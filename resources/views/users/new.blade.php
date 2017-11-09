@@ -21,39 +21,47 @@
                 <div class="content-box-wrapper">
                     <h4 class="font-gray font-size-16"><strong>Datos Usuario</strong></h4>
                     <div class="form-group col-md-4">
-                        <label>Nombre Usuario</label>
+                        <label>Nombre Usuario *</label>
                         <input type="text" class="form-control" name="name" value="{{old('name')}}">
                     </div>
 
                     <div class="form-group col-md-4">
-                        <label>Email</label>
+                        <label>Email *</label>
                         <input type="email" class="form-control" name="email" value="{{old('email')}}">
                     </div>
 
                     <div class="form-group col-md-4">
-                        <label>Nombre</label>
+                        <label>Nombre *</label>
                         <input type="text" class="form-control" name="nombre" value="{{old('nombre')}}">
                     </div>
 
                     <div class="form-group col-md-4">
-                        <label>Apellido</label>
+                        <label>Apellido *</label>
                         <input type="text" class="form-control" name="apellido" value="{{old('apellido')}}">
                     </div>
 
                     <div class="form-group col-md-4">
-                        <label>Password</label>
+                        <label>Password *</label>
                         <input type="password" class="form-control" name="password" value="">
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         <label>Celular</label>
-                        <input type="text" class="form-control" name="cel_codigo_area" id="cel_codigo_area" placeholder="Característica" value="{{old('cel_codigo_area')}}">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>&nbsp;</label>
                         <input type="text" class="form-control" name="cel_numero" id="cel_numero" placeholder="Número" value="{{old('cel_numero')}}">
                     </div>
-
+                    <div class="form-group col-md-4">
+                        <label>Tipo Usuario *</label>
+                        <select id="tipo_usuario_id" name="tipo_usuario_id" class="form-control">
+                            <option value="">&lt;Seleccione&gt;</option>
+                            @foreach($tipos_usuario as $tipo_usuario)
+                                @if(old('tipo_usuario_id') == $tipo_usuario->id)
+                                    <option value="{{$tipo_usuario->id}}" selected>{{$tipo_usuario->tipo_usuario}}</option>
+                                @else
+                                    <option value="{{$tipo_usuario->id}}">{{$tipo_usuario->tipo_usuario}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="clearfix">&nbsp;</div>
                     <div class="divider"></div>
                     <h4 class="font-gray font-size-16"><strong>Datos Ubicación</strong></h4>
@@ -86,11 +94,6 @@
                         <input type="text" class="form-control" name="numero_calle" placeholder="N° calle" value="{{old('numero_calle')}}">
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label>Administrador</label>
-                        <input type="checkbox" name="is_admin" class="form-control input-switch" checked data-size="large" data-on-text="Si" data-off-text="No">
-                    </div>
-
                     <div class="clearfix">&nbsp;</div>
 
                     <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar</button>
@@ -102,19 +105,7 @@
 
     <script type="text/javascript">
         $(function () {
-            $('.input-switch').bootstrapSwitch();
 
-            $("#cel_codigo_area").inputmask({
-                mask: function () {
-                    return ["999[9]"];
-                }
-            });
-
-            $("#cel_numero").inputmask({
-                mask: function () {
-                    return ["999999[9]"];
-                }
-            });
         });
     </script>
 @endsection

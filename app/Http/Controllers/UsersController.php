@@ -53,7 +53,11 @@ class UsersController extends Controller
             ->orderBy("provincia", "asc")
             ->get();
 
-        return view('users.new', compact('provincias'));
+        $tipos_usuario = DB::table('tipo_usuario')
+            ->orderBy("tipo_usuario", "asc")
+            ->get();
+
+        return view('users.new', compact('provincias', 'tipos_usuario'));
     }
 
     /**
@@ -66,10 +70,9 @@ class UsersController extends Controller
     {
         //Merge Password
         $request->merge(["password" => Hash::make($request->input("password"))]);
-        $request->merge(["is_admin" => $request->input("is_admin") == "on" ? 1 : 0]);
 
         //Validaciones
-        $validator = Validator::make($request->all(), User::getRulesSTORE($request));
+        $validator = Validator::make($request->all(), User::getRulesSTORE());
 
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -107,7 +110,11 @@ class UsersController extends Controller
             ->orderBy("provincia", "asc")
             ->get();
 
-        return view('users/edit', ["user" => $user, "provincias" => $provincias]);
+        $tipos_usuario = DB::table('tipo_usuario')
+            ->orderBy("tipo_usuario", "asc")
+            ->get();
+
+        return view('users/edit', ["user" => $user, "provincias" => $provincias, "tipos_usuario" => $tipos_usuario]);
     }
 
     /**
@@ -129,10 +136,10 @@ class UsersController extends Controller
         } else {
             $request->merge(["password" => $user["password"]]);
         }
-        $request->merge(["is_admin" => $request->input("is_admin") == "on" ? 1 : 0]);
+
 
         //Validaciones
-        $validator = Validator::make($request->all(), User::getRulesPUT($id, $request));
+        $validator = Validator::make($request->all(), User::getRulesPUT($id));
         if ($validator->fails()) {
             $errors = $validator->errors();
             return Redirect::back()->withErrors($errors)->withInput();

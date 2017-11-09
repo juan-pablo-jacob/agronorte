@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Request;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','nombre','apellido','cel_numero','calle','numero_calle','localidad','codigo_postal','is_activo', 'provincia_id'
+        'name', 'email', 'password','nombre','apellido','cel_numero','calle','numero_calle','localidad','codigo_postal','is_activo', 'provincia_id', 'tipo_usuario_id'
     ];
 
     /**
@@ -29,7 +30,6 @@ class User extends Authenticatable
 
 
     public function scopeName($query, $name) {
-
         if (trim($name) != "") {
             $query->where('name', 'LIKE', "%$name%");
         }
@@ -45,12 +45,14 @@ class User extends Authenticatable
      * Retorno del array de validación al guardar la moto
      * @param type $request
      */
-    public static function getRulesSTORE(Request $request) {
+    public static function getRulesSTORE() {
 
         $array_rule = [
             'name' => "required|unique:users",
             'nombre' => "required",
             'apellido' => "required",
+            'password' => "required",
+            'tipo_usuario_id' => "required",
             'email' => "required|email|unique:users"
         ];
 
@@ -59,14 +61,17 @@ class User extends Authenticatable
 
     /**
      * Retorno del array de validación al realizar el UPDATE de la moto
-     * @param type $id
-     * @return type
+     * @param $id
+     * @param Request $request
+     * @return array
      */
-    public static function getRulesPUT($id,Request $request) {
+    public static function getRulesPUT($id) {
         $array_rule = [
             'name' => "required|unique:users,name," . $id,
             'nombre' => "required",
             'apellido' => "required",
+            'password' => "required",
+            'tipo_usuario_id' => "required",
             'email' => 'required|email|unique:users,email,' . $id
         ];
 
