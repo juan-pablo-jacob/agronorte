@@ -22,3 +22,25 @@ Auth::routes();
  */
 
 Route::resource("users", "UsersController");
+
+/**
+ * Rutas creación Marca
+ */
+Route::resource("marca", "MarcaController");
+
+Route::get("marca/showJSON/{id}", 'MarcaController@showJSON');
+
+/**
+ * Rutas creación Tipo productos
+ */
+Route::resource("tipo_producto", "TipoProductoController");
+
+Route::get("tipo_producto/showJSON/{id}", 'TipoProductoController@showJSON');
+
+
+/**
+ * Rutas creación Clientes
+ */
+Route::resource("cliente", "ClienteController");
+Route::get('as/cliente','ClienteController@autosuggest');
+Route::get("cliente/showJSON/{id}", 'ClienteController@showJSON');
