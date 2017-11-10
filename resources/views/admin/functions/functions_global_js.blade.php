@@ -64,54 +64,5 @@
             $("#" + params.id_related).change();
         }
     };
-//------------ esto es lo mio de los alerta del menu
-    var get_info_menu = function () {
-        var params = {
-            url: BASE_URL + "/get_info_menu_email",
-            data: "",
-            method: "GET",
-            function_success: function (data) {
-                if (data.result) {
-                    if (parseInt(data.info.cantidad_no_leidos) > 0) {
-                        $("#span_cantidad_emails").html(data.info.cantidad_no_leidos);
-                    }
-                }
-            },
-            function_error: function (data) {
-            }
-        };
-
-        ajax_form(params);
-    }
-    var get_info_stock_chapa = function () {
-
-        var params = {
-            url: BASE_URL + "/get_info_menu_stock",
-            data: "",
-            method: "GET",
-            function_success: function (data) {
-
-                if (data.result) {
-
-                    $("#span_stock_minimo").html(data.info);
-
-                }
-            },
-            function_error: function (data) {
-            }
-        };
-
-        ajax_form(params);
-    }
-
-
-    /**
-     * Funciones corrridas al final de todo
-     */
-
-    $(document).ready(function () {
-        get_info_menu();
-        get_info_stock_chapa();
-    });
 
 </script>

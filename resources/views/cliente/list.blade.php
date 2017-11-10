@@ -9,6 +9,7 @@
     <ul id="page-subnav" style="text-align: left!important;">
         <li><a href="#" title="Listado Clientes"><span>Listado Clientes</span></a></li>
         <li><a href="{{url("cliente/create")}}" title="Listado Clientes"><span>Crear Clientes</span></a></li>
+        <li><a href="{{url("cliente/upload_xls")}}" title="Agregar Clientes XLS"><span>Agregar clientes XLS</span></a></li>
     </ul>
 </div>
 
@@ -97,6 +98,8 @@
             </div>
         </div>
     </div>
+
+
 </div>
 
 <script type="text/javascript">

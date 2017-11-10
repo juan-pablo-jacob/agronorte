@@ -41,8 +41,12 @@ Route::get("tipo_producto/showJSON/{id}", 'TipoProductoController@showJSON');
 /**
  * Rutas creación Clientes
  */
+Route::get("cliente/upload_xls", 'ClienteController@getUploadXLS');
 Route::resource("cliente", "ClienteController");
 Route::get('as/cliente','ClienteController@autosuggest');
 Route::get("cliente/showJSON/{id}", 'ClienteController@showJSON');
+
+Route::post("cliente/agregar_clientes", 'ClienteController@parserClienteFromXLS');
+Route::post("cliente/upload_xls", 'ClienteController@uploadXLS');
 
 Route::get("test_xls", 'ClienteController@parserClienteFromXLS');
