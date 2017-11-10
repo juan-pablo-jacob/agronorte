@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
+use Mockery\Exception;
 
 class ClienteController extends Controller
 {
@@ -171,7 +172,6 @@ class ClienteController extends Controller
     }
 
 
-
     /**
      * Método que retorna el valor del registro en formato JSON
      * @param type $id
@@ -208,5 +208,43 @@ class ClienteController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+
+    /**
+     * Método utilizado para el parseo de clientes XLS
+     */
+    public function parserClienteFromXLS()
+    {
+        $objPHPExcel = new \PHPExcel();
+
+        $inputFileName = public_path("exportacion_clientes/1.xls");
+        //  Read your Excel workbook
+        try {
+
+            $inputFileType = \PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+        } catch(\Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+//  Get worksheet dimensions
+        $sheet = $objPHPExcel->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+
+//  Loop through each row of the worksheet in turn
+        for ($row = 2; $row <= $highestRow; $row++){
+            //  Read a row of data into an array
+            $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+                NULL,
+                TRUE,
+                FALSE);
+
+            dump($rowData);
+            die();
+            //  Insert row data array into your database of choice here
+        }
     }
 }

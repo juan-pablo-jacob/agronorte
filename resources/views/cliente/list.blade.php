@@ -7,8 +7,8 @@
 
 <div id="page-nav">
     <ul id="page-subnav" style="text-align: left!important;">
-        <li><a href="#" title="Listado Contactos"><span>Listado Contacto</span></a></li>
-        <li><a href="{{url("contactos/create")}}" title="Listado Contactos"><span>Crear Contacto</span></a></li>
+        <li><a href="#" title="Listado Clientes"><span>Listado Clientes</span></a></li>
+        <li><a href="{{url("cliente/create")}}" title="Listado Clientes"><span>Crear Clientes</span></a></li>
     </ul>
 </div>
 
@@ -16,22 +16,22 @@
     <!--    Inicio Filtro Búsqueda-->
     <div class="content-box">
         <h3 class="content-box-header bg-white">
-            Filtro búsqueda de contactos
+            Filtro búsqueda de clientes
         </h3>
 
         <div class="content-box-wrapper bg-white">
-            <form action="{{url("/contactos")}}" method="get" enctype="multipart/form-data">
+            <form action="{{url("/cliente")}}" method="get" enctype="multipart/form-data">
                 <div class="form-group col-md-6">
-                    <label for="exampleInputEmail1">Nombre Contacto</label>
-                    <input type="text" class="form-control col-md-2" id="nombre_busqueda" value="{{$request->nombre}}" name="nombre" placeholder="Nombre o apellido">
+                    <label for="exampleInputEmail1">Razón Social</label>
+                    <input type="text" class="form-control col-md-2" id="nombre_busqueda" value="{{$request->nombre}}" name="nombre" placeholder="Razón social">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="exampleInputPassword1">DNI</label>
-                    <input type="text" class="form-control" id="dni_busqueda" name="dni" value="{{$request->dni}}" placeholder="DNI">
+                    <label for="exampleInputPassword1">CUIT</label>
+                    <input type="text" class="form-control" id="cuit_busqueda" name="CUIT" value="{{$request->CUIT}}" placeholder="CUIT">
                 </div>
 
                 <button type="submit" class="btn btn-success"><i class="glyph-icon icon-elusive-search"></i>&nbsp;Buscar</button>
-                <a href="{{url("contactos")}}" class="btn btn-success"><i class="glyph-icon icon-refresh"></i>&nbsp;Limpiar</a>
+                <a href="{{url("cliente")}}" class="btn btn-success"><i class="glyph-icon icon-refresh"></i>&nbsp;Limpiar</a>
             </form>
         </div>
     </div>
@@ -40,14 +40,16 @@
 
     <!--    Inicio Tabla-->
 
-    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="dynamic-table-contacto">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="dynamic-table-cliente">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>DNI</th>
+                <th>Razón Social</th>
+                <th>Teléfono</th>
+                <th>Celular</th>
+                <th>CUIT</th>
                 <th>Email</th>
-                <th>Dirección</th>
+                <th>Localidad</th>
+                <th>Domicilio</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -55,13 +57,15 @@
             @if(count($clientes)>0)
             @foreach ($clientes as $cliente)
             <tr class="odd gradeX">
-                <td>{{$cliente->nombre}}</td>
-                <td>{{$cliente->apellido}}</td>
-                <td>{{$cliente->dni}}</td>
+                <td>{{$cliente->razon_social}}</td>
+                <td>{{$cliente->telefono}}</td>
+                <td>{{$cliente->celular}}</td>
+                <td>{{$cliente->CUIT}}</td>
                 <td>{{$cliente->email}}</td>
-                <td>{{$cliente->direccion}}</td>
+                <td>{{$cliente->localidad}}</td>
+                <td>{{$cliente->domicilio}}</td>
                 <td class="center">
-                    <a href="{{url("contactos/" . $cliente->id . "/edit")}}" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
+                    <a href="{{url("cliente/" . $cliente->id . "/edit")}}" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
                     <a href="javascript:;" data-id="{{$cliente->id}}" class="btn-borrar" tittle="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
                 </td>
             </tr>
@@ -80,8 +84,8 @@
                     <h4 class="modal-title">Eliminar registro</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Seguro que desea eliminar el contacto?</p>
-                    <form id="contacto-delete-form" action="" style="display:none;" method="post">
+                    <p>Seguro que desea eliminar el cliente?</p>
+                    <form id="cliente-delete-form" action="" style="display:none;" method="post">
                         {{ method_field('DELETE') }}
                         {{ csrf_field() }}
                     </form>
@@ -102,19 +106,19 @@
     $(document).ready(function () {
 
         $(".btn-borrar").click(function () {
-            var idcontacto = $(this).data("id");
-            $('#contacto-delete-form').attr('action', BASE_URL + '/contactos/' + idcontacto);
+            var idcliente = $(this).data("id");
+            $('#cliente-delete-form').attr('action', BASE_URL + '/cliente/' + idcliente);
             $('#modal-delete-confirmation').modal('toggle');
         });
 
         $(".btn-confirm-delete").click(function () {
-            $('#contacto-delete-form').submit();
+            $('#cliente-delete-form').submit();
         });
 
 
-        $('#dynamic-table-contacto').dataTable();
-        $("#dynamic-table-contacto_length").hide();
-        $("#dynamic-table-contacto_filter").hide();
+        $('#dynamic-table-cliente').dataTable();
+        $("#dynamic-table-cliente_length").hide();
+        $("#dynamic-table-cliente_filter").hide();
 
         /* Add sorting icons */
 

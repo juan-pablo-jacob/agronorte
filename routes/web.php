@@ -44,3 +44,5 @@ Route::get("tipo_producto/showJSON/{id}", 'TipoProductoController@showJSON');
 Route::resource("cliente", "ClienteController");
 Route::get('as/cliente','ClienteController@autosuggest');
 Route::get("cliente/showJSON/{id}", 'ClienteController@showJSON');
+
+Route::get("test_xls", 'ClienteController@parserClienteFromXLS');
