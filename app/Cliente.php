@@ -42,9 +42,9 @@ class Cliente extends Model
     }
 
 
-    public function scopeEmail($query, $email) {
-        if (trim($email) != "") {
-            $query->where('email', 'LIKE', "%$email%");
+    public function scopeCUIT($query, $CUIT) {
+        if (trim($CUIT) != "") {
+            $query->where('CUIT', 'LIKE', "%$CUIT%");
         }
     }
 

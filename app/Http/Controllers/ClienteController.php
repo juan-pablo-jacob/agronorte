@@ -7,7 +7,9 @@ use App\CondicionIVA;
 use App\Provincia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Mockery\Exception;
@@ -34,13 +36,13 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $clientes =
-            Cliente::email($request->get('email'))
+            Cliente::CUIT($request->get('CUIT'))
                 ->nombre($request->get('razon_social'))
                 ->select("cliente.*", "provincia.provincia")
                 ->leftJoin("provincia", "cliente.provincia_id", "=", "provincia.id")
                 ->where("active", 1)
                 ->orderBy('email', 'DESC')
-                ->get();
+                ->paginate(200);
 
         return view('cliente.list', ["clientes" => $clientes, "request" => $request]);
     }
@@ -218,6 +220,8 @@ class ClienteController extends Controller
      */
     public function parserClienteFromXLS()
     {
+
+        ini_set("max_execution_time", 2000);
         $objPHPExcel = new \PHPExcel();
 
         $inputFileName = public_path("exportacion_clientes/1.xls");
@@ -231,7 +235,6 @@ class ClienteController extends Controller
             die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME) . '": ' . $e->getMessage());
         }
 
-//  Get worksheet dimensions
         $sheet = $objPHPExcel->getSheet(0);
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
@@ -239,9 +242,7 @@ class ClienteController extends Controller
         $correcto = 0;
         $incorrecto = 0;
 
-//  Loop through each row of the worksheet in turn
         for ($row = 2; $row <= $highestRow; $row++) {
-            //  Read a row of data into an array
             $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
                 NULL,
                 TRUE,
@@ -313,20 +314,39 @@ class ClienteController extends Controller
     }
 
 
+    /**
+     * Método que realiza la subida del archivo XLS
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function uploadXLS(Request $request)
     {
-        dump($request);
-        dump($request->file("fileinput"));
 
-        if( $request->hasFile('fileinput') ) {
-            $file = $request->file('fileinput');
-            dd($file);
-            // Now you have your file in a variable that you can do things with
+        $file = $request->file('fileinput');
+
+        if (!is_null($file)) {
+
+            $partes_ruta = pathinfo($file->getClientOriginalName());
+            if($partes_ruta['extension'] != "xls"){
+                $errors = new MessageBag(['error' => ['Debe ingresar un archivo XLS']]);
+                return Redirect::back()->withErrors($errors);
+            }
+
+            Input::file('fileinput')->move(public_path("exportacion_clientes"), "1.xls");
+
+            $path = public_path("exportacion_clientes/1.xls");
+            if (is_file($path)) {
+                return view('cliente/upload_xls', ["file" => $path]);
+            }
         }
-
-
+        $errors = new MessageBag(['error' => ['No ingresó ningún archivo']]);
+        return Redirect::back()->withErrors($errors);
     }
 
+    /**
+     * Retorna la pantalla utilizada para parseo de clientes
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getUploadXLS()
     {
         $inputFileName = public_path("exportacion_clientes/1.xls");
@@ -335,7 +355,23 @@ class ClienteController extends Controller
         } else {
             return view('cliente/upload_xls', ["file" => ""]);
         }
+    }
 
+    /**
+     * Mètodo utilizado para retornar el archivo
+     */
+    public function getArchivo()
+    {
 
+        $enlace = public_path("exportacion_clientes/1.xls");
+        if (is_file($enlace)) {
+
+            header("Content-Disposition: attachment; filename=Archivo_exportación_clientes.xls");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Length: " . filesize($enlace));
+            readfile($enlace);
+        } else {
+            die("No se encontró el archivo en el servidor");
+        }
     }
 }

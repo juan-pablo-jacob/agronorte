@@ -4,7 +4,7 @@
 
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title> Over Admin </title>
+        <title> Agronorte Admin </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -61,7 +61,7 @@ $(window).load(function () {
                         <a href="#" class="tooltip-button hidden-desktop" title="Navigation Menu" id="responsive-open-menu">
                             <i class="glyph-icon icon-align-justify"></i>
                         </a>
-                        <span>Over Admin <i class="opacity-80">1.0</i>
+                        <span>Agronorte Admin <i class="opacity-80">1.0</i>
                         </span>
 
                         <a id="collapse-sidebar" href="#" title="">

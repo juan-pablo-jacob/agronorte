@@ -24,7 +24,7 @@
             <form action="{{url("/cliente")}}" method="get" enctype="multipart/form-data">
                 <div class="form-group col-md-6">
                     <label for="exampleInputEmail1">Razón Social</label>
-                    <input type="text" class="form-control col-md-2" id="nombre_busqueda" value="{{$request->nombre}}" name="nombre" placeholder="Razón social">
+                    <input type="text" class="form-control col-md-2" id="razon_social" value="{{$request->razon_social}}" name="razon_social" placeholder="Razón social">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="exampleInputPassword1">CUIT</label>
