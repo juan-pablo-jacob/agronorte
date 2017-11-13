@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    {{--    <script type="text/javascript" src="{{url('/assets/js-core/raphael.js')}}"></script>--}}
-    {{--<script type="text/javascript" src="{{url('/assets/widgets/multi-upload/jquery.fileupload.js')}}"></script>--}}
-    {{--<script type="text/javascript" src="{{url('/assets/widgets/multi-upload/main.js')}}"></script>--}}
 
 
     @include('admin.partials.mensajes')
@@ -125,7 +122,10 @@
             <link rel="stylesheet" href="{{url('/assets/blueimp/blueimp-gallery.min.css')}}">
             <link rel="stylesheet" href="{{url('/assets/widgets/multi-upload/fileupload.css')}}">
 
-            <form id="fileupload" action="{{url("producto/multi-upload")}}" method="POST"
+            <link rel="stylesheet" href="{{url('/assets/widgets/progressbar/progressbar.css')}}">
+
+
+            <form id="fileupload" target="_blank" action="{{url("producto/multi-upload")}}" method="POST"
                   enctype="multipart/form-data">
 
                 {{ csrf_field() }}
@@ -135,9 +135,9 @@
                   <span class="btn btn-md btn-success fileinput-button">
                         <i class="glyph-icon icon-plus"></i>
                         Agregar archivos...
-                      <input type="file" name="files[]" multiple>
+                      <input type="file" id="files_input" name="files[]" multiple>
                   </span>
-                            <button type="submit" class="btn btn-md btn-default start">
+                            <button type="submit" id="btnSendFiles" class="btn btn-md btn-default start">
                                 <i class="glyph-icon icon-upload"></i>
                                 Subir
                             </button>
@@ -167,319 +167,111 @@
                         <div class="progress-extended">&nbsp;</div>
                     </div>
                 </div>
+
+
                 <!-- The table listing the files available for upload/download -->
                 <table role="presentation" class="table table-striped">
-                    <tbody class="files"></tbody>
+                    <tbody class="files">
+
+                    </tbody>
                 </table>
             </form>
 
-
-            <!-- The blueimp Gallery widget -->
-            <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
-                <div class="slides"></div>
-                <h3 class="title"></h3>
-                <a class="prev">‹</a>
-                <a class="next">›</a>
-                <a class="close">×</a>
-                <a class="play-pause"></a>
-                <ol class="indicator"></ol>
-            </div>
-
-
-            <script id="template-upload" type="text/x-tmpl">
-              {% for (var i=0, file; file=o.files[i]; i++) { %}
-                  <tr class="template-upload fade">
-                      <td>
-                          <span class="preview"></span>
-                      </td>
-                      <td>
-                          <p class="name">{%=file.name%}</p>
-                          <strong class="error text-danger"></strong>
-                      </td>
-                      <td>
-                          <p class="size">Procesando...</p>
-                          <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success bg-green" style="width:0%;"></div></div>
-                      </td>
-                      <td>
-                          {% if (!i && !o.options.autoUpload) { %}
-                              <button class="btn btn-md btn-default start" disabled>
-                                <span class="button-content">
-                                  <i class="glyph-icon icon-upload"></i>
-                                  Subir
-                                </span>
-                              </button>
-                          {% } %}
-                          {% if (!i) { %}
-                              <button class="btn btn-md btn-warning cancel">
-                                  <span class="button-content">
-                                    <i class="glyph-icon icon-ban-circle"></i>
-                                    Cancelar
-                                  </span>
-                              </button>
-                          {% } %}
-                      </td>
-                  </tr>
-              {% } %}
-
-
-
-            </script>
-
-            <script id="template-download" type="text/x-tmpl">
-              {% for (var i=0, file; file=o.files[i]; i++) { %}
-                  <tr class="template-download fade">
-                      <td>
-                          <span class="preview">
-                              {% if (file.thumbnailUrl) { %}
-                                  <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
-                              {% } %}
-                          </span>
-                      </td>
-                      <td>
-                          <p class="name">
-                              {% if (file.url) { %}
-                                  <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
-                              {% } else { %}
-                                  <span>{%=file.name%}</span>
-                              {% } %}
-                          </p>
-                          {% if (file.error) { %}
-                              <div><span class="label label-danger">Error</span> {%=file.error%}</div>
-                          {% } %}
-                      </td>
-                      <td>
-                          <span class="size">{%=o.formatFileSize(file.size)%}</span>
-                      </td>
-                      <td>
-                          {% if (file.deleteUrl) { %}
-                              <button class="btn btn-md btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                                  <span class="button-content">
-                                    <i class="glyph-icon icon-trash"></i>
-                                    Eliminar
-                                  </span>
-                              </button>
-                              <input type="checkbox" name="delete" value="1" class="toggle width-reset float-left">
-                          {% } else { %}
-                              <button class="btn btn-md btn-warning cancel">
-                                  <span class="button-content">
-                                    <i class="glyph-icon icon-ban-circle"></i>
-                                    Cancelar
-                                  </span>
-                              </button>
-                          {% } %}
-                      </td>
-                  </tr>
-              {% } %}
-
-
-
-            </script>
-
-
-            <div class="example-html">
-			<pre>
-				<code class="language-markup">
-
-                    <form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST"
-                          enctype="multipart/form-data">
-                        <div class="row fileupload-buttonbar">
-                            <div class="col-lg-6">
-                                <div class="float-left">
-                                  <span class="btn btn-md btn-success fileinput-button">
-                                        <i class="glyph-icon icon-plus"></i>
-                                        Agregar Archivos...
-                                      <input type="file" name="files[]" multiple>
-                                  </span>
-                                    <button type="submit" class="btn btn-md btn-default start">
-                                        <i class="glyph-icon icon-upload"></i>
-                                        Subir
-                                    </button>
-                                    <button type="reset" class="btn btn-md btn-warning cancel">
-                                        <i class="glyph-icon icon-ban"></i>
-                                        Cancelar
-                                    </button>
-                                    <button type="button" style="display: none" class="btn btn-md btn-danger delete">
-                                        <i class="glyph-icon icon-trash-o"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                                <!-- The global file processing state -->
-                                <span class="fileupload-process"></span>
-                            </div>
-                            <!-- The global progress state -->
-                            <div class="col-lg-6 fileupload-progress fade">
-                                <!-- The global progress bar -->
-
-                                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0"
-                                     aria-valuemax="100">
-                                    <div class="progress-bar progress-bar-success bg-green">
-                                        <div class="progressbar-overlay"></div>
-                                    </div>
-                                </div>
-                                <!-- The extended global progress state -->
-                                <div class="progress-extended">&nbsp;</div>
-                            </div>
-                        </div>
-                        <!-- The table listing the files available for upload/download -->
-                        <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
-                    </form>
-
-                    <!-- The blueimp Gallery widget -->
-                    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
-                        <div class="slides"></div>
-                        <h3 class="title"></h3>
-                        <a class="prev">‹</a>
-                        <a class="next">›</a>
-                        <a class="close">×</a>
-                        <a class="play-pause"></a>
-                        <ol class="indicator"></ol>
-                    </div>
-                    <!-- The template to display files available for upload -->
-                    <script id="template-upload" type="text/x-tmpl">
-                      {% for (var i=0, file; file=o.files[i]; i++) { %}
-                          <tr class="template-upload fade">
-                              <td>
-                                  <span class="preview"></span>
-                              </td>
-                              <td>
-                                  <p class="name">{%=file.name%}</p>
-                                  <strong class="error text-danger"></strong>
-                              </td>
-                              <td>
-                                  <p class="size">Procesando...</p>
-                                  <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success bg-green" style="width:0%;"></div></div>
-                              </td>
-                              <td>
-                                  {% if (!i && !o.options.autoUpload) { %}
-                                      <button class="btn btn-md btn-default start" disabled>
-                                        <span class="button-content">
-                                          <i class="glyph-icon icon-upload"></i>
-                                          Subir
-                                        </span>
-                                      </button>
-                                  {% } %}
-                                  {% if (!i) { %}
-                                      <button class="btn btn-md btn-warning cancel">
-                                          <span class="button-content">
-                                            <i class="glyph-icon icon-ban-circle"></i>
-                                            Cancelar
-                                          </span>
-                                      </button>
-                                  {% } %}
-                              </td>
-                          </tr>
-                      {% } %}
-                      </script>
-                    <!-- The template to display files available for download -->
-                    <script id="template-download" type="text/x-tmpl">
-                      {% for (var i=0, file; file=o.files[i]; i++) { %}
-                          <tr class="template-download fade">
-                              <td>
-                                  <span class="preview">
-                                      {% if (file.thumbnailUrl) { %}
-                                          <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
-                                      {% } %}
-                                  </span>
-                              </td>
-                              <td>
-                                  <p class="name">
-                                      {% if (file.url) { %}
-                                          <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
-                                      {% } else { %}
-                                          <span>{%=file.name%}</span>
-                                      {% } %}
-                                  </p>
-                                  {% if (file.error) { %}
-                                      <div><span class="label label-danger">Error</span> {%=file.error%}</div>
-                                  {% } %}
-                              </td>
-                              <td>
-                                  <span class="size">{%=o.formatFileSize(file.size)%}</span>
-                              </td>
-                              <td>
-                                  {% if (file.deleteUrl) { %}
-                                      <button class="btn btn-md btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                                          <span class="button-content">
-                                            <i class="glyph-icon icon-trash"></i>
-                                            Eliminar
-                                          </span>
-                                      </button>
-                                      <input type="checkbox" name="delete" value="1" class="toggle width-reset float-left">
-                                  {% } else { %}
-                                      <button class="btn btn-md btn-warning cancel">
-                                          <span class="button-content">
-                                            <i class="glyph-icon icon-ban-circle"></i>
-                                            Cancelar
-                                          </span>
-                                      </button>
-                                  {% } %}
-                              </td>
-                          </tr>
-                      {% } %}
-                      </script>
-
-
-                    <script src="{{url('/assets/blueimp/JavaScript-Load-Image-master/js/load-image.all.min.js')}}"></script>
-
-                    <!-- The Templates plugin is included to render the upload/download listings -->
-                    <script src="{{url('/assets/blueimp/tmpl.min.js')}}"></script>
-
-                    <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.js"></script>
-                    {{--<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image-ios.js"></script>--}}
-                    <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image-orientation.js"></script>
-                    <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image-meta.js"></script>
-                    <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image-exif.js"></script>
-                    <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image-exif-map.js"></script>
-
-                    <!-- The Canvas to Blob plugin is included for image resizing functionality -->
-                    <script src="{{url('/assets/blueimp/canvas-to-blob.min.js')}}"></script>
-                    <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-                    <!-- blueimp Gallery script -->
-                    <script src="{{url('/assets/blueimp/jquery.blueimp-gallery.min.js')}}"></script>
-                    <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-
-
-                    <script type="text/javascript" src="{{url('/assets/js-core/raphael.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.iframe-transport.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-process.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-image.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-audio.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-video.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-validate.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/jquery.fileupload-ui.js')}}"></script>
-
-                    <script type="text/javascript" src="{{url('/assets/widgets/multi-upload/main.js')}}"></script>
-
-                    <script type="text/javascript"
-                            src="{{url('/assets/widgets/multi-upload/cors/jquery.xdr-transport.js')}}"></script>
-
-
-                </code>
-			</pre>
-            </div>
-
-
         </div>
     </div>
+
+
+
     <script type="text/javascript">
         $(function () {
+
+            /**
+             * click botón subir
+             */
+            $("#btnSendFiles").click(function (e) {
+                e.preventDefault();
+                $("#fileupload").submit();
+
+
+                var data = $("#fileupload").serialize();
+                var url = $("#fileupload").attr("action");
+                $.post(url, data, function (result) {
+                    if (result.result == false) {
+                        $.each(result.errors, function (index, value) {
+                            alertify.error(value[0]);
+                        });
+                    } else {
+                        alertify.success(result.msg);
+                    }
+                });
+
+            });
+
+
+            $(".btnDeleteFile").click(function () {
+                var id = $(this).data("id");
+
+                if (parseInt(id) > 0) {
+                    //Enviar a eliminar archivo
+                }
+            });
+
+
+            /**
+             * Función utilizada para cargar archivos existentes
+             * @param params
+             */
+            var cargarArchivosExistentes = function (params) {
+                var form = $("#" + params.form_id);
+
+                var url = form.attr("action");
+                var data = form.serialize();
+
+                $.get(url, data, function (result) {
+                    if (result.result == false) {
+                        $.each(result.errors, function (index, value) {
+                            alertify.error(value[0]);
+                        });
+                    } else {
+                        if (result.files.length > 0) {
+                            $.each(result.files, function (index, value) {
+                                var append = "<tr class=\"template-upload fade processing in\">"
+                                    + "                        <td>"
+                                    + "                            <span class=\"preview\"></span>"
+                                    + "                        </td>"
+                                    + "                        <td>"
+                                    + "                            <p class=\"name\">" + value.nombre_archivo + "." + value.ext + "</p>"
+                                    + "                            <strong class=\"error text-danger\"></strong>"
+                                    + "                        </td>"
+                                    + "                        <td>"
+                                    + "                            <p class=\"size\">Subido</p>"
+                                    + "                            <div class=\"progress progress-striped active\" role=\"progressbar\" aria-valuemin=\"0\""
+                                    + "                                 aria-valuemax=\"100\" aria-valuenow=\"0\">"
+                                    + "                                <div class=\"progress-bar progress-bar-success bg-green\" style=\"width:100%;\"></div>"
+                                    + "                          </div>"
+                                    + "                     </td>"
+                                    + "                     <td>"
+                                    + "                         <a href='javascript:;' type='button' data-id='" + value.id + "' class=\"btn btn-md btn-danger delete btnDeleteFile\">"
+                                    + "                             <span class=\"button-content\">"
+                                    + "                               <i class=\"glyph-icon icon-trash-o\"></i>"
+                                    + "                               Borrar"
+                                    + "                             </span>"
+                                    + "                       </a>"
+                                    + "                   </td>"
+                                    + "               </tr>";
+
+                                $(append).appendTo(".files");
+                            });
+                        }
+
+                    }
+                });
+            }
+
+
+            var params_carga_archivos = {
+                "form_id": "fileupload"
+            };
 
         });
     </script>

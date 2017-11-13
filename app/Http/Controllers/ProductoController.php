@@ -144,6 +144,6 @@ class ProductoController extends Controller
     public function multiUploadSave(Request $request)
     {
         $files = $request->file('files');
-        dd($files);
+        dd($request);
     }
 }
