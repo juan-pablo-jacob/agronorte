@@ -53,3 +53,11 @@ Route::post("cliente/agregar_clientes", 'ClienteController@parserClienteFromXLS'
 Route::post("cliente/upload_xls", 'ClienteController@uploadXLS');
 
 Route::get("test_xls", 'ClienteController@parserClienteFromXLS');
+
+
+/**
+ * Rutas productos
+ */
+Route::get("producto/multi-upload", "ProductoController@multiUpload");
+Route::post("producto/multi-upload", "ProductoController@multiUploadSave");
+Route::resource("producto", "ProductoController");

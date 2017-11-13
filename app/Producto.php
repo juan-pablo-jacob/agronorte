@@ -33,6 +33,18 @@ class Producto extends Model
         }
     }
 
+
+    /**
+     * Filtrado por marca
+     * @param $query
+     * @param $marca_id
+     */
+    public function scopeMarca($query, $marca_id) {
+        if (trim($marca_id) != "") {
+            $query->where('marca', $marca_id);
+        }
+    }
+
     /**
      * Filtrado tipo producto
      * @param $query

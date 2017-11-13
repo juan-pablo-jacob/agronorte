@@ -40,6 +40,19 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="#" title="Productos">
+                        <i class="glyph-icon icon-gears"></i>
+                        <span>Productos</span>
+                    </a>
+                    <ul>
+                        <li><a href="{{ url("/producto") }}"
+                               title="Listado Productos"><span>Listado Productos</span></a></li>
+                        <li><a href="{{ url("/producto/create") }}" title="Crear Producto"><span>Crear Producto</span></a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </div><!-- #sidebar-menu -->
     </div><!-- #page-sidebar-wrapper -->

@@ -199,7 +199,7 @@
                     }
                 }
                 if (img) {
-                    resolve(loadImage.scale(img, options));
+                    //resolve(loadImage.scale(img, options));
                     return dfd.promise();
                 }
                 return data;
