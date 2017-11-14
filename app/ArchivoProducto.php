@@ -18,7 +18,7 @@ class ArchivoProducto extends Model
      * @var array
      */
     protected $fillable = [
-        'application', 'content_type', 'path', 'ext', 'nombre_archivo', 'producto_id'
+        'content_type', 'path', 'ext', 'nombre_archivo', 'producto_id'
     ];
 
 
@@ -27,10 +27,9 @@ class ArchivoProducto extends Model
      * Método de retorno la validación para la Creación o Update
      * @return array
      */
-    public static function getValidation()
+    public static function getRules()
     {
         $validation = [
-            'application' => 'required',
             'content_type' => 'required',
             'producto_id' => 'required',
             'path' => 'required',

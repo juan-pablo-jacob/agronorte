@@ -19,7 +19,9 @@ class Producto extends Model
      */
     protected $fillable = [
         'precio_lista', 'bonificacion_basica', 'costo_basico', 'incentivo_actual', 'is_nuevo', 'modelo', 'descripcion',
-        'tipo_producto_id', 'marca_id'
+        'tipo_producto_id', 'marca_id', 'anio', 'horas_motor', 'horas_trilla', 'precio_sin_canje', 'costo_usado',
+        'traccion', 'recolector', 'piloto_mapeo', 'ex_usuario', 'ubicacion', 'vendedor', 'estado',
+        'disponible', 'usuario_vendedor_id'
     ];
 
     /**
@@ -27,7 +29,8 @@ class Producto extends Model
      * @param $query
      * @param $modelo
      */
-    public function scopeModelo($query, $modelo) {
+    public function scopeModelo($query, $modelo)
+    {
         if (trim($modelo) != "") {
             $query->where('modelo', 'LIKE', "%$modelo%");
         }
@@ -39,9 +42,10 @@ class Producto extends Model
      * @param $query
      * @param $marca_id
      */
-    public function scopeMarca($query, $marca_id) {
+    public function scopeMarca($query, $marca_id)
+    {
         if (trim($marca_id) != "") {
-            $query->where('marca', $marca_id);
+            $query->where('marca_id', $marca_id);
         }
     }
 
@@ -50,7 +54,8 @@ class Producto extends Model
      * @param $query
      * @param $tipo_producto_id
      */
-    public function scopeTipoProducto($query, $tipo_producto_id) {
+    public function scopeTipoProducto($query, $tipo_producto_id)
+    {
         if (trim($tipo_producto_id) != "") {
             $query->where('tipo_producto_id', $tipo_producto_id);
         }
@@ -60,12 +65,13 @@ class Producto extends Model
      * Retorno del array de validación al guardar el producto
      * @return array
      */
-    public static function getRules() {
+    public static function getRules()
+    {
 
         $array_rule = [
-            'precio_lista' => "required",
-            'bonificacion_basica' => "required",
-            'costo_basico' => "required",
+            'precio_lista' => "required|numeric",
+            'bonificacion_basica' => "required|min:0|max:100|numeric",
+            'costo_basico' => "required|numeric",
             'is_nuevo' => "required",
             'modelo' => "required",
             'descripcion' => "required",

@@ -8,12 +8,16 @@
     <div id="page-nav">
         <ul id="page-subnav" style="text-align: left!important;">
             <li><a href="{{url("/producto")}}" title="Listado productos"><span>Listado Productos &raquo;</span></a></li>
-            <li><a href="#" title="Crear producto"><span>Crear Producto</span></a></li>
+            <li><a href="#" title="Crear producto"><span>Editar Producto</span></a></li>
         </ul>
     </div>
     <div id="page-content">
-        <form action="{{url("/producto")}}" method="post" enctype="multipart/form-data">
+        <form action="{{url("/producto/" . $producto->id)}}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
+            {{ method_field('PUT') }}
+            <input type="hidden" id="object_id" value="{{$producto->id}}" />
+            <input type="hidden" id="entity_id" value="{{$producto->id}}" />
+
             <div class="content-box">
                 <h3 class="content-box-header bg-default">
                     <i class="glyph-icon icon-elusive-basket"></i>
@@ -26,16 +30,11 @@
                     <div class="form-group col-md-4">
                         <label>Nuevo/Usado</label>
                         <select id="is_nuevo" name="is_nuevo" class="form-control">
-                            @if(is_null(old('is_nuevo')))
-                                <option value="" selected>&lt;Seleccione&gt;</option>
-                                <option value="1">Nuevo</option>
-                                <option value="0">Usado</option>
-                            @elseif(old('is_nuevo') == 1)
-                                <option value="">&lt;Seleccione&gt;</option>
+                            <option value="" selected>&lt;Seleccione&gt;</option>
+                            @if($producto->is_nuevo == 1)
                                 <option value="1" selected>Nuevo</option>
                                 <option value="0">Usado</option>
-                            @elseif(!is_null(old('is_nuevo')))
-                                <option value="">&lt;Seleccione&gt;</option>
+                            @else
                                 <option value="1">Nuevo</option>
                                 <option value="0" selected>Usado</option>
                             @endif
@@ -48,7 +47,7 @@
                         <select id="marca_id" name="marca_id" class="form-control">
                             <option value="">&lt;Seleccione&gt;</option>
                             @foreach($marcas as $marca)
-                                @if($marca->id == old('marca_id'))
+                                @if($marca->id == $producto->marca_id)
                                     <option value="{{$marca->id}}" selected>{{$marca->marca}}</option>
                                 @else
                                     <option value="{{$marca->id}}">{{$marca->marca}}</option>
@@ -62,7 +61,7 @@
                         <select id="tipo_producto_id" name="tipo_producto_id" class="form-control">
                             <option value="">&lt;Seleccione&gt;</option>
                             @foreach($tipo_productos as $tipo_producto)
-                                @if($tipo_producto->id == old("tipo_producto_id"))
+                                @if($tipo_producto->id == $producto->tipo_producto_id)
                                     <option value="{{$tipo_producto->id}}"
                                             selected>{{$tipo_producto->tipo_producto}}</option>
                                 @else
@@ -74,24 +73,24 @@
 
                     <div class="form-group col-md-4">
                         <label>Modelo</label>
-                        <input type="text" class="form-control" name="modelo" value="{{old('modelo')}}">
+                        <input type="text" class="form-control" name="modelo" value="{{$producto->modelo}}">
                     </div>
 
                     <div class="form-group col-md-4">
                         <label>Descripción</label>
                         <textarea name="descripcion" id="descripcion" placeholder="Ingrese descripción" rows="3"
-                                  class="form-control textarea-sm">{{old("descripcion")}}</textarea>
+                                  class="form-control textarea-sm">{{$producto->descripcion}}</textarea>
                     </div>
 
                     <div class="form-group col-md-4">
                         <label>Año</label>
-                        <input type="number" class="form-control" name="anio" value="{{old('anio')}}">
+                        <input type="number" class="form-control" name="anio" value="{{$producto->anio}}">
                     </div>
 
                     <!-- Detalles Usados-->
 
                     <div id="div_producto_usado"
-                         @if(!is_null(old('is_nuevo')) && old("is_nuevo") == 0)
+                         @if($producto->is_nuevo == 0)
                          style="display: block"
                          @else
                          style="display: none"
@@ -105,58 +104,58 @@
                         <div class="form-group col-md-4">
                             <label>Precio sin canje</label>
                             <input type="number" class="form-control" name="precio_sin_canje"
-                                   value="{{old('precio_sin_canje')}}">
+                                   value="{{$producto->precio_sin_canje}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Costo Usado</label>
-                            <input type="number" class="form-control" name="costo_usado" value="{{old('costo_usado')}}">
+                            <input type="number" class="form-control" name="costo_usado" value="{{$producto->costo_usado}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Horas motor</label>
-                            <input type="number" class="form-control" name="horas_motor" value="{{old('costo_usado')}}">
+                            <input type="number" class="form-control" name="horas_motor" value="{{$producto->horas_motor}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Horas Trilla</label>
                             <input type="number" class="form-control" name="horas_trilla"
-                                   value="{{old('horas_trilla')}}">
+                                   value="{{$producto->horas_trilla}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Tracción</label>
-                            <input type="text" class="form-control" name="traccion" value="{{old('traccion')}}">
+                            <input type="text" class="form-control" name="traccion" value="{{$producto->traccion}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Recolector</label>
-                            <input type="text" class="form-control" name="recolector" value="{{old('recolector')}}">
+                            <input type="text" class="form-control" name="recolector" value="{{$producto->recolector}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Piloto Mapeo</label>
-                            <input type="text" class="form-control" name="piloto_mapeo" value="{{old('piloto_mapeo')}}">
+                            <input type="text" class="form-control" name="piloto_mapeo" value="{{$producto->piloto_mapeo}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Ex Usuario</label>
-                            <input type="text" class="form-control" name="ex_usuario" value="{{old('ex_usuario')}}">
+                            <input type="text" class="form-control" name="ex_usuario" value="{{$producto->ex_usuario}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Ubicación</label>
-                            <input type="text" class="form-control" name="ubicacion" value="{{old('ubicacion')}}">
+                            <input type="text" class="form-control" name="ubicacion" value="{{$producto->ubicacion}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Estado</label>
-                            <input type="text" class="form-control" name="estado" value="{{old('estado')}}">
+                            <input type="text" class="form-control" name="estado" value="{{$producto->estado}}">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>Disponible</label>
-                            <input type="text" class="form-control" name="disponible" value="{{old('disponible')}}">
+                            <input type="text" class="form-control" name="disponible" value="{{$producto->disponible}}">
                         </div>
 
 
@@ -165,7 +164,7 @@
                             <select id="usuario_vendedor_id" name="usuario_vendedor_id" class="form-control">
                                 <option value="">&lt;Seleccione&gt;</option>
                                 @foreach($usuarios_vendedores as $vendedor)
-                                    @if($vendedor->id == old("usuario_vendedor_id"))
+                                    @if($vendedor->id == $producto->usuario_vendedor_id)
                                         <option value="{{$vendedor->id}}"
                                                 selected>{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                                     @else
@@ -185,23 +184,14 @@
 
                     <div class="form-group col-md-4">
                         <label>Precio Lista</label>
-                        <input type="number" class="form-control" name="precio_lista" value="{{old('razon_social')}}">
+                        <input type="number" class="form-control" name="precio_lista" value="{{$producto->precio_lista}}">
                     </div>
 
                     <div class="form-group col-md-4">
                         <label>Bonificación Básica</label>
-                        @if(old("bonificacion_basica") != "")
-                            <input type="number" class="form-control" name="bonificacion_basica"
-                                   value="{{old('bonificacion_basica')}}">
-                        @else
-                            <input type="number" class="form-control" name="bonificacion_basica"
-                                   value="{{$parametros_sistema->bonificacion_basica}}">
-                        @endif
+                        <input type="number" class="form-control" name="bonificacion_basica"
+                               value="{{$producto->bonificacion_basica}}">
                     </div>
-
-                    <div class="clearfix">&nbsp;</div>
-
-                    @include('admin.upload.upload_new')
 
                     <div class="clearfix">&nbsp;</div>
 
@@ -212,6 +202,10 @@
             </div>
         </form>
     </div>
+
+    <div class="clearfix">&nbsp;</div>
+
+    @include('admin.upload.upload_edit')
 
     <script>
         $("#is_nuevo").change(function () {

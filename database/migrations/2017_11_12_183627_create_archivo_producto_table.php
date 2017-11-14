@@ -15,7 +15,6 @@ class CreateArchivoProductoTable extends Migration
     {
         Schema::create('archivo_producto', function (Blueprint $table) {
             $table->increments('id');
-            $table->string("application");
             $table->string("content_type");
             $table->string("path");
             $table->string("ext", 10);
