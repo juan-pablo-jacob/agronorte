@@ -5,16 +5,19 @@
 
     <link rel="stylesheet" href="{{url('/assets/widgets/progressbar/progressbar.css')}}">
 
+    <div class="clearfix">&nbsp;</div>
+    <h4 class="font-gray font-size-16"><strong>Detalle Precio Producto</strong></h4>
+    <div class="clearfix">&nbsp;</div>
 
-    <form id="fileupload" target="_blank" action="{{url("producto/multi-upload")}}" method="POST"
+    <form id="fileupload" action="{{url("producto/multi-upload")}}" method="POST"
           enctype="multipart/form-data">
 
-        <input type="hidden" name="object_id" id="object_id_form" value="" />
-        <input type="hidden" name="entity_id" id="entity_id_form" value="" />
+        <input type="hidden" name="object_id" id="object_id_form" value=""/>
+        <input type="hidden" name="entity_id" id="entity_id_form" value=""/>
 
         {{ csrf_field() }}
         <div class="row fileupload-buttonbar">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="float-left">
                   <span class="btn btn-md btn-success fileinput-button">
                         <i class="glyph-icon icon-plus"></i>
@@ -25,20 +28,16 @@
                         <i class="glyph-icon icon-upload"></i>
                         Subir
                     </button>
-                    <button type="reset" class="btn btn-md btn-warning cancel">
+                    <button type="reset" id="btn_delete_files" class="btn btn-md btn-warning cancel">
                         <i class="glyph-icon icon-ban"></i>
                         Cancelar
-                    </button>
-                    <button type="button" style="display: none" class="btn btn-md btn-danger delete">
-                        <i class="glyph-icon icon-trash-o"></i>
-                        Delete
                     </button>
                 </div>
                 <!-- The global file processing state -->
                 <span class="fileupload-process"></span>
             </div>
             <!-- The global progress state -->
-            <div class="col-lg-6 fileupload-progress fade">
+            <div class="col-lg-4 fileupload-progress fade">
                 <!-- The global progress bar -->
 
                 <div class="progress progress-striped active" role="progressbar" aria-valuemin="0"
@@ -69,26 +68,49 @@
 <script type="text/javascript">
     $(function () {
 
+
+        var params_carga_archivos = {
+            "form_id": "fileupload",
+            "object_id": $("#object_id").val(),
+            "entity_id": $("#entity_id").val()
+        };
+
+
+        var delete_files_input = function (){
+            var $el = $('#' + params_carga_archivos.form_id);
+            $el.wrap('<form>').closest('form').get(0).reset();
+            $el.unwrap();
+            $("#p_nombres_archivos").html("");
+        };
+
+
+        $("#btn_delete_files").click(function () {
+            delete_files_input();
+        });
+
+
         /**
          * click botón subir
-         */
+         *
         $("#btnSendFiles").click(function (e) {
 
-            //Extra_params = object_id + ruta alternativa (folders a partir del public)
-            var object_id = $("#object_id").val();
+            var form = $('#' + params_carga_archivos.form_id)
 
-            var data = $("#fileupload").serialize() + "&id=" + object_id;
-            var url = $("#fileupload").attr("action");
+            var data = form.serialize() + "&id=" + params_carga_archivos.object_id;
+            var url = form.attr("action");
             $.post(url, data, function (result) {
                 if (result.result == false) {
                     $.each(result.errors, function (index, value) {
                         alertify.error(value[0]);
                     });
                 } else {
+
+                    delete_files_input();
+                    cargarArchivosExistentes();
                     alertify.success(result.msg);
                 }
             });
-        });
+        });*/
 
 
         $("#files_input").change(function () {
@@ -104,27 +126,45 @@
         });
 
 
-        $(".btnDeleteFile").click(function () {
-            var id = $(this).data("id");
+        $(".files").delegate(".btnDeleteFile", "click",
+            function () {
 
-            if (parseInt(id) > 0) {
-                //Enviar a eliminar archivo
+                var id = $(this).data("id");
 
+                var data = $("#" + params_carga_archivos.form_id).serialize() + "&id=" + params_carga_archivos.object_id;
+                var url = BASE_URL + "/delete_archivo/" + params_carga_archivos.entity_id + "/" + id;
+                console.log(url);
+                console.log(BASE_URL);
+                if (parseInt(id) > 0) {
+                    //Enviar a eliminar archivo
+                    $.post(url, data, function (result) {
+                        if (result.result == false) {
+                            $.each(result.errors, function (index, value) {
+                                alertify.error(value[0]);
+                            });
+                        } else {
+                            $(".files").html("");
+                            cargarArchivosExistentes();
+                            alertify.success(result.msg);
+                        }
+                    });
+                }
             }
-        });
+        );
+
+        // $(".btnDeleteFile").click();
 
 
         /**
          * Función utilizada para cargar archivos existentes
-         * @param params
          */
-        var cargarArchivosExistentes = function (params) {
+        var cargarArchivosExistentes = function () {
 
-            $("#" + params.form_id).attr('action', BASE_URL + '/producto/multi-upload');
+            $("#" + params_carga_archivos.form_id).attr('action', BASE_URL + '/producto/multi-upload');
 
-            $("#object_id_form").val(params.object_id);
-            $("#entity_id_form").val(params.entity_id);
-            var form = $("#" + params.form_id);
+            $("#object_id_form").val(params_carga_archivos.object_id);
+            $("#entity_id_form").val(params_carga_archivos.entity_id);
+            var form = $("#" + params_carga_archivos.form_id);
 
             var url = form.attr("action");
             var data = form.serialize();
@@ -157,6 +197,12 @@
                                 + "                               Borrar"
                                 + "                             </span>"
                                 + "                       </a>"
+                                + "                             <a href='" + BASE_URL + "/archivo/" + $("#entity_id").val() + "/" + value.id + "' target='_blank' type='button' class=\"btn btn-md btn-default start\">"
+                                + "                             <span class=\"button-content\">"
+                                + "                               <i class=\"glyph-icon icon-download\"></i>"
+                                + "                               Descargar"
+                                + "                             </span>"
+                                + "                       </a>"
                                 + "                   </td>"
                                 + "               </tr>";
 
@@ -169,14 +215,7 @@
         }
 
 
-        var params_carga_archivos = {
-            "form_id": "fileupload",
-            "object_id": $("#object_id").val(),
-            "entity_id": $("#entity_id").val()
-        };
-
-
-        cargarArchivosExistentes(params_carga_archivos);
+        cargarArchivosExistentes();
 
     });
 </script>

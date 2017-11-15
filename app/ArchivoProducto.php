@@ -40,6 +40,17 @@ class ArchivoProducto extends Model
         return $validation;
     }
 
+
+    /**
+     * Retorna si la extensión se encuentra en el array
+     * @param $ext
+     * @return bool
+     */
+    public static function validateFileExtension($ext){
+        return in_array(strtolower($ext), ["docx", "doc", "pdf", "jpg", "png", "xls", "xlsx"]);
+    }
+
+
     /**
      * @return array
      */

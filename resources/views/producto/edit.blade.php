@@ -16,7 +16,7 @@
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <input type="hidden" id="object_id" value="{{$producto->id}}" />
-            <input type="hidden" id="entity_id" value="{{$producto->id}}" />
+            <input type="hidden" id="entity_id" value="producto" />
 
             <div class="content-box">
                 <h3 class="content-box-header bg-default">
@@ -201,11 +201,11 @@
                 </div>
             </div>
         </form>
+
+        @include('admin.upload.upload_edit')
     </div>
 
-    <div class="clearfix">&nbsp;</div>
 
-    @include('admin.upload.upload_edit')
 
     <script>
         $("#is_nuevo").change(function () {

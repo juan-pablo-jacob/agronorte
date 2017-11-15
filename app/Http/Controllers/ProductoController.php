@@ -188,6 +188,11 @@ class ProductoController extends Controller
     }
 
 
+    /**
+     * retorna JSON con todos los archivos pertenecientes a un "object_id"
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function multiUpload(Request $request)
     {
 
@@ -196,12 +201,12 @@ class ProductoController extends Controller
             ->get();
 
 
-        if(count($archivos_producto) > 0){
+        if (count($archivos_producto) > 0) {
             return response()->json([
                 "result" => true,
                 "files" => $archivos_producto
             ]);
-        }else{
+        } else {
             return response()->json([
                 "result" => false
             ]);
@@ -210,10 +215,16 @@ class ProductoController extends Controller
     }
 
 
+    /**
+     * Método que agrega los upload multiples de los documentos
+     * @param Request $request
+     * @return mixed
+     */
     public function multiUploadSave(Request $request)
     {
-        $files = $request->file('files');
-        dd($request);
+        $this->addFileProducto($request, $request->input("object_id"));
+
+        return Redirect::back()->with('message', 'Archivos subidos con éxito');
     }
 
 
@@ -226,14 +237,15 @@ class ProductoController extends Controller
     {
 
         if (count($request->file('files')) > 0) {
+
             foreach ($request->file('files') as $key => $file) {
-                if ($file->isValid()) {
+                if ($file->isValid() && ArchivoProducto::validateFileExtension($file->getClientOriginalExtension())) {
                     $insert_array = [
                         "nombre_archivo" => $file->getClientOriginalName(),
                         "ext" => $file->getClientOriginalExtension(),
                         "content_type" => $file->getClientMimeType(),
                         "producto_id" => $id,
-                        "path" => "storage/app/public/archivos/archivo_producto/"
+                        "path" => "storage/app/public/archivos/archivo_producto/$id/"
                     ];
 
                     $validator = Validator::make($insert_array, ArchivoProducto::getRules());
@@ -246,7 +258,7 @@ class ProductoController extends Controller
                     $archivo_producto = ArchivoProducto::create($insert_array);
 
                     if ($archivo_producto) {
-                        Storage::disk('public')->put("archivos/archivo_producto/" . $archivo_producto->id . "." . $archivo_producto->ext, file_get_contents($file->getRealPath()));
+                        Storage::disk('public')->put("archivos/archivo_producto/{$id}/" . $archivo_producto->id . "." . $archivo_producto->ext, file_get_contents($file->getRealPath()));
                     }
 
                 }
@@ -257,14 +269,41 @@ class ProductoController extends Controller
 
 
     /**
+     * Método utilizado para eliminar archivos
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteArchivo($id)
+    {
+        $archivo_producto = ArchivoProducto::find($id);
+
+        $file = storage_path( "app/public/archivos/archivo_producto/{$archivo_producto->producto_id}/{$archivo_producto->id}.{$archivo_producto->ext}");
+
+        if ($archivo_producto->delete()) {
+
+            unlink($file);
+
+            return response()->json([
+                "result" => true,
+                "msg" => "Archivo eliminado con éxito"
+            ]);
+        } else {
+            $errors = new MessageBag(['error' => ['No se eliminar el archivo']]);
+            return response()->json([
+                "result" => true,
+                "errors" => $errors
+            ]);
+        }
+    }
+
+
+    /**
      * Mètodo utilizado para retornar el archivo
      * @param $id
      */
     public function getArchivo($id)
     {
-
         $archivo_producto = ArchivoProducto::find($id);
-
 
         $enlace = base_path($archivo_producto->path . $id . "." . $archivo_producto->ext);
         if (is_file($enlace)) {
