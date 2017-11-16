@@ -13,13 +13,23 @@
                     <div class="form-group col-md-12">
                         <label>Fecha Caducidad *</label>
                         <div class="input-prepend input-group ">
-                    <span class="add-on input-group-addon">
-                        <i class="glyph-icon icon-calendar"></i>
-                    </span>
-                            <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega_prometida" placeholder="dd/mm/aaaa" data-date-format="mm/dd/yy" >
+                            <span class="add-on input-group-addon">
+                                <i class="glyph-icon icon-calendar"></i>
+                            </span>
+                            <input type="text" class="bootstrap-datepicker form-control" name="fecha_caducidad"
+                                   placeholder="dd/mm/aaaa" data-date-format="dd/mm/yy">
                         </div>
                     </div>
 
+                    <div class="form-group col-md-12">
+                        <label>Porcentaje *</label>
+                        <input type="number" class="form-control" name="porcentaje" placeholder="0 % - 100 %">
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label>Condición excluyente</label>
+                        <input type="text" class="form-control" name="condicion_excluyente">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

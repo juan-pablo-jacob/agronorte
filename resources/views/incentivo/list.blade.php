@@ -53,6 +53,7 @@
             <tr>
                 <th>Fecha Caducidad</th>
                 <th>Porcentaje</th>
+                <th>Condición excluyente</th>
                 <th>Cantidad Productos</th>
                 <th>&nbsp;</th>
             </tr>
@@ -61,13 +62,14 @@
             @if(count($incentivos)>0)
                 @foreach ($incentivos as $incentivo)
                     <tr class="odd gradeX">
+                        <td>{{date('d/m/Y',strtotime($incentivo->fecha_caducidad))}}</td>
                         <td>{{$incentivo->porcentaje}}</td>
-                        <td>{{$incentivo->fecha_caducidad}}</td>
+                        <td>{{$incentivo->condicion_excluyente}}</td>
                         <td>{{$incentivo->cantidad_productos}}</td>
                         <td class="center">
                             <a href="{{url("incentivo/" . $incentivo->id . "/productos")}}" tittle="Ver Productos"><i
                                         class="glyph-icon icon-gears"></i></a>
-                            <a href="{{url("incentivo/" . $incentivo->id . "/edit")}}" tittle="Editar"><i
+                            <a href="javascript:;" data-id="{{$incentivo->id}}" class="btn-editar" tittle="Editar"><i
                                         class="glyph-icon icon-elusive-edit"></i></a>
                             <a href="javascript:;" data-id="{{$incentivo->id}}" class="btn-borrar" tittle="Eliminar"><i
                                         class="glyph-icon icon-elusive-trash"></i></a>
@@ -103,7 +105,7 @@
             </div>
         </div>
 
-        <!--Inclusión Modal Presupuestos NEW-->
+
         @include('incentivo.new_modal')
 
         @include('incentivo.edit_modal')
@@ -126,8 +128,6 @@
             });
 
 
-
-
             $("#btnCrear").click(function () {
                 $("#modal-create").modal("toggle");
             });
@@ -144,6 +144,7 @@
                     } else {
 
                         load_values_form("actualizacion_modal", result);
+                        $("#fecha_caducidad").val(result.fecha_caducidad_format);
                         $('#actualizacion_modal').attr('action', BASE_URL + '/incentivo/' + id);
                         $('#modal-update').modal('toggle');
                     }
@@ -151,7 +152,7 @@
             });
 
 
-            $('#dynamic-table-user').dataTable();
+            $('#dynamic-table-user').dataTable({"sort": false});
             $("#dynamic-table-user_length").hide();
             $("#dynamic-table-user_filter").hide();
 

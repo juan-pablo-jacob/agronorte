@@ -10,7 +10,13 @@
 
         $.each($("#" + form + " input"), function (index, value) {
             if (typeof values[$(this).attr("name")] != "undefined") {
-                $(this).val(values[$(this).attr("name")]);
+                if ($(this).hasClass("bootstrap-datepicker")) {
+                    $(this).val(values[$(this).attr("name") + "_format"]);
+                } else {
+                    $(this).val(values[$(this).attr("name")]);
+                }
+            } else if ($(this).attr("name") != "_token" && $(this).attr("name") != "_method") {
+                $(this).val("");
             }
         });
     };

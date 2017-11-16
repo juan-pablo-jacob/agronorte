@@ -28,7 +28,7 @@ class Incentivo extends Model
     public static function getRules()
     {
         $validation = [
-            'porcentaje' => 'required|numeric',
+            'porcentaje' => 'required|numeric|min:0|max:100',
             'fecha_caducidad' => 'required|date'
         ];
 

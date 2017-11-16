@@ -14,7 +14,7 @@
 
                     <div class="form-group col-md-12">
                         <label>Marca *</label>
-                        <input type="text" class="form-control" name="marca"> 
+                        <input type="text" class="form-control" name="marca">
                     </div>
 
                 </form>

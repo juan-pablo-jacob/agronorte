@@ -68,6 +68,7 @@ Route::resource("producto", "ProductoController");
 /**
  * Rutas incentivos
  */
-Route::get("incentivo/{id}/productos", "IncentivoController@verProductos");
 Route::resource("incentivo", "IncentivoController");
+Route::get("incentivo/{id}/productos", "IncentivoController@verProductos");
+
 Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
