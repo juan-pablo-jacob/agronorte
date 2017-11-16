@@ -53,6 +53,19 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="#" title="Incentivos">
+                        <i class="glyph-icon icon-elusive-pencil"></i>
+                        <span>Incentivos</span>
+                    </a>
+                    <ul>
+                        <li><a href="{{ url("/incentivo") }}"
+                               title="Listado Incentivos"><span>Listado Incentivos</span></a></li>
+                        <li><a href="{{ url("/incentivo/create") }}" title="Crear Incentivos"><span>Crear Incentivos</span></a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </div><!-- #sidebar-menu -->
     </div><!-- #page-sidebar-wrapper -->

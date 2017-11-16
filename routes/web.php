@@ -63,3 +63,11 @@ Route::get("archivo/producto/{id}", "ProductoController@getArchivo");
 Route::post("delete_archivo/producto/{id}", "ProductoController@deleteArchivo");
 Route::post("producto/multi-upload", "ProductoController@multiUploadSave");
 Route::resource("producto", "ProductoController");
+
+
+/**
+ * Rutas incentivos
+ */
+Route::get("incentivo/{id}/productos", "IncentivoController@verProductos");
+Route::resource("incentivo", "IncentivoController");
+Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
