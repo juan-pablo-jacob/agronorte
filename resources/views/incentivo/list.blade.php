@@ -30,7 +30,7 @@
                     <div class="form-group col-md-6">
                         <label for="exampleInputPassword1">Estado</label>
                         <select id="no_caducados" name="no_caducados" class="form-control">
-                            <option value="">&lt;Seleccione&gt;</option>
+                            <option value="">&lt;Todos&gt;</option>
                             <option value="2" @if($request->no_caducados == 2) selected @endif>Caducados</option>
                             <option value="1" @if($request->no_caducados == 1) selected @endif>No Caducados</option>
                         </select>
@@ -67,7 +67,7 @@
                         <td>{{$incentivo->condicion_excluyente}}</td>
                         <td>{{$incentivo->cantidad_productos}}</td>
                         <td class="center">
-                            <a href="{{url("incentivo/" . $incentivo->id . "/productos")}}" tittle="Ver Productos"><i
+                            <a href="{{url("incentivo/" . $incentivo->id . "/productos?asignado=1")}}" tittle="Ver Productos"><i
                                         class="glyph-icon icon-gears"></i></a>
                             <a href="javascript:;" data-id="{{$incentivo->id}}" class="btn-editar" tittle="Editar"><i
                                         class="glyph-icon icon-elusive-edit"></i></a>

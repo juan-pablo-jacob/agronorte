@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Incentivo;
+use App\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -169,5 +170,51 @@ class IncentivoController extends Controller
                 "msg" => "registro no encontrado"
             ]);
         }
+    }
+
+    public function verProductos($id, Request $request)
+    {
+        $incentivo = Incentivo::find($id);
+
+        $query =
+            Producto::modelo($request->get('modelo'))
+                ->marca($request->get('marca_id'))
+                ->tipoProducto($request->get('tipo_producto_id'))
+                ->select("producto.*", "tipo_producto.tipo_producto", "marca.marca")
+                ->leftJoin("tipo_producto", "producto.tipo_producto_id", "=", "tipo_producto.id")
+                ->leftJoin("marca", "producto.marca_id", "=", "marca.id");
+
+
+        $incentivos = DB::table("incentivo_producto")
+            ->select("incentivo_producto.producto_id")
+            ->where("incentivo_producto.incentivo_id", $id)
+            ->get();
+        $array = [];
+        foreach ($incentivos as $value){
+            $array[] = $value->producto_id;
+        }
+
+        if ($request->get('asignado') == 1) {
+            $query->whereIn('producto.id', $array);
+        } else {
+            $query->whereNotIn('producto.id', $array);
+        }
+
+        $productos = $query->where("producto.active", 1)
+            ->where("producto.is_nuevo", 1)
+            ->orderBy('producto.modelo', 'DESC')
+            ->paginate(200);
+
+        $tipo_productos = DB::table('tipo_producto')
+            ->where("active", 1)
+            ->orderBy("tipo_producto", "asc")
+            ->get();
+
+        $marcas = DB::table('marca')
+            ->where("active", 1)
+            ->orderBy("marca", "asc")
+            ->get();
+
+        return view('incentivo.list_productos', ["productos" => $productos, "request" => $request, "tipo_productos" => $tipo_productos, "marcas" => $marcas, "incentivo" => $incentivo]);
     }
 }

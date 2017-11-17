@@ -60,8 +60,7 @@
                     </a>
                     <ul>
                         <li><a href="{{ url("/incentivo") }}"
-                               title="Listado Incentivos"><span>Listado Incentivos</span></a></li>
-                        <li><a href="{{ url("/incentivo/create") }}" title="Crear Incentivos"><span>Crear Incentivos</span></a>
+                               title="Listado Incentivos"><span>Listado Incentivos</span></a>
                         </li>
                     </ul>
                 </li>
