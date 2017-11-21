@@ -131,7 +131,7 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), Cliente::getValidationPUT($id));
+        $validator = Validator::make($request->all(), Cliente::getValidationPUT($id, $request));
 
         $cliente = Cliente::find($id);
 

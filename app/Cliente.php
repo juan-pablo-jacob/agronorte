@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Cliente extends Model
 {
@@ -27,7 +28,7 @@ class Cliente extends Model
     public static function getValidationStore()
     {
         $validation = [
-            'email' => 'required:unique:cliente|email',
+            'email' => 'unique:cliente|email',
             'razon_social' => 'required:unique:cliente'
         ];
 
@@ -48,13 +49,16 @@ class Cliente extends Model
         }
     }
 
-    public static function getValidationPUT($id)
+    public static function getValidationPUT($id, Request $request)
     {
+
         $validation = [
-            'razon_social' => 'required:unique:cliente,razon_social,' . $id,
-            'email' => 'email|required|unique:cliente,email,' . $id
+            'razon_social' => 'required:unique:cliente,razon_social,' . $id
         ];
 
+        if($request->get("email") != ""){
+            $validation["email"] = 'email|unique:cliente,email,' . $id;
+        }
         return $validation;
     }
 }

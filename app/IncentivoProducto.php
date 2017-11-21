@@ -18,7 +18,7 @@ class IncentivoProducto extends Model
      * @var array
      */
     protected $fillable = [
-        'costo_real', 'incentivo_id', 'producto_id'
+        'incentivo_id', 'producto_id'
     ];
 
     /**
@@ -28,7 +28,6 @@ class IncentivoProducto extends Model
     public static function getRules()
     {
         $validation = [
-            'costo_real' => 'required|numeric',
             'incentivo_id' => 'required',
             'producto_id' => 'required'
         ];

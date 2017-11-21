@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Incentivo;
+use App\IncentivoProducto;
 use App\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 
 class IncentivoController extends Controller
 {
@@ -190,7 +193,7 @@ class IncentivoController extends Controller
             ->where("incentivo_producto.incentivo_id", $id)
             ->get();
         $array = [];
-        foreach ($incentivos as $value){
+        foreach ($incentivos as $value) {
             $array[] = $value->producto_id;
         }
 
@@ -216,5 +219,83 @@ class IncentivoController extends Controller
             ->get();
 
         return view('incentivo.list_productos', ["productos" => $productos, "request" => $request, "tipo_productos" => $tipo_productos, "marcas" => $marcas, "incentivo" => $incentivo]);
+    }
+
+
+    /**
+     * Método utilizado para asociar productos - incentivos en la tabla incentivo_producto
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function agregarProductos(Request $request)
+    {
+        $ids_productos = explode(",", $request->get("ids"));
+        if (count($ids_productos) == 0) {
+            $errors = new MessageBag(['error' => ['Error. No hay productos seleccionados']]);
+            return Redirect::back()->withErrors($errors);
+        }
+
+        $incentivo = Incentivo::find($request->get("incentivo_id"));
+        if (!$incentivo) {
+            $errors = new MessageBag(['error' => ['Error. No se encontró el incentivo en la base de datos']]);
+            return Redirect::back()->withErrors($errors);
+        }
+
+        foreach ($ids_productos as $producto_id) {
+            $producto = Producto::find($producto_id);
+            if ($producto) {
+                $rdo = IncentivoProducto::create([
+                    "producto_id" => $producto_id,
+                    "incentivo_id" => $incentivo->id
+                ]);
+                if (!$rdo) {
+                    $errors = new MessageBag(['error' => ['Error. Uno de los registros no se pudo insertar']]);
+                    return Redirect::back()->withErrors($errors);
+                }
+            }
+        }
+
+        return Redirect::back()->with('message', 'Los productos fueron asignados con éxito');
+    }
+
+
+    /**
+     * Mètodo utilizado para quitar los productos
+     * @param Request $request
+     * @return mixed
+     */
+    public function quitarProductos(Request $request)
+    {
+
+        $ids_productos = explode(",", $request->get("ids"));
+        if (count($ids_productos) == 0) {
+            $errors = new MessageBag(['error' => ['Error. No hay productos seleccionados']]);
+            return Redirect::back()->withErrors($errors);
+        }
+
+        $incentivo = Incentivo::find($request->get("incentivo_id"));
+        if (!$incentivo) {
+            $errors = new MessageBag(['error' => ['Error. No se encontró el incentivo en la base de datos']]);
+            return Redirect::back()->withErrors($errors);
+        }
+
+
+        foreach ($ids_productos as $producto_id) {
+
+            $incentivo_producto = IncentivoProducto::where("producto_id", $producto_id)
+                ->where("incentivo_id", $incentivo->id)
+                ->first();
+
+            if ($incentivo_producto) {
+                $rdo = $incentivo_producto->delete();
+
+                if (!$rdo) {
+                    $errors = new MessageBag(['error' => ['Error. Uno de los registros no se pudo insertar']]);
+                    return Redirect::back()->withErrors($errors);
+                }
+            }
+        }
+
+        return Redirect::back()->with('message', 'Los incentivos de los productos fueron eliminados con éxito');
     }
 }

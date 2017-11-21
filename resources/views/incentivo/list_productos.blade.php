@@ -17,7 +17,7 @@
             <h3 class="content-box-header bg-gray">
                 Datos Incentivo
             </h3>
-            <input type="hidden" id="incentivo_id" value="{{$incentivo->porcentaje}}">
+
 
             <div class="content-box-wrapper bg-white">
                 <div class="form-group col-md-4">
@@ -45,7 +45,7 @@
             </h3>
 
             <div class="content-box-wrapper bg-white">
-                <form action="{{url("incentivo/" . $incentivo->id . "/productos")}}" method="get"
+                <form id="form_busqueda" action="{{url("incentivo/" . $incentivo->id . "/productos")}}" method="get"
                       enctype="multipart/form-data">
                     <div class="form-group col-md-3">
                         <label for="exampleInputEmail1">Modelo</label>
@@ -167,6 +167,12 @@
 
     </div>
 
+    <form id="form_procesar" action="" method="post" enctype="multipart/form-data" style="display: none">
+        {{ csrf_field() }}
+        <input type="hidden" name="ids" id="ids_input"/>
+        <input type="hidden" id="incentivo_id" name="incentivo_id" value="{{$incentivo->id}}"/>
+    </form>
+
     <script type="text/javascript">
 
         /* Datatables init */
@@ -174,43 +180,39 @@
         $(document).ready(function () {
 
             var getChecked = function () {
-                var array_id = []
+                var array_id = [];
                 $.each($(".check_grilla:checked"), function (index, value) {
                     array_id[index] = $(this).val();
                 });
                 return array_id;
             };
 
-
-            $("#btnQuitar").click(function (e) {
-                e.preventDefault();
-                var url = BASE_URL + "/incentivo/agregar_productos";
+            var sendForm = function (action) {
+                $('#form_procesar').attr('action', action);
 
                 var array_id = getChecked();
-                var data = "";
+
                 if (array_id.length > 0) {
-                    data += "ids=" + array_id.join(',');
+                    $("#ids_input").val(array_id.join(','));
                 } else {
                     alertify.error("Seleccione al menos un producto");
                     return false;
                 }
 
-                data += "&incentivo_id=" + $("#incentivo_id").val();
+                $('#form_procesar').submit();
+            }
 
-                $.post(url, data, function (result) {
-                    if (result.result == false) {
-                        $.each(result.errors, function (index, value) {
-                            alertify.error(value[0]);
-                        });
-                    } else {
-                        alertify.success(result.msg);
-                        window.location.href = "";
-                    }
-                });
+
+            $("#btnAgregar").click(function (e) {
+                e.preventDefault();
+
+                sendForm(BASE_URL + '/incentivo/agregar_productos');
             });
 
-            $("#btnQuitar").click(function () {
+            $("#btnQuitar").click(function (e) {
+                e.preventDefault();
 
+                sendForm(BASE_URL + '/incentivo/quitar_productos');
             });
 
 
