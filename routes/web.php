@@ -43,6 +43,7 @@ Route::get("tipo_producto/showJSON/{id}", 'TipoProductoController@showJSON');
  */
 Route::get("cliente/getArchivo", 'ClienteController@getArchivo');
 Route::get("cliente/upload_xls", 'ClienteController@getUploadXLS');
+Route::post("cliente/creacion_agil", 'ClienteController@addCliente');
 Route::resource("cliente", "ClienteController");
 Route::get('as/cliente','ClienteController@autosuggest');
 Route::get("cliente/showJSON/{id}", 'ClienteController@showJSON');
@@ -74,3 +75,9 @@ Route::post("incentivo/agregar_productos", "IncentivoController@agregarProductos
 Route::post("incentivo/quitar_productos", "IncentivoController@quitarProductos");
 
 Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
+
+
+/**
+ * Rutas propuestas
+ */
+Route::resource("propuesta", "PropuestaController");

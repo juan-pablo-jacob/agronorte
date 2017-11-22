@@ -177,13 +177,55 @@ class ClienteController extends Controller
 
 
     /**
+     * Mètodo para dar de alta un cliente de manera ágil
+     * @param Request $request
+     * @return mixed
+     */
+    public function addCliente(Request $request)
+    {
+        $validator = Validator::make($request->all(), Cliente::getValidationStore());
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json([
+                "result" => false,
+                "errors" => $errors
+            ]);
+        }
+
+        DB::beginTransaction();
+
+        $cliente = Cliente::create($request->all());
+
+        if (!$cliente) {
+            DB::Rollback();
+            $errors = new MessageBag(['error' => ['No se pudo crear el cliente']]);
+            return response()->json([
+                "result" => false,
+                "errors" => $errors
+            ]);
+        }
+
+        DB::commit();
+        return response()->json([
+            "result" => true,
+            "cliente" => $cliente,
+            "msg" => "El cliente fue creado con éxito"
+        ]);
+    }
+
+    /**
      * Método que retorna el valor del registro en formato JSON
      * @param type $id
      * @return type
      */
     public function showJSON($id)
     {
-        $record = Cliente::find($id);
+        $record = DB::table("cliente")
+            ->select("cliente.*", "provincia.provincia")
+            ->leftJoin("provincia", "cliente.provincia_id", "=", "provincia.id")
+            ->where("cliente.id", $id)
+            ->first();
         if ($record) {
             return response()->json($record);
         } else {
@@ -207,8 +249,8 @@ class ClienteController extends Controller
         $users = DB::table('cliente')
             ->select('id', DB::raw('CONCAT(IFNULL(razon_social, " ")," - ",IFNULL(CUIT, " "), " - ", IFNULL(email, " ")) as cliente'))
             ->where('CUIT', 'like', '%' . $query . '%')
-            ->orWhere('nombre_fantasia', 'like', '%' . $query . '%')
-            ->orderBy('nombre_fantasia', 'asc')
+            ->orWhere('razon_social', 'like', '%' . $query . '%')
+            ->orderBy('razon_social', 'asc')
             ->get();
 
         return response()->json($users);
@@ -327,7 +369,7 @@ class ClienteController extends Controller
         if (!is_null($file)) {
 
             $partes_ruta = pathinfo($file->getClientOriginalName());
-            if($partes_ruta['extension'] != "xls"){
+            if ($partes_ruta['extension'] != "xls") {
                 $errors = new MessageBag(['error' => ['Debe ingresar un archivo XLS']]);
                 return Redirect::back()->withErrors($errors);
             }

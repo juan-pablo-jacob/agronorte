@@ -29,6 +29,7 @@ class Cliente extends Model
     {
         $validation = [
             'email' => 'unique:cliente|email',
+            'CUIT' => 'required:unique:cliente',
             'razon_social' => 'required:unique:cliente'
         ];
 
@@ -53,7 +54,8 @@ class Cliente extends Model
     {
 
         $validation = [
-            'razon_social' => 'required:unique:cliente,razon_social,' . $id
+            'razon_social' => 'required:unique:cliente,razon_social,' . $id,
+            'CUIT' => 'required:unique:cliente,CUIT,' . $id
         ];
 
         if($request->get("email") != ""){

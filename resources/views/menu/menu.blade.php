@@ -65,6 +65,18 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="#" title="Propuestas">
+                        <i class="glyph-icon icon-money"></i>
+                        <span>Propuestas</span>
+                    </a>
+                    <ul>
+                        <li><a href="{{ url("/propuesta/create") }}"
+                               title="Crear Propuesta"><span>Crear Propuesta</span></a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </div><!-- #sidebar-menu -->
     </div><!-- #page-sidebar-wrapper -->

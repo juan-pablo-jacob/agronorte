@@ -29,7 +29,6 @@ class PropuestaNegocio extends Model
     {
         $validation = [
             'fecha' => 'required|date',
-            'estados' => 'required',
             'active' => 'required',
             'cliente_id' => 'required',
             'users_id' => 'required',
