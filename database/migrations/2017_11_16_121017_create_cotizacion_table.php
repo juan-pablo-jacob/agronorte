@@ -41,12 +41,6 @@ class CreateCotizacionTable extends Migration
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
 
-            $table->integer("incentivo_id")->unsigned();
-            $table->foreign('incentivo_id')
-                ->references('id')->on('incentivo')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
-
             $table->timestamps();
         });
     }

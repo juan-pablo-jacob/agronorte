@@ -312,6 +312,7 @@ class IncentivoController extends Controller
                 ->leftJoin("incentivo_producto", "incentivo.id", "=", "incentivo_producto.incentivo_id")
                 ->where("incentivo_producto.producto_id", $id)
                 ->where("active", 1)
+                ->whereDate('fecha_caducidad', '>=', date("Y-m-d"))
                 ->orderBy('fecha_caducidad', 'DESC')
                 ->get(200);
 

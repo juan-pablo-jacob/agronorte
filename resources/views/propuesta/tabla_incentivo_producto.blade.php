@@ -11,11 +11,7 @@
         <th>Porcentaje</th>
         <th>Condición excluyente</th>
         <th>
-            <div class="checkbox-inline">
-                <label>
-                    <input type="checkbox" id="select_checkbox" class="custom-checkbox">
-                </label>
-            </div>
+            &nbsp;
         </th>
     </tr>
     </thead>
@@ -24,12 +20,12 @@
         @foreach ($incentivos as $incentivo)
             <tr class="odd gradeX">
                 <td>{{date('d/m/Y',strtotime($incentivo->fecha_caducidad))}}</td>
-                <td>{{$incentivo->porcentaje}}</td>
+                <td>{{$incentivo->porcentaje}} %</td>
                 <td>{{$incentivo->condicion_excluyente}}</td>
                 <td class="center">
                     <div class="checkbox-inline">
                         <label>
-                            <input type="checkbox" value="{{$incentivo->id}}" id="incentivo_{{$incentivo->id}}"
+                            <input type="checkbox" value="{{$incentivo->porcentaje}}" id="incentivo_{{$incentivo->id}}"
                                    class="custom-checkbox check_grilla">
                         </label>
                     </div>
@@ -40,6 +36,8 @@
     </tbody>
 </table>
 
+<div class="clearfix">&nbsp;</div>
+<div class="divider"></div>
 <script>
     /**
      * Tabla Incentivos

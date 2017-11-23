@@ -31,19 +31,6 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-4">
-                <label>Descuento</label>
-                <input type="number" class="form-control" name="descuento" placeholder="1 % - 100 %">
-            </div>
-
-            <div class="form-group col-md-4">
-                <label>Descripcion descuento</label>
-                <textarea name="descripcion_descuento" placeholder="Ingrese descripción por el descuento" rows="3"
-                          class="form-control textarea-sm">{{old("descripcion_descuento")}}</textarea>
-            </div>
-
-
-
 
             <div class="clearfix">&nbsp;</div>
             <div class="divider"></div>
@@ -52,7 +39,7 @@
             <div id="div_datos_productos">
                 <div class="form-group col-md-4">
                     <label>Modelo</label>
-                    <input type="text" class="form-control" id="modelo" />
+                    <input type="text" class="form-control" id="modelo"/>
                 </div>
 
                 <div class="form-group col-md-4" id="div_razon_social" style="display: none">
@@ -62,23 +49,35 @@
 
                 <div class="form-group col-md-4" id="div_telefono" style="display: none">
                     <label>Descripción</label>
-                    <textarea name="descripcion" id="descripcion_producto" placeholder="Ingrese descripción producto" rows="3"
+                    <textarea name="descripcion" id="descripcion_producto" placeholder="Ingrese descripción producto"
+                              rows="3"
                               class="form-control textarea-sm">{{old("descripcion")}}</textarea>
+                </div>
+
+                <div id="div_table_incentivos_productos">
+
                 </div>
 
                 <div class="form-group col-md-4" id="div_email" style="display: none">
                     <label>Precio Lista</label>
-                    <input type="email" class="form-control" id="precio_lista">
+                    <input type="number" class="form-control" id="precio_lista">
                 </div>
 
-                <div class="form-group col-md-4" id="div_provincia" style="display: none">
-                    <label>Costo</label>
-                    <input type="text" class="form-control" id="costo">
+                <div class="form-group col-md-4" id="div_email" style="display: none">
+                    <label>Descuento</label>
+                    <input type="number" class="form-control" id="descuento" name="descuento" placeholder="1 % - 100 %">
                 </div>
 
-            </div>
+                <div class="form-group col-md-4" id="div_email" style="display: none">
+                    <label>Descripcion descuento</label>
+                    <textarea name="descripcion_descuento" placeholder="Ingrese descripción por el descuento" rows="3"
+                              class="form-control textarea-sm">{{old("descripcion_descuento")}}</textarea>
+                </div>
 
-            <div id="div_table_incentivos_productos">
+                <div class="form-group col-md-4" id="div_precio_venta" style="display: none">
+                    <label>Precio venta</label>
+                    <input type="text" class="form-control" id="precio_venta">
+                </div>
 
             </div>
 
@@ -94,7 +93,8 @@
 
 </div>
 
-<form role="form" id="form_buscar_incentivos_productos" action="" method="get" enctype="multipart/form-data" onsubmit="return false;">
+<form role="form" id="form_buscar_incentivos_productos" action="" method="get" enctype="multipart/form-data"
+      onsubmit="return false;">
 
 </form>
 
@@ -119,6 +119,10 @@
                     $('#dynamic-table-incentivo-producto').dataTable({"sort": false, "paging": false});
                     $("#dynamic-table-incentivo-producto_length").hide();
                     $("#dynamic-table-incentivo-producto_filter").hide();
+
+                    $(".check_grilla").click(function () {
+                        actualizarCosto();
+                    });
                 }
             },
             function_error: function (data) {
@@ -138,18 +142,20 @@
                 if (result.result == false) {
                     alertify.error(result.msg);
                 } else {
-                    $("#modelo").val(result.modelo).prop("disabled", true);
+                    $("#modelo").val(result.modelo);
                     $("#tipo_producto").val(result.tipo_producto).prop("disabled", true);
                     $("#descripcion_producto").html(result.descripcion);
-                    $("#precio_lista").val(result.precio_lista).prop("disabled", true);
+                    $("#precio_lista").val(result.precio_lista);
                     $("#costo").val(result.costo).prop("disabled", true);
                     $("#div_datos_productos .form-group.col-md-4").show();
                     $('#form_buscar_incentivos_productos').attr('action', BASE_URL + '/getIncetivosProductos/' + result.id);
+                    $("#precio_venta").val(result.precio_lista);
                     getListIncentivosProducto();
                 }
             });
         } else {
             $("#modelo").val("").prop("disabled", false);
+            $("#precio_venta").val("");
             $("#tipo_producto").val("").prop("disabled", false);
             $("#descripcion_producto").html("");
             $("#precio_lista").val("").prop("disabled", false);
@@ -159,6 +165,38 @@
             $("#div_table_incentivos_productos").html("");
         }
     };
+
+    var getChecked = function () {
+        var array_id = [];
+        $.each($(".check_grilla:checked"), function (index, value) {
+            array_id[index] = $(this).val();
+        });
+        return array_id;
+    };
+
+    var actualizarCosto = function () {
+        var precio_lista = parseFloat($("#precio_lista").val());
+        var descuento = isNaN(parseFloat($("#descuento").val())) ? 0 : parseFloat($("#descuento").val());
+        var porcentajes_incentivos = getChecked();
+
+        if (precio_lista > 0) {
+            var precio_venta = (100 - descuento) * precio_lista / 100;
+            for (var i = 0; i < porcentajes_incentivos.length; i++) {
+                var porc_inc = isNaN(parseFloat(porcentajes_incentivos[i])) ? 0 : parseFloat(porcentajes_incentivos[i]);
+                precio_venta = precio_venta - (porc_inc) * precio_lista / 100;
+            }
+
+            $("#precio_venta").val(precio_venta);
+        } else {
+            alertify.error("El precio de lista debe ser mayor a Cero");
+        }
+    };
+
+
+
+    $("#precio_lista, #descuento").blur(function () {
+        actualizarCosto();
+    });
 
     $(function () {
         if ($("#producto_id").val() != "") {

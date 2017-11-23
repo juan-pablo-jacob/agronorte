@@ -45,23 +45,14 @@
                         <a href="#step-3" data-toggle="tab" id="go_step_3">
                             <label class="wizard-step">3</label>
                             <span class="wizard-description">
-                            Incentivos
-                            <small>Seleccione Incentivos</small>
-                        </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#step-4" data-toggle="tab" id="go_step_4">
-                            <label class="wizard-step">4</label>
-                            <span class="wizard-description">
                             Precio
                             <small>Visualización Costos / Ganancias</small>
                         </span>
                         </a>
                     </li>
                     <li>
-                        <a href="#step-5" data-toggle="tab" id="go_step_5">
-                            <label class="wizard-step">5</label>
+                        <a href="#step-4" data-toggle="tab" id="go_step_4">
+                            <label class="wizard-step">4</label>
                             <span class="wizard-description">
                             Finalización
                             <small>Finalizar propuesta</small>
@@ -82,9 +73,6 @@
                         {{--@include('service_reparacion.step_edit_3')--}}
                     </div>
                     <div class="tab-pane" id="step-4">
-                        {{--@include('service_reparacion.step_edit_4')--}}
-                    </div>
-                    <div class="tab-pane" id="step-5">
                         {{--@include('service_reparacion.step_edit_4')--}}
                     </div>
                 </div>
