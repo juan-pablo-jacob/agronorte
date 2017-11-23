@@ -28,8 +28,7 @@ class PropuestaNegocio extends Model
     public static function getRules()
     {
         $validation = [
-            'fecha' => 'required|date',
-            'active' => 'required',
+            'fecha' => 'required',
             'cliente_id' => 'required',
             'users_id' => 'required',
             'tipo_propuesta_negocio_id' => 'required',

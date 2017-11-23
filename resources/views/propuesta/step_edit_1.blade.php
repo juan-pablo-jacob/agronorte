@@ -3,47 +3,49 @@
         Datos generales propuesta
     </h3>
     <div class="content-box-wrapper">
-        <form role="form" id="form_crear_propuesta" action="{{url("/propuesta")}}" method="post"
+        <form role="form" id="form_editar_propuesta" action="{{url("/propuesta/" . $propuesta->id)}}" method="post"
               enctype="multipart/form-data">
             {{ csrf_field() }}
+            {{ method_field('PUT') }}
+
             <h4 class="font-gray font-size-16"><strong>Datos Cliente *</strong></h4>
 
-            <input type="hidden" name="cliente_id" id="cliente_id" value="{{old("cliente_id")}}"/>
+            <input type="hidden" name="cliente_id" id="cliente_id" value="{{$propuesta->cliente_id}}"/>
 
             <div id="div_datos_clientes">
                 <div class="form-group col-md-4">
                     <label>CUIT</label>
-                    <input type="text" class="form-control" id="CUIT" >
+                    <input type="text" class="form-control" id="CUIT" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_razon_social" style="display: none">
                     <label>Razón social</label>
-                    <input type="text" class="form-control" id="razon_social">
+                    <input type="text" class="form-control" id="razon_social" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_telefono" style="display: none">
                     <label>Teléfono</label>
-                    <input type="text" class="form-control" id="telefono">
+                    <input type="text" class="form-control" id="telefono" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_email" style="display: none">
                     <label>Email</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_provincia" style="display: none">
                     <label>Provincia</label>
-                    <input type="text" class="form-control" id="provincia">
+                    <input type="text" class="form-control" id="provincia" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_localidad" style="display: none">
                     <label>Localidad</label>
-                    <input type="text" class="form-control" id="localidad">
+                    <input type="text" class="form-control" id="localidad" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="form-group col-md-4" id="div_direccion" style="display: none">
                     <label>Dirección</label>
-                    <input type="text" class="form-control" id="direccion">
+                    <input type="text" class="form-control" id="direccion" value="{{$cliente->CUIT}}">
                 </div>
 
                 <div class="clearfix">&nbsp;</div>
@@ -63,15 +65,11 @@
                     <span class="add-on input-group-addon">
                         <i class="glyph-icon icon-calendar"></i>
                     </span>
-                    @if(old("fecha") == "")
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy">
-                    @else
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime(old("fecha")))}}">
-                    @endif
+
+                    <input type="text" class="bootstrap-datepicker form-control" name="fecha"
+                           placeholder="dd/mm/aaaa"
+                           data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime($propuesta->fecha))}}">
+
                 </div>
             </div>
 
@@ -80,7 +78,7 @@
                 <select id="tipo_propuesta_negocio_id" name="tipo_propuesta_negocio_id" class="form-control">
                     <option value="">&lt;Seleccione&gt;</option>
                     @foreach($tipos_propuestas_negocios as $tipo)
-                        @if(old('tipo_propuesta_negocio_id') == $tipo->id)
+                        @if($propuesta->tipo_propuesta_negocio_id == $tipo->id)
                             <option value="{{$tipo->id}}" selected>{{$tipo->tipo_propuesta_negocio}}</option>
                         @else
                             <option value="{{$tipo->id}}">{{$tipo->tipo_propuesta_negocio}}</option>
@@ -94,7 +92,7 @@
                 <select id="users_id" name="users_id" class="form-control">
                     <option value="">&lt;Seleccione&gt;</option>
                     @foreach($vendedores as $vendedor)
-                        @if(old('users_id') == $vendedor->id)
+                        @if($propuesta->users_id == $vendedor->id)
                             <option value="{{$vendedor->id}}"
                                     selected>{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                         @else

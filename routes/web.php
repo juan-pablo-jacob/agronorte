@@ -64,6 +64,8 @@ Route::get("archivo/producto/{id}", "ProductoController@getArchivo");
 Route::post("delete_archivo/producto/{id}", "ProductoController@deleteArchivo");
 Route::post("producto/multi-upload", "ProductoController@multiUploadSave");
 Route::resource("producto", "ProductoController");
+Route::get("producto/showJSON/{id}", 'ProductoController@showJSON');
+Route::get("as/productosNuevos", 'ProductoController@autosuggestNuevos');
 
 
 /**
@@ -73,6 +75,7 @@ Route::resource("incentivo", "IncentivoController");
 Route::get("incentivo/{id}/productos", "IncentivoController@verProductos");
 Route::post("incentivo/agregar_productos", "IncentivoController@agregarProductos");
 Route::post("incentivo/quitar_productos", "IncentivoController@quitarProductos");
+Route::get("getIncetivosProductos/{id}", "IncentivoController@getListIncentivosXproducto");
 
 Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
 
@@ -81,3 +84,9 @@ Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
  * Rutas propuestas
  */
 Route::resource("propuesta", "PropuestaController");
+
+
+/**
+ * Rutas cotizaciones
+ */
+Route::resource("cotizacion", "CotizacionController");

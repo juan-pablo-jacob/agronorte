@@ -52,7 +52,7 @@
                 $("#modal-create-cliente").modal("toggle");
                 alertify.success(result.msg);
                 actualizarDatosCliente(result.cliente.id);
-                $("#as_CUIT").val(result.cliente.razon_social + " - " + result.cliente.CUIT);
+                $("#CUIT").val(result.cliente.razon_social + " - " + result.cliente.CUIT);
 
             }
         });

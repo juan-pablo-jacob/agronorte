@@ -298,4 +298,23 @@ class IncentivoController extends Controller
 
         return Redirect::back()->with('message', 'Los incentivos de los productos fueron eliminados con éxito');
     }
+
+
+    /**
+     * Método que retorna los incentivos de los productos
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getListIncentivosXproducto($id)
+    {
+        $records = $incentivos =
+            Incentivo::select("incentivo.*")
+                ->leftJoin("incentivo_producto", "incentivo.id", "=", "incentivo_producto.incentivo_id")
+                ->where("incentivo_producto.producto_id", $id)
+                ->where("active", 1)
+                ->orderBy('fecha_caducidad', 'DESC')
+                ->get(200);
+
+        return view('propuesta.tabla_incentivo_producto', ['incentivos' => $records]);
+    }
 }
