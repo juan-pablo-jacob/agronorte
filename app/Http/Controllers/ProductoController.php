@@ -135,6 +135,29 @@ class ProductoController extends Controller
     }
 
     /**
+     * Método que retorna el valor del registro en formato JSON
+     * @param type $id
+     * @return type
+     */
+    public function showJSON($id)
+    {
+        $record = DB::table("producto")
+            ->select("producto.*", "tipo_producto.tipo_producto")
+            ->leftJoin("tipo_producto", "producto.tipo_producto_id", "=", "tipo_producto.id")
+            ->where("producto.id", $id)
+            ->first();
+
+        if ($record) {
+            return response()->json($record);
+        } else {
+            return response()->json([
+                "result" => false,
+                "msg" => "Registro no encontrado"
+            ]);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int $id
@@ -277,7 +300,7 @@ class ProductoController extends Controller
     {
         $archivo_producto = ArchivoProducto::find($id);
 
-        $file = storage_path( "app/public/archivos/archivo_producto/{$archivo_producto->producto_id}/{$archivo_producto->id}.{$archivo_producto->ext}");
+        $file = storage_path("app/public/archivos/archivo_producto/{$archivo_producto->producto_id}/{$archivo_producto->id}.{$archivo_producto->ext}");
 
         if ($archivo_producto->delete()) {
 
@@ -315,5 +338,26 @@ class ProductoController extends Controller
         } else {
             die("No se encontró el archivo en el servidor");
         }
+    }
+
+
+    /**
+     * autossugest para los productos nuevos en base al modelo
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function autosuggestNuevos(Request $request)
+    {
+        //Buscar en la base de datos por el nombre de usuario
+        $query = $request->input('query');
+        $users = DB::table('producto')
+            ->select('id', "modelo")
+            ->where('modelo', 'like', '%' . $query . '%')
+            ->where("is_nuevo", 1)
+            ->where("active", 1)
+            ->orderBy('modelo', 'asc')
+            ->get();
+
+        return response()->json($users);
     }
 }

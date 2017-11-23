@@ -3,7 +3,7 @@
         Datos generales propuesta
     </h3>
     <div class="content-box-wrapper">
-        <form role="form" id="form_buscar_venta" action="{{url("/propuesta")}}" method="post"
+        <form role="form" id="form_crear_propuesta" action="{{url("/propuesta")}}" method="post"
               enctype="multipart/form-data">
             {{ csrf_field() }}
             <h4 class="font-gray font-size-16"><strong>Datos Cliente *</strong></h4>
@@ -13,7 +13,7 @@
             <div id="div_datos_clientes">
                 <div class="form-group col-md-4">
                     <label>CUIT</label>
-                    <input type="text" class="form-control" id="as_CUIT">
+                    <input type="text" class="form-control" id="CUIT" >
                 </div>
 
                 <div class="form-group col-md-4" id="div_razon_social" style="display: none">
@@ -72,7 +72,6 @@
                                placeholder="dd/mm/aaaa"
                                data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime(old("fecha")))}}">
                     @endif
-
                 </div>
             </div>
 
@@ -82,7 +81,7 @@
                     <option value="">&lt;Seleccione&gt;</option>
                     @foreach($tipos_propuestas_negocios as $tipo)
                         @if(old('tipo_propuesta_negocio_id') == $tipo->id)
-                            <option value="{{$tipo->id}}">{{$tipo->tipo_propuesta_negocio}}</option>
+                            <option value="{{$tipo->id}}" selected>{{$tipo->tipo_propuesta_negocio}}</option>
                         @else
                             <option value="{{$tipo->id}}">{{$tipo->tipo_propuesta_negocio}}</option>
                         @endif
@@ -108,7 +107,7 @@
             <div class="clearfix"></div>
 
             <div class="form-group col-md-12">
-                <button type="submit" id="btn_buscar_venta" class="btn btn-primary"><i class="glyph-icon icon-save"></i>&nbsp;Guardar
+                <button type="submit" class="btn btn-primary"><i class="glyph-icon icon-save"></i>&nbsp;Guardar
                 </button>
             </div>
         </form>
@@ -130,7 +129,7 @@
 
                     $.each($("#div_datos_clientes input"), function (index, value) {
                         if (typeof result[$(this).attr("id")] != "undefined") {
-                            if ($(this).attr("id") != "as_CUIT") {
+                            if ($(this).attr("id") != "CUIT") {
                                 $(this).val(result[$(this).attr("id")]).prop("disabled", true);
                                 $("#div_" + $(this).attr("id")).show();
                             } else {
@@ -143,7 +142,7 @@
             });
         } else {
             $.each($("#div_datos_clientes input"), function (index, value) {
-                if ($(this).attr("id") != "as_CUIT") {
+                if ($(this).attr("id") != "CUIT") {
                     $(this).val("").prop("disabled", false);
                     $("#div_" + $(this).attr("id")).hide();
                 }
@@ -164,7 +163,7 @@
         /**
          * Autosuggest de clientes
          */
-        $("#as_CUIT").autocomplete({
+        $("#CUIT").autocomplete({
             source: function (request, response) {
 
                 $.ajax({

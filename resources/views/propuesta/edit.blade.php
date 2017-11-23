@@ -71,10 +71,12 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="step-1">
-                        @include('propuesta.step_new_1')
+                        @include('propuesta.step_edit_1')
                     </div>
                     <div class="tab-pane" id="step-2">
-                        {{--@include('service_reparacion.step_edit_2')--}}
+                        @if($propuesta->tipo_propuesta_negocio_id == 1)
+                            @include('propuesta.step_new_nuevo_2')
+                        @endif
                     </div>
                     <div class="tab-pane" id="step-3">
                         {{--@include('service_reparacion.step_edit_3')--}}
@@ -90,9 +92,20 @@
         </div>
     </div>
 
-
+    @if (isset($step) && $step != "")
+        <input type="hidden" id="request_step" value="{{$step}}" />
+    @endif
 
     <script type="text/javascript">
+
+        $("#btn_next_step_2").click(function () {
+            $("#go_step_2").click();
+        });
+
+
+        if ($("#request_step").val() != "") {
+            $("#go_step_" + $("#request_step").val()).click();
+        }
 
         /* Datepicker bootstrap */
 
