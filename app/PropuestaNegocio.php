@@ -36,4 +36,17 @@ class PropuestaNegocio extends Model
 
         return $validation;
     }
+
+
+    public function scopeTipoPropuestaNegocio($query, $tipo_propuesta_negocio_id) {
+        if (trim($tipo_propuesta_negocio_id) != "") {
+            $query->where('tipo_propuesta_negocio_id', $tipo_propuesta_negocio_id);
+        }
+    }
+
+    public function scopeVendedor($query, $users_id) {
+        if (trim($users_id) != "") {
+            $query->where('users_id', $users_id);
+        }
+    }
 }
