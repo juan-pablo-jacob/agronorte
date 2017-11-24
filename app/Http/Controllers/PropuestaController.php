@@ -8,6 +8,7 @@ use App\PropuestaNegocio;
 use App\TipoPropuestaNegocio;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -29,11 +30,32 @@ class PropuestaController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $propuestas =
+            PropuestaNegocio::TipoPropuestaNegocio($request->get('tipo_propuesta_negocio_id'))
+                ->vendedor($request->get('users_id'))
+                ->select("propuesta_negocio.*",
+                    "tipo_propuesta_negocio.tipo_propuesta_negocio",
+                    "users.nombre", "users.apellido", "cliente.razon_social")
+                ->join("tipo_propuesta_negocio", "propuesta_negocio.tipo_propuesta_negocio_id", "=", "tipo_propuesta_negocio.id")
+                ->join("users", "propuesta_negocio.users_id", "=", "users.id")
+                ->join("cliente", "propuesta_negocio.cliente_id", "=", "cliente.id")
+                ->where("propuesta_negocio.active", 1)
+                ->orderBy('propuesta_negocio.fecha', 'DESC')
+                ->paginate(200);
+
+        $vendedores = User::where("tipo_usuario_id", 2)
+            ->where("is_activo", 1)
+            ->get();
+
+        //Listado Tipos de propuesta
+        $tipos_propuestas = TipoPropuestaNegocio::all();
+
+        return view('propuesta.list', ["propuestas" => $propuestas, "request" => $request, "vendedores" => $vendedores, "tipo_propuestas" => $tipos_propuestas]);
     }
 
     /**
@@ -158,7 +180,15 @@ class PropuestaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $rdo = DB::table('propuesta_negocio')
+            ->where('id', $id)
+            ->update(['active' => 0]);
+
+        if (!$rdo) {
+            return redirect('/cliente')->with('message', 'No se pudo eliminar la propuesta de negocio');
+        }
+
+        return redirect('/cliente')->with('message', 'Propuesta de negocio eliminada con éxito');
     }
 
     /**

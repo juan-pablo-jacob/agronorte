@@ -71,6 +71,9 @@
                         <span>Propuestas</span>
                     </a>
                     <ul>
+                        <li><a href="{{ url("/propuesta") }}"
+                               title="Listado Propuestas"><span>Listado Propuestas</span></a>
+                        </li>
                         <li><a href="{{ url("/propuesta/create") }}"
                                title="Crear Propuesta"><span>Crear Propuesta</span></a>
                         </li>
