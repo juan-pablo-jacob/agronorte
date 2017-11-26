@@ -210,6 +210,10 @@ class PropuestaController extends Controller
 
         $propuesta = PropuestaNegocio::find($id);
 
+        if ((int)$propuesta->tipo_propuesta_negocio_id > 0) {
+            $tipo_propuesta = TipoPropuestaNegocio::find($propuesta->tipo_propuesta_negocio_id);
+        }
+
         $cliente = Cliente::find($propuesta->cliente_id);
 
         $user = User::find($propuesta->users_id);
@@ -219,6 +223,7 @@ class PropuestaController extends Controller
             "cliente" => $cliente,
             "user" => $user,
             "vendedores" => $vendedores,
+            "tipo_propuesta" => $tipo_propuesta,
             "tipos_propuestas_negocios" => $tipos_propuestas
         ];
     }

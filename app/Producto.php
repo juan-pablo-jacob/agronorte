@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Producto extends Model
 {
@@ -79,6 +80,23 @@ class Producto extends Model
         ];
 
         return $array_rule;
+    }
+
+    /**
+     * Método que retorna el costo real de un producto NUEVO
+     * @param Request $request
+     * @return float
+     */
+    public static function getCostoRealNuevo(Request $request)
+    {
+        $costo_real_producto = (float)$request->get("precio_lista_producto") - (float)$request->get("bonificacion_basica_producto");
+        $costo_basico_producto = (float)$request->get("costo_basico_producto");
+        $array_incentivos = $request->get("incentivos_id");
+        foreach ($array_incentivos as $incentivo_id) {
+            $porcentaje_incentivo = (float)Incentivo::find($incentivo_id)->first()->porcentaje;
+            $costo_real_producto -= ($porcentaje_incentivo) * $costo_basico_producto / 100;
+        }
+        return $costo_real_producto;
     }
 
 }

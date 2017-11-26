@@ -18,8 +18,8 @@ class CreateCotizacionTable extends Migration
             $table->date("fecha_entrega");
             $table->double("precio_venta")->nullable();
             $table->text("observacion")->nullable();
-            $table->double("rentabilidad_precio_lista")->nullable();
-            $table->double("rentabilidad_precio_venta")->nullable();
+            $table->double("rentabilidad_vs_costo_real")->nullable();
+            $table->double("rentabilidad_vs_precio_venta")->nullable();
             $table->double("descuento")->nullable();
             $table->text("descripcion_descuento")->nullable();
             $table->double("precio_lista_producto")->nullable();
@@ -28,6 +28,7 @@ class CreateCotizacionTable extends Migration
             $table->double("costo_basico_producto")->nullable();
             $table->double("incentivo_producto")->nullable();
             $table->tinyInteger("is_toma")->default(0);
+            $table->double("precio_toma")->nullable();
 
             $table->integer("producto_id")->unsigned();
             $table->foreign('producto_id')

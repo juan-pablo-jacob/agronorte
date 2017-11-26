@@ -17,7 +17,7 @@
         <div class="content-box">
             <h3 class="content-box-header bg-default">
                 <i class="glyph-icon icon-elusive-wrench"></i>
-                Editar Propuesta
+                Editar Propuesta <strong>({{$tipo_propuesta->tipo_propuesta_negocio}})</strong>
             </h3>
             <div id="form-wizard-3"
                  style="position: relative;margin-bottom: 40px;padding: 25px 25px 0;border-width: 1px;border-radius: 6px;"

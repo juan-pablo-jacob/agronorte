@@ -25,7 +25,7 @@
                 <td class="center">
                     <div class="checkbox-inline">
                         <label>
-                            <input type="checkbox" value="{{$incentivo->porcentaje}}" id="incentivo_{{$incentivo->id}}"
+                            <input type="checkbox" name="incentivos_id[]" data-value="{{$incentivo->porcentaje}}" value="{{$incentivo->id}}" id="incentivo_{{$incentivo->id}}"
                                    class="custom-checkbox check_grilla">
                         </label>
                     </div>
