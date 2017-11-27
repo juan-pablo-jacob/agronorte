@@ -18,16 +18,31 @@
     </thead>
     <tbody>
     @if(count($cotizaciones)>0)
+        @php ($total_precio_venta = 0)
+        @php ($total_precio_lista_producto = 0)
+        @php ($total_costo_real_producto = 0)
+        @php ($total_costo_basico_producto = 0)
+        @php ($total_rentabilidad_vs_costo_real = 0)
+        @php ($total_rentabilidad_vs_precio_venta = 0)
+
         @foreach ($cotizaciones as $cotizacion)
+
+            @php ($total_precio_venta += $cotizacion->precio_venta)
+            @php ($total_precio_lista_producto += $cotizacion->precio_lista_producto)
+            @php ($total_costo_real_producto += $cotizacion->costo_real_producto)
+            @php ($total_costo_basico_producto += $cotizacion->costo_basico_producto)
+            @php ($total_rentabilidad_vs_costo_real += $cotizacion->rentabilidad_vs_costo_real)
+            @php ($total_rentabilidad_vs_precio_venta += $cotizacion->rentabilidad_vs_precio_venta)
+
             <tr class="odd gradeX">
                 <td>{{$cotizacion->modelo}}</td>
                 <td>{{date('d/m/Y',strtotime($cotizacion->fecha_entrega))}}</td>
-                <td>{{$cotizacion->precio_venta}}</td>
-                <td>{{$cotizacion->precio_lista_producto}}</td>
-                <td>{{$cotizacion->costo_real_producto}}</td>
-                <td>{{$cotizacion->costo_basico_producto}}</td>
-                <td>{{$cotizacion->rentabilidad_vs_costo_real}}</td>
-                <td>{{$cotizacion->rentabilidad_vs_precio_venta}}</td>
+                <td>{{number_format ($cotizacion->precio_venta, 2)}}</td>
+                <td>{{number_format ($cotizacion->precio_lista_producto, 2)}}</td>
+                <td>{{number_format ($cotizacion->costo_real_producto, 2)}}</td>
+                <td>{{number_format ($cotizacion->costo_basico_producto, 2)}}</td>
+                <td>{{number_format ($cotizacion->rentabilidad_vs_costo_real, 2)}}</td>
+                <td>{{number_format ($cotizacion->rentabilidad_vs_precio_venta, 2)}}</td>
                 <td class="center">
                     <a href="{{url("propuesta/cotizacion/" . $cotizacion->id)}}" tittle="Editar"><i
                                 class="glyph-icon icon-elusive-edit"></i></a>
@@ -36,6 +51,21 @@
                 </td>
             </tr>
         @endforeach
+        @if(count($cotizaciones)>1)
+        <tr class="odd gradeX">
+            <td>&nbsp;</td>
+            <td><strong>Total:</strong></td>
+            <td>{{number_format ($total_precio_venta, 2)}}</td>
+            <td>{{number_format ($total_precio_lista_producto, 2)}}</td>
+            <td>{{number_format ($total_costo_real_producto, 2)}}</td>
+            <td>{{number_format ($total_costo_basico_producto, 2)}}</td>
+            <td>{{number_format ($total_rentabilidad_vs_costo_real  / count($cotizaciones), 2)}}</td>
+            <td>{{number_format ($total_rentabilidad_vs_precio_venta / count($cotizaciones), 2)}}</td>
+            <td class="center">
+                &nbsp;
+            </td>
+        </tr>
+        @endif
     @endif
     </tbody>
 </table>
@@ -51,7 +81,7 @@
                 <h4 class="modal-title">Eliminar cotización</h4>
             </div>
             <div class="modal-body">
-                <p>Seguro que desea eliminar la propuesta?</p>
+                <p>Seguro que desea eliminar la cotización?</p>
                 <form id="cotizacion-delete-form" action="" style="display:none;" method="post">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}

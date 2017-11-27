@@ -66,7 +66,7 @@ class CotizacionController extends Controller
         }
 
         $precio_venta = Cotizacion::getPrecioVenta($request);
-        if (!$precio_venta) {
+        if (!$precio_venta || $precio_venta <= 0) {
             $errors = new MessageBag(['error' => ['Error. Verifique el campo precio de lista y el costo básico del producto']]);
             return Redirect::back()->withErrors($errors)->withInput();
         }
@@ -94,21 +94,23 @@ class CotizacionController extends Controller
 
         //Inserto las cotizaciones incentivos
         $array_incentivos = $request->get("incentivos_id");
-        foreach ($array_incentivos as $incentivo_id) {
-            $insert = ["incentivo_id" => $incentivo_id, "cotizacion_id" => $cotizacion->id];
-            $validator = Validator::make($insert, CotizacionIncentivo::getRules());
-            if ($validator->fails()) {
-                $errors = $validator->errors();
-                DB::Rollback();
-                return Redirect::back()->withErrors($errors)->withInput();
-            }
+        if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
+            foreach ($array_incentivos as $incentivo_id) {
+                $insert = ["incentivo_id" => $incentivo_id, "cotizacion_id" => $cotizacion->id];
+                $validator = Validator::make($insert, CotizacionIncentivo::getRules());
+                if ($validator->fails()) {
+                    $errors = $validator->errors();
+                    DB::Rollback();
+                    return Redirect::back()->withErrors($errors)->withInput();
+                }
 
-            //Inserto cotización / incentivo
-            $cotizacion_incentivo = CotizacionIncentivo::create($insert);
-            if (!$cotizacion_incentivo) {
-                $errors = new MessageBag(['error' => ['Error. Hubo un problema al asociar la cotización con el incentivo seleccionado']]);
-                DB::Rollback();
-                return Redirect::back()->withErrors($errors)->withInput();
+                //Inserto cotización / incentivo
+                $cotizacion_incentivo = CotizacionIncentivo::create($insert);
+                if (!$cotizacion_incentivo) {
+                    $errors = new MessageBag(['error' => ['Error. Hubo un problema al asociar la cotización con el incentivo seleccionado']]);
+                    DB::Rollback();
+                    return Redirect::back()->withErrors($errors)->withInput();
+                }
             }
         }
 
@@ -166,7 +168,7 @@ class CotizacionController extends Controller
         }
 
         $precio_venta = Cotizacion::getPrecioVenta($request);
-        if (!$precio_venta) {
+        if (!$precio_venta || $precio_venta <= 0) {
             $errors = new MessageBag(['error' => ['Error. Verifique el campo precio de lista y el costo básico del producto']]);
             return Redirect::back()->withErrors($errors)->withInput();
         }
@@ -196,29 +198,31 @@ class CotizacionController extends Controller
 
         //Inserto las cotizaciones incentivos
         $array_incentivos = $request->get("incentivos_id");
-        foreach ($array_incentivos as $incentivo_id) {
+        if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
+            foreach ($array_incentivos as $incentivo_id) {
 
-            $cotizacion_incentivo = CotizacionIncentivo::where("incentivo_id", $incentivo_id)
-                ->where("cotizacion_id", $cotizacion->id)
-                ->first();
-            //Si no hay cotizacione inserto
-            if (!$cotizacion_incentivo) {
-
-                $insert = ["incentivo_id" => $incentivo_id, "cotizacion_id" => $cotizacion->id];
-                $validator = Validator::make($insert, CotizacionIncentivo::getRules());
-                if ($validator->fails()) {
-                    $errors = $validator->errors();
-                    DB::Rollback();
-                    return Redirect::back()->withErrors($errors)->withInput();
-                }
-
-
-                //Inserto cotización / incentivo
-                $cotizacion_incentivo = CotizacionIncentivo::create($insert);
+                $cotizacion_incentivo = CotizacionIncentivo::where("incentivo_id", $incentivo_id)
+                    ->where("cotizacion_id", $cotizacion->id)
+                    ->first();
+                //Si no hay cotizacione inserto
                 if (!$cotizacion_incentivo) {
-                    $errors = new MessageBag(['error' => ['Error. Hubo un problema al asociar la cotización con el incentivo seleccionado']]);
-                    DB::Rollback();
-                    return Redirect::back()->withErrors($errors)->withInput();
+
+                    $insert = ["incentivo_id" => $incentivo_id, "cotizacion_id" => $cotizacion->id];
+                    $validator = Validator::make($insert, CotizacionIncentivo::getRules());
+                    if ($validator->fails()) {
+                        $errors = $validator->errors();
+                        DB::Rollback();
+                        return Redirect::back()->withErrors($errors)->withInput();
+                    }
+
+
+                    //Inserto cotización / incentivo
+                    $cotizacion_incentivo = CotizacionIncentivo::create($insert);
+                    if (!$cotizacion_incentivo) {
+                        $errors = new MessageBag(['error' => ['Error. Hubo un problema al asociar la cotización con el incentivo seleccionado']]);
+                        DB::Rollback();
+                        return Redirect::back()->withErrors($errors)->withInput();
+                    }
                 }
             }
         }
@@ -241,7 +245,21 @@ class CotizacionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $cotizacion = Cotizacion::find($id);
+
+        $rdo = DB::table('cotizacion')
+            ->where('id', $id)
+            ->update(['active' => 0]);
+
+        if (!$rdo) {
+            $errors = new MessageBag(['error' => ['Error. No se pudo eliminar la cotización']]);
+            DB::Rollback();
+            return Redirect::back()->withErrors($errors)->withInput();
+        }
+
+        return redirect()->action(
+            'PropuestaController@edit', ['id' => $cotizacion->propuesta_negocio_id]
+        )->with('message', "Cotización eliminada con éxito.");
     }
 
 
@@ -249,8 +267,14 @@ class CotizacionController extends Controller
     {
         switch ((int)$request->get("tipo_propuesta_negocio_id")) {
             case 1:
+                //Cálculo costo real
                 $costo_real_producto = Producto::getCostoRealNuevo($request);
                 $request->merge(["costo_real_producto" => $costo_real_producto]);
+                //Cálculos rentabilidad Vs. Precio venta
+                $ganancia = (float)$request->get("precio_venta") - $costo_real_producto;
+
+                $request->merge(["rentabilidad_vs_precio_venta" => number_format($ganancia * 100 / $request->get("precio_venta"), 2)]);
+                $request->merge(["rentabilidad_vs_costo_real" => number_format($ganancia * 100 / $costo_real_producto, 2)]);
                 break;
             case 2:
                 break;

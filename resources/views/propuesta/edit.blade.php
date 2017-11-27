@@ -75,7 +75,9 @@
                         @include('propuesta.step_show_ventas_3')
                     </div>
                     <div class="tab-pane" id="step-4">
-                        {{--@include('service_reparacion.step_edit_4')--}}
+                        @if($propuesta->tipo_propuesta_negocio_id == 1 )
+                        @include('propuesta.step_edit_finalizacion_nuevo_4')
+                        @endif
                     </div>
                 </div>
             </div>

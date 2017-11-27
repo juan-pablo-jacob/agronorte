@@ -17,7 +17,7 @@
 
             <h4 class="font-gray font-size-16"><strong>Datos Cotización</strong></h4>
             <div class="form-group col-md-4">
-                <label for="exampleInputEmail1">Fecha Entrega</label>
+                <label for="exampleInputEmail1">Fecha </label>
                 <div class="input-prepend input-group ">
                     <span class="add-on input-group-addon">
                         <i class="glyph-icon icon-calendar"></i>
