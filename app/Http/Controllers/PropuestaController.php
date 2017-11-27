@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\Cotizacion;
 use App\Producto;
 use App\PropuestaNegocio;
+use App\TipoProducto;
 use App\TipoPropuestaNegocio;
 use App\User;
 use Illuminate\Http\Request;
@@ -135,6 +137,23 @@ class PropuestaController extends Controller
     }
 
     /**
+     * Método utilizado para editar la cotización
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editCotizacion($id, Request $request)
+    {
+        $cotizacion = Cotizacion::find($id);
+
+        $array_response = $this->getEditData($cotizacion->propuesta_negocio_id);
+        $array_response["cotizacion_edit"] = $cotizacion;
+        $array_response["step"] = (int) $cotizacion->is_toma == 0 ? 2 : 4;
+
+        return view('propuesta/edit', $array_response);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -222,6 +241,7 @@ class PropuestaController extends Controller
             "propuesta" => $propuesta,
             "cliente" => $cliente,
             "user" => $user,
+            "cotizacion_edit" => null,
             "vendedores" => $vendedores,
             "tipo_propuesta" => $tipo_propuesta,
             "tipos_propuestas_negocios" => $tipos_propuestas

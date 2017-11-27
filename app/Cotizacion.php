@@ -21,7 +21,7 @@ class Cotizacion extends Model
     protected $fillable = [
         'fecha_entrega', 'precio_venta', 'observacion', 'rentabilidad_vs_costo_real', 'rentabilidad_vs_precio_venta',
         'descuento', 'descripcion_descuento', 'precio_lista_producto', 'bonificacion_basica_producto', 'costo_real_producto',
-        'costo_basico_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id'
+        'costo_basico_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id', 'active'
     ];
 
 
@@ -47,7 +47,7 @@ class Cotizacion extends Model
      */
     public static function getPrecioVenta(Request $request)
     {
-        $precio_lista = (float)$request->get("precio_lista");
+        $precio_lista = (float)$request->get("precio_lista_producto");
         if ($precio_lista <= 0) {
             return false;
         }

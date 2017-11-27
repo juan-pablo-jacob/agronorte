@@ -76,6 +76,7 @@ Route::get("incentivo/{id}/productos", "IncentivoController@verProductos");
 Route::post("incentivo/agregar_productos", "IncentivoController@agregarProductos");
 Route::post("incentivo/quitar_productos", "IncentivoController@quitarProductos");
 Route::get("getIncetivosProductos/{id}", "IncentivoController@getListIncentivosXproducto");
+Route::get("getIncetivosProductosEdit/{id}-{cotizacion_id}", "IncentivoController@getListIncentivosXproductoEdit");
 
 Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
 
@@ -84,6 +85,8 @@ Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
  * Rutas propuestas
  */
 Route::resource("propuesta", "PropuestaController");
+Route::get("propuesta/cotizacion/{id}", "PropuestaController@editCotizacion");
+///propuesta/cotizacion/
 
 
 /**

@@ -37,7 +37,7 @@
                             <label class="wizard-step">2</label>
                             <span class="wizard-description">
                             Producto
-                            <small>Datos de producto</small>
+                            <small>Datos de producto Venta</small>
                         </span>
                         </a>
                     </li>
@@ -46,7 +46,7 @@
                             <label class="wizard-step">3</label>
                             <span class="wizard-description">
                             Precio
-                            <small>Visualización Costos / Ganancias</small>
+                            <small>Visualización Productos Ventas</small>
                         </span>
                         </a>
                     </li>
@@ -65,12 +65,14 @@
                         @include('propuesta.step_edit_1')
                     </div>
                     <div class="tab-pane" id="step-2">
-                        @if($propuesta->tipo_propuesta_negocio_id == 1)
+                        @if($propuesta->tipo_propuesta_negocio_id == 1 && is_null($cotizacion_edit))
                             @include('propuesta.step_new_nuevo_2')
+                        @elseif($propuesta->tipo_propuesta_negocio_id == 1 && !is_null($cotizacion_edit) && $step == 2)
+                            @include('propuesta.step_edit_nuevo_2')
                         @endif
                     </div>
                     <div class="tab-pane" id="step-3">
-                        {{--@include('service_reparacion.step_edit_3')--}}
+                        @include('propuesta.step_show_ventas_3')
                     </div>
                     <div class="tab-pane" id="step-4">
                         {{--@include('service_reparacion.step_edit_4')--}}

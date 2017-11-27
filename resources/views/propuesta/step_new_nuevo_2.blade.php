@@ -9,7 +9,7 @@
 
 
             <input type="hidden" name="producto_id" id="producto_id" value="{{old('producto_id')}}">
-            <input type="hidden" name="propuesta_id" value="{{$propuesta->id}}">
+            <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
             <input type="hidden" name="tipo_propuesta_negocio_id" value="{{$propuesta->tipo_propuesta_negocio_id}}">
 
 

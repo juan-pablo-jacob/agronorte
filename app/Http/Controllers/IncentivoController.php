@@ -313,7 +313,28 @@ class IncentivoController extends Controller
                 ->where("incentivo_producto.producto_id", $id)
                 ->where("active", 1)
                 ->whereDate('fecha_caducidad', '>=', date("Y-m-d"))
-                ->orderBy('fecha_caducidad', 'DESC')
+                ->orderBy('fecha_caducidad', 'ASC')
+                ->get(200);
+
+        return view('propuesta.tabla_incentivo_producto', ['incentivos' => $records]);
+    }
+
+    /**
+     * Método que retorna los incentivos de los productos para el edit de la cotizacion
+     * @param $id
+     * @param $cotizacion_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getListIncentivosXproductoEdit($id, $cotizacion_id)
+    {
+        $records =
+            Incentivo::select("incentivo.*", DB::raw("cotizacion_incentivo.id as cotizacion_incentivo_id"))
+                ->leftJoin("incentivo_producto", "incentivo.id", "=", "incentivo_producto.incentivo_id")
+                ->leftJoin("cotizacion_incentivo", "cotizacion_incentivo.incentivo_id", "=", "incentivo.id")
+                ->where("incentivo_producto.producto_id", $id)
+                ->where("active", 1)
+                ->whereDate('fecha_caducidad', '>=', date("Y-m-d"))
+                ->orderBy('fecha_caducidad', 'ASC')
                 ->get(200);
 
         return view('propuesta.tabla_incentivo_producto', ['incentivos' => $records]);

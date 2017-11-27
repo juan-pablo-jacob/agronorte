@@ -25,7 +25,11 @@
                 <td class="center">
                     <div class="checkbox-inline">
                         <label>
-                            <input type="checkbox" name="incentivos_id[]" data-value="{{$incentivo->porcentaje}}" value="{{$incentivo->id}}" id="incentivo_{{$incentivo->id}}"
+                            <input type="checkbox" name="incentivos_id[]" data-value="{{$incentivo->porcentaje}}"
+                                   value="{{$incentivo->id}}" id="incentivo_{{$incentivo->id}}"
+                                   @if(!is_null($incentivo->cotizacion_incentivo_id))
+                                   checked
+                                   @endif
                                    class="custom-checkbox check_grilla">
                         </label>
                     </div>
@@ -52,7 +56,6 @@
             $(".custom-checkbox").prop('checked', false).uniform();
         }
     });
-
 
 
 </script>
