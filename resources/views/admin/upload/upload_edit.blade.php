@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="{{url('/assets/widgets/progressbar/progressbar.css')}}">
 
     <div class="clearfix">&nbsp;</div>
-    <h4 class="font-gray font-size-16"><strong>Detalle Precio Producto</strong></h4>
+    <h4 class="font-gray font-size-16"><strong>UY</strong></h4>
     <div class="clearfix">&nbsp;</div>
 
-    <form id="fileupload" action="{{url("producto/multi-upload")}}" method="POST"
+    <form id="fileupload" action="" method="POST"
           enctype="multipart/form-data">
 
         <input type="hidden" name="object_id" id="object_id_form" value=""/>
@@ -89,30 +89,6 @@
         });
 
 
-        /**
-         * click botón subir
-         *
-        $("#btnSendFiles").click(function (e) {
-
-            var form = $('#' + params_carga_archivos.form_id)
-
-            var data = form.serialize() + "&id=" + params_carga_archivos.object_id;
-            var url = form.attr("action");
-            $.post(url, data, function (result) {
-                if (result.result == false) {
-                    $.each(result.errors, function (index, value) {
-                        alertify.error(value[0]);
-                    });
-                } else {
-
-                    delete_files_input();
-                    cargarArchivosExistentes();
-                    alertify.success(result.msg);
-                }
-            });
-        });*/
-
-
         $("#files_input").change(function () {
             input = document.getElementById("files_input");
             if (input.files.length > 0) {
@@ -133,8 +109,7 @@
 
                 var data = $("#" + params_carga_archivos.form_id).serialize() + "&id=" + params_carga_archivos.object_id;
                 var url = BASE_URL + "/delete_archivo/" + params_carga_archivos.entity_id + "/" + id;
-                console.log(url);
-                console.log(BASE_URL);
+
                 if (parseInt(id) > 0) {
                     //Enviar a eliminar archivo
                     $.post(url, data, function (result) {
@@ -160,7 +135,7 @@
          */
         var cargarArchivosExistentes = function () {
 
-            $("#" + params_carga_archivos.form_id).attr('action', BASE_URL + '/producto/multi-upload');
+            $("#" + params_carga_archivos.form_id).attr('action', BASE_URL + '/' + params_carga_archivos.entity_id + '/multi-upload');
 
             $("#object_id_form").val(params_carga_archivos.object_id);
             $("#entity_id_form").val(params_carga_archivos.entity_id);
@@ -172,7 +147,6 @@
             $.get(url, data, function (result) {
                 if (result.result != false) {
 
-                    console.log(result.files);
                     if (result.files) {
                         $.each(result.files, function (index, value) {
                             var append = "<tr class=\"template-upload fade processing in\">"

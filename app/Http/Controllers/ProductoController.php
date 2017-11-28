@@ -113,14 +113,14 @@ class ProductoController extends Controller
 
         if (!$producto) {
             DB::Rollback();
-            $errors = new MessageBag(['error' => ['No se pudo crear el cliente']]);
+            $errors = new MessageBag(['error' => ['No se pudo crear el producto']]);
             return Redirect::back()->withErrors($errors);
         }
 
         $this->addFileProducto($request, $producto->id);
 
         DB::commit();
-        return redirect('/producto')->with('message', 'Cliente creado con éxito');
+        return redirect('/producto')->with('message', 'Producto creado con éxito');
     }
 
     /**
@@ -196,7 +196,35 @@ class ProductoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $producto = Producto::find($id);
+
+        $costo_basico = (float)$request->input("precio_lista") * (100 - $request->input("bonificacion_basica")) / 100;
+        $request->merge(["costo_basico" => $costo_basico]);
+
+
+        $validator = Validator::make($request->all(), Producto::getRules());
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return Redirect::back()->withErrors($errors)->withInput();
+        }
+
+
+        DB::beginTransaction();
+
+        $producto->fill($request->all());
+        $rdo = $producto->save();
+
+        if (!$rdo) {
+            DB::Rollback();
+            $errors = new MessageBag(['error' => ['No se pudo actualizar el producto']]);
+            return Redirect::back()->withErrors($errors);
+        }
+
+        $this->addFileProducto($request, $producto->id);
+
+        DB::commit();
+        return redirect('/producto')->with('message', 'Producto actualizado con éxito');
     }
 
     /**

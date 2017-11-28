@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ArchivoPropuesta;
 use App\Cliente;
 use App\Cotizacion;
 use App\Producto;
@@ -12,6 +13,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
@@ -148,7 +150,7 @@ class PropuestaController extends Controller
 
         $array_response = $this->getEditData($cotizacion->propuesta_negocio_id);
         $array_response["cotizacion_edit"] = $cotizacion;
-        $array_response["step"] = (int) $cotizacion->is_toma == 0 ? 2 : 4;
+        $array_response["step"] = (int)$cotizacion->is_toma == 0 ? 2 : 4;
 
         return view('propuesta/edit', $array_response);
     }
@@ -229,22 +231,155 @@ class PropuestaController extends Controller
 
         $propuesta = PropuestaNegocio::find($id);
 
-        if ((int)$propuesta->tipo_propuesta_negocio_id > 0) {
-            $tipo_propuesta = TipoPropuestaNegocio::find($propuesta->tipo_propuesta_negocio_id);
-        }
+        $tipo_propuesta = (int)$propuesta->tipo_propuesta_negocio_id > 0 ? TipoPropuestaNegocio::find($propuesta->tipo_propuesta_negocio_id) : null;
 
         $cliente = Cliente::find($propuesta->cliente_id);
 
         $user = User::find($propuesta->users_id);
 
+        $mail_propuesta = DB::table("mail_propuesta_negocio")
+            ->where("propuesta_negocio_id", $id)
+            ->first();
+
         return [
             "propuesta" => $propuesta,
             "cliente" => $cliente,
             "user" => $user,
+            "mail_propuesta" => !$mail_propuesta ? null : $mail_propuesta,
             "cotizacion_edit" => null,
             "vendedores" => $vendedores,
             "tipo_propuesta" => $tipo_propuesta,
             "tipos_propuestas_negocios" => $tipos_propuestas
         ];
+    }
+
+
+    /**
+     * retorna JSON con todos los archivos pertenecientes a un "object_id"
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function multiUpload(Request $request)
+    {
+
+        $archivos = DB::table("archivo_propuesta")
+            ->where("propuesta_negocio_id", $request->input("object_id"))
+            ->get();
+
+
+        if (count($archivos) > 0) {
+            return response()->json([
+                "result" => true,
+                "files" => $archivos
+            ]);
+        } else {
+            return response()->json([
+                "result" => false
+            ]);
+        }
+
+    }
+
+
+    /**
+     * Método que agrega los upload multiples de los documentos
+     * @param Request $request
+     * @return mixed
+     */
+    public function multiUploadSave(Request $request)
+    {
+        $this->addFilePropuesta($request, $request->input("object_id"));
+
+        return Redirect::back()->with('message', 'Archivos subidos con éxito');
+    }
+
+
+    /**
+     * Método que agrega los archivos al file propuesta
+     * @param Request $request
+     * @param $id
+     */
+    public function addFilePropuesta(Request $request, $id)
+    {
+
+        if (count($request->file('files')) > 0) {
+
+            foreach ($request->file('files') as $key => $file) {
+                if ($file->isValid() && ArchivoPropuesta::validateFileExtension($file->getClientOriginalExtension())) {
+                    $insert_array = [
+                        "nombre_archivo" => $file->getClientOriginalName(),
+                        "ext" => $file->getClientOriginalExtension(),
+                        "content_type" => $file->getClientMimeType(),
+                        "propuesta_negocio_id" => $id,
+                        "path" => "storage/app/public/archivos/archivo_propuesta/$id/"
+                    ];
+
+                    $validator = Validator::make($insert_array, ArchivoPropuesta::getRules());
+
+                    if ($validator->fails()) {
+                        $errors = $validator->errors();
+                        return Redirect::back()->withErrors($errors)->withInput();
+                    }
+
+                    $archivo_propuesta = ArchivoPropuesta::create($insert_array);
+
+                    if ($archivo_propuesta) {
+                        Storage::disk('public')->put("archivos/archivo_propuesta/{$id}/" . $archivo_propuesta->id . "." . $archivo_propuesta->ext, file_get_contents($file->getRealPath()));
+                    }
+
+                }
+            }
+        }
+        return;
+    }
+
+
+    /**
+     * Método utilizado para eliminar archivos
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteArchivo($id)
+    {
+        $archivo_propuesta = ArchivoPropuesta::find($id);
+
+        $file = storage_path("app/public/archivos/archivo_propuesta/{$archivo_propuesta->propuesta_negocio_id}/{$archivo_propuesta->id}.{$archivo_propuesta->ext}");
+
+        if ($archivo_propuesta->delete()) {
+
+            unlink($file);
+
+            return response()->json([
+                "result" => true,
+                "msg" => "Archivo eliminado con éxito"
+            ]);
+        } else {
+            $errors = new MessageBag(['error' => ['No se eliminar el archivo']]);
+            return response()->json([
+                "result" => true,
+                "errors" => $errors
+            ]);
+        }
+    }
+
+
+    /**
+     * Mètodo utilizado para retornar el archivo
+     * @param $id
+     */
+    public function getArchivo($id)
+    {
+        $archivo_propuesta = ArchivoPropuesta::find($id);
+
+        $enlace = base_path($archivo_propuesta->path . $id . "." . $archivo_propuesta->ext);
+        if (is_file($enlace)) {
+
+            header("Content-Disposition: attachment; filename=" . $archivo_propuesta->nombre_archivo);
+            header("Content-Type: " . $archivo_propuesta->content_type);
+            header("Content-Length: " . filesize($enlace));
+            readfile($enlace);
+        } else {
+            die("No se encontró el archivo en el servidor");
+        }
     }
 }

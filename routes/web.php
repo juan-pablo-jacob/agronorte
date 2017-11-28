@@ -84,12 +84,23 @@ Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
 /**
  * Rutas propuestas
  */
+Route::get("propuesta/multi-upload", "PropuestaController@multiUpload");
+Route::get("archivo/propuesta/{id}", "PropuestaController@getArchivo");
+Route::post("delete_archivo/propuesta/{id}", "PropuestaController@deleteArchivo");
+Route::post("propuesta/multi-upload", "PropuestaController@multiUploadSave");
 Route::resource("propuesta", "PropuestaController");
 Route::get("propuesta/cotizacion/{id}", "PropuestaController@editCotizacion");
-///propuesta/cotizacion/
+
 
 
 /**
  * Rutas cotizaciones
  */
+
+Route::get("cotizacion/getTablaCotizaciones", "CotizacionController@getDatosCotizacionesTabla");
 Route::resource("cotizacion", "CotizacionController");
+
+/**
+ * Mail propuesta Negocio
+ */
+Route::resource("mail_propuesta_negocio", "MailPropuestaNegocioController");

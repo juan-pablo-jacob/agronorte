@@ -3,91 +3,54 @@
         Finalización producto <strong>Nuevo</strong>
     </h3>
     <div class="content-box-wrapper">
-
-        <table class="table table-bordered">
-            <thead>
-            <tr >
-                <th style="background: #80808047;">&nbsp;</th>
-                <th style="background: #80808047;">Unidad</th>
-                <th style="background: #80808047;">Descripción</>
-                <th style="background: #80808047;">Precio sin IVA</th>
-                <th style="background: #80808047;">IVA</th>
-                <th style="background: #80808047;">Prcio IVA Incluído</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong> (producto 1)</td>
-                <td style="background: rgba(149,224,55,0.28);" >S550SS630F</td>
-                <td>jp se la come</td>
-                <td align="right">USD 374.900,0</td>
-                <td align="right">USD 39.364,5</td>
-                <td align="right">USD 414.264,5</td>
-            </tr>
-            <tr>
-
-                <td colspan="4"><strong>Total VENTA nuevo:</strong></td>
-                <td  align="right">USD 414.264,0</td>
-            </tr>
-            <tr>
-                <td><strong>Descuento 6%</strong></td>
-                <td colspan="4">Descuento AGROACTIVA (esta es la descripción descuento)</td>
-                <td align="right">USD 24.855,8</td>
-            </tr>
-            {{--otro producto--}}
-
-            <tr>
-                <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong> (producto 2)</td>
-                <td style="background: rgba(149,224,55,0.28);" >S550SS630F</td>
-                <td>jp se la come</td>
-                <td align="right">USD 374.900,0</td>
-                <td align="right">USD 39.364,5</td>
-                <td align="right">USD 414.264,5</td>
-            </tr>
-            <tr>
-
-                <td colspan="4"><strong>Total VENTA nuevo:</strong></td>
-                <td  align="right">USD 414.264,0</td>
-            </tr>
-            <tr>
-                <td><strong>Descuento 6%</strong></td>
-                <td colspan="4">Descuento AGROACTIVA (esta es la descripción descuento)</td>
-                <td align="right">USD 24.855,8</td>
-            </tr>
-            </tbody>
-        </table>
         <div class="clearfix">&nbsp;</div>
-        {{--<table class="table table-bordered">--}}
-        {{--<thead>--}}
-        {{--<tr>--}}
-        {{--<th>&nbsp;</th>--}}
-        {{--<th>Unidad</th>--}}
-        {{--<th>Descripción</th>--}}
-        {{--<th>Precio sin IVA</th>--}}
-        {{--<th>IVA</th>--}}
-        {{--<th>Prcio IVA Incluído</th>--}}
-        {{--</tr>--}}
-        {{--</thead>--}}
-        {{--<tbody>--}}
-        {{--<tr>--}}
-        {{--<td rowspan="2">Venta</td>--}}
-        {{--<td>S550SS630F</td>--}}
-        {{--<td>jp se la come</td>--}}
-        {{--<td>USD 374.900,0</td>--}}
-        {{--<td>USD 39.364,5</td>--}}
-        {{--<td>USD 414.264,5</td>--}}
-        {{--</tr>--}}
-        {{--<tr>--}}
+        <h4 class="font-gray font-size-16"><strong>Resumen cotizaciones</strong></h4>
+        <div class="clearfix">&nbsp;</div>
+        <div id="div_visualizacion_cotizaciones"></div>
 
-        {{--<td colspan="4">Total VENTA nuevo:</td>--}}
-        {{--<td>USD 414.264,0</td>--}}
-        {{--</tr>--}}
-        {{--<tr>--}}
-        {{--<td>Descuento 6%</td>--}}
-        {{--<td colspan="4">Descuento AGROACTIVA (esta es la descripción descuento)</td>--}}
-        {{--<td>USD	24.855,8</td>--}}
-        {{--</tr>--}}
-        {{--</tbody>--}}
-        {{--</table>--}}
+        <div class="clearfix">&nbsp;</div>
+
+        <input type="hidden" id="object_id" value="{{$propuesta->id}}"/>
+        <input type="hidden" id="entity_id" value="propuesta"/>
+        @include('admin.upload.upload_edit')
     </div>
 </div>
+
+<form role="form" id="form_get_tabla_cotizaciones_step_4" action="{{url("cotizacion/getTablaCotizaciones")}}"
+      method="get" enctype="multipart/form-data"
+      onsubmit="return false;">
+    <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
+    <input type="hidden" name="is_toma" value="0">
+</form>
+
+@if(!is_null($mail_propuesta))
+    @include('mail_propuesta_negocio.edit_in_propuesta')
+@else
+    @include('mail_propuesta_negocio.new_in_propuesta')
+@endif
+
+
+<script>
+    /*
+     * Function que rearma la tabla de las visualizaciones
+     */
+    var getTablaCotizaciones = function (form_id, div_id) {
+        var $_form = $("#" + form_id);
+
+        $.ajax({
+            url: $_form.attr("action"),
+            data: $_form.serialize(),
+            method: "GET",
+            success: function (data) {
+                if (data) {
+                    $("#" + div_id).html(data);
+                }
+            },
+            error: function (data) {
+            }
+        });
+    };
+
+    getTablaCotizaciones("form_get_tabla_cotizaciones_step_4", "div_visualizacion_cotizaciones");
+
+</script>

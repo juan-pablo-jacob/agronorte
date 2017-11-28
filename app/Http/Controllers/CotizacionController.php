@@ -286,4 +286,24 @@ class CotizacionController extends Controller
                 break;
         }
     }
+
+
+    /**
+     * Mètodo que retorna la cotización en formato tabla
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getDatosCotizacionesTabla(Request $request)
+    {
+        $records =
+            Cotizacion::select("cotizacion.*", "producto.modelo")
+                ->leftJoin("producto", "producto.id", "=", "cotizacion.producto_id")
+                ->where("cotizacion.propuesta_negocio_id", $request->get("propuesta_negocio_id"))
+                ->where("cotizacion.active", 1)
+                ->where("cotizacion.is_toma", $request->get("is_toma"))
+                ->orderBy('producto.modelo', 'DESC')
+                ->get(200);
+
+        return view('propuesta.tabla_visualizacion_cotizaciones_step_4', ['cotizaciones' => $records]);
+    }
 }
