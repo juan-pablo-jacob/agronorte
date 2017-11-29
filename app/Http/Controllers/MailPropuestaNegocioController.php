@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\MailPropuestaNegocio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 
 class MailPropuestaNegocioController extends Controller
 {
@@ -48,6 +50,8 @@ class MailPropuestaNegocioController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $validator = Validator::make($request->all(), MailPropuestaNegocio::getRules());
 
         if ($validator->fails()) {
@@ -63,10 +67,7 @@ class MailPropuestaNegocioController extends Controller
         //Creo la marca
         MailPropuestaNegocio::create($request->all());
 
-        return response()->json([
-            "result" => true,
-            "msg" => "Los datos de mail fueron creados con éxito"
-        ]);
+        return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se creó el mail para la propuesta de negocio, puede enviarlo"]);
     }
 
     /**
@@ -100,7 +101,20 @@ class MailPropuestaNegocioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $mail_propuesta_negocio = MailPropuestaNegocio::find($id);
+
+        $validator = Validator::make($request->all(), MailPropuestaNegocio::getRules());
+
+        if ($validator->fails()) {
+            $errors = new MessageBag(['error' => ['Error. No se pudo editar la información a enviar al mail']]);
+            return Redirect::back()->withErrors($errors)->withInput();
+        }
+
+        //Creo la marca
+        $mail_propuesta_negocio->fill($request->all());
+        $mail_propuesta_negocio->save();
+
+        return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se modificaron los datos para el mail de la propuesta de negocio, puede enviarlo"]);
     }
 
     /**

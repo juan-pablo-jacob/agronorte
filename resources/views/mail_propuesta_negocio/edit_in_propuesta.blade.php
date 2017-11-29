@@ -15,7 +15,7 @@
 
             <div class="form-group col-md-4">
                 <label>Mail Cliente *</label>
-                <input type="text" class="form-control" name="mail_cliente" value="{{$cliente->email}}">
+                <input type="text" class="form-control" name="mail_cliente" value="{{$mail_propuesta->mail_cliente}}">
             </div>
 
             <div class="form-group col-md-4">
@@ -23,7 +23,7 @@
                 <select name="mail_vendedores" class="form-control">
                     <option value="">&lt;No enviar a ningún vendedor&gt;</option>
                     @foreach($vendedores as $vendedor)
-                        @if($propuesta->users_id == $vendedor->id)
+                        @if($mail_propuesta->mail_vendedores == $vendedor->email)
                             <option value="{{$vendedor->email}}"
                                     selected>{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )</option>
                         @else

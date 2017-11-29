@@ -388,4 +388,25 @@ class ProductoController extends Controller
 
         return response()->json($users);
     }
+
+
+    /**
+     * autossugest para los productos nuevos en base al modelo
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function autosuggestUsados(Request $request)
+    {
+        //Buscar en la base de datos por el nombre de usuario
+        $query = $request->input('query');
+        $users = DB::table('producto')
+            ->select('id', "modelo")
+            ->where('modelo', 'like', '%' . $query . '%')
+            ->where("is_nuevo", 0)
+            ->where("active", 1)
+            ->orderBy('modelo', 'asc')
+            ->get();
+
+        return response()->json($users);
+    }
 }

@@ -27,7 +27,7 @@
                         <a href="#step-1" data-toggle="tab" id="go_step_1">
                             <label class="wizard-step">1</label>
                             <span class="wizard-description">
-                            Propuesta Inicio
+                            Propuesta Inicio{{$step}}
                             <small>Carga datos generales</small>
                         </span>
                         </a>
@@ -64,13 +64,23 @@
                     <div class="tab-pane active" id="step-1">
                         @include('propuesta.step_edit_1')
                     </div>
-                    <div class="tab-pane" id="step-2">
-                        @if($propuesta->tipo_propuesta_negocio_id == 1 && is_null($cotizacion_edit))
-                            @include('propuesta.step_new_nuevo_2')
-                        @elseif($propuesta->tipo_propuesta_negocio_id == 1 && !is_null($cotizacion_edit) && $step == 2)
-                            @include('propuesta.step_edit_nuevo_2')
-                        @endif
-                    </div>
+                    @if($propuesta->tipo_propuesta_negocio_id == 1 )
+                        <div class="tab-pane" id="step-2">
+                            @if(is_null($cotizacion_edit))
+                                @include('propuesta.step_new_nuevo_2')
+                            @elseif(!is_null($cotizacion_edit) && $step == 2)
+                                @include('propuesta.step_edit_nuevo_2')
+                            @endif
+                        </div>
+                    @elseif($propuesta->tipo_propuesta_negocio_id == 2)
+                        <div class="tab-pane" id="step-2">
+                            @if(is_null($cotizacion_edit))
+                                @include('propuesta.step_new_usado_2')
+                            @elseif(!is_null($cotizacion_edit) && $step == 2)
+                                @include('propuesta.step_edit_nuevo_2')
+                            @endif
+                        </div>
+                    @endif
                     <div class="tab-pane" id="step-3">
                         @include('propuesta.step_show_ventas_3')
                     </div>

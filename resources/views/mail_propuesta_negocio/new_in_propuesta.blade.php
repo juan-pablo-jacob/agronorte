@@ -6,7 +6,7 @@
     <div class="content-box">
         <h3 class="content-box-header bg-default">
             <i class="glyph-icon icon-elusive-basket"></i>
-            Editar Mail de propuesta de negocio
+            Crear Mail de propuesta de negocio
         </h3>
         <div class="content-box-wrapper">
 
@@ -24,9 +24,9 @@
                     @foreach($vendedores as $vendedor)
                         @if($propuesta->users_id == $vendedor->id)
                             <option value="{{$vendedor->email}}"
-                                    selected>{{$vendedor->nombre}} {{$vendedor->apellido}} <br> {{$vendedor->email}}</option>
+                                    selected>{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )</option>
                         @else
-                            <option value="{{$vendedor->email}}">{{$vendedor->nombre}} {{$vendedor->apellido}} <br> {{$vendedor->email}}</option>
+                            <option value="{{$vendedor->email}}">{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )</option>
                         @endif
                     @endforeach
                 </select>

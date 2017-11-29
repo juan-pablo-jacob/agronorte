@@ -126,14 +126,16 @@ class PropuestaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @param null $params
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         $array_response = $this->getEditData($id);
 
-        $array_response["step"] = 2;
+
+        $array_response["step"] = is_null(session('data')["step"]) ? 2 : session('data')["step"];
 
         return view('propuesta/edit', $array_response);
     }
@@ -153,6 +155,20 @@ class PropuestaController extends Controller
         $array_response["step"] = (int)$cotizacion->is_toma == 0 ? 2 : 4;
 
         return view('propuesta/edit', $array_response);
+    }
+
+    /**
+     * Método utilizado para editar la propuesta
+     * @param $id
+     * @param null $params
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editWithParams($id, $params = null)
+    {
+        $array_response["step"] = is_null($params) ? 2 : $params["step"];
+        $array_response["message"] = $params["mensaje"];
+
+        return Redirect::back()->with("data", $array_response);
     }
 
     /**

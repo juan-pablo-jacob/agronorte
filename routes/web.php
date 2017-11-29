@@ -66,6 +66,7 @@ Route::post("producto/multi-upload", "ProductoController@multiUploadSave");
 Route::resource("producto", "ProductoController");
 Route::get("producto/showJSON/{id}", 'ProductoController@showJSON');
 Route::get("as/productosNuevos", 'ProductoController@autosuggestNuevos');
+Route::get("as/productosUsados", 'ProductoController@autosuggestUsados');
 
 
 /**

@@ -18,7 +18,7 @@ class MailPropuestaNegocio extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_vendedores', 'mail_vendedores', 'propuesta_negocio_id'
+        'mail_cliente', 'mail_vendedores', 'propuesta_negocio_id'
     ];
 
     /**

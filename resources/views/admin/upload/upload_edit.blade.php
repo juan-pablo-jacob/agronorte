@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{url('/assets/widgets/progressbar/progressbar.css')}}">
 
     <div class="clearfix">&nbsp;</div>
-    <h4 class="font-gray font-size-16"><strong>UY</strong></h4>
+    <h4 class="font-gray font-size-16"><strong>Subir Archivos</strong></h4>
     <div class="clearfix">&nbsp;</div>
 
     <form id="fileupload" action="" method="POST"
