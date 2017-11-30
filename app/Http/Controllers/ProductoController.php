@@ -95,8 +95,13 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
 
-        $costo_basico = (float)$request->input("precio_lista") * (100 - $request->input("bonificacion_basica")) / 100;
-        $request->merge(["costo_basico" => $costo_basico]);
+        //El producto es nuevo
+        if ($request->get("is_nuevo") == 1) {
+            $costo_basico = (float)$request->input("precio_lista") * (100 - $request->input("bonificacion_basica")) / 100;
+            $request->merge(["costo_basico" => $costo_basico, "costo_usado" => "", "precio_sin_canje" => ""]);
+        } else {
+            $request->merge(["bonificacion_basica" => "", "costo_basico" => ""]);
+        }
 
 
         $validator = Validator::make($request->all(), Producto::getRules());
@@ -198,9 +203,14 @@ class ProductoController extends Controller
     {
         $producto = Producto::find($id);
 
-        $costo_basico = (float)$request->input("precio_lista") * (100 - $request->input("bonificacion_basica")) / 100;
-        $request->merge(["costo_basico" => $costo_basico]);
 
+        //El producto es nuevo
+        if ($request->get("is_nuevo") == 1) {
+            $costo_basico = (float)$request->input("precio_lista") * (100 - $request->input("bonificacion_basica")) / 100;
+            $request->merge(["costo_basico" => $costo_basico, "costo_usado" => "", "precio_sin_canje" => ""]);
+        } else {
+            $request->merge(["bonificacion_basica" => "", "costo_basico" => ""]);
+        }
 
         $validator = Validator::make($request->all(), Producto::getRules());
 

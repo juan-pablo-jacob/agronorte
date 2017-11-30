@@ -168,7 +168,7 @@
                                         <option value="{{$vendedor->id}}"
                                                 selected>{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                                     @else
-                                        <option value="{{$vendedor->nombre}} {{$vendedor->apellido}}"</option>
+                                        <option value="{{$vendedor->id}}">{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                                     @endif
                                 @endforeach
                             </select>

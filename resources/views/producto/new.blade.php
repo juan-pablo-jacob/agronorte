@@ -26,16 +26,10 @@
                     <div class="form-group col-md-4">
                         <label>Nuevo/Usado</label>
                         <select id="is_nuevo" name="is_nuevo" class="form-control">
-                            @if(is_null(old('is_nuevo')))
-                                <option value="" selected>&lt;Seleccione&gt;</option>
-                                <option value="1">Nuevo</option>
-                                <option value="0">Usado</option>
-                            @elseif(old('is_nuevo') == 1)
-                                <option value="">&lt;Seleccione&gt;</option>
+                            @if(is_null(old('is_nuevo')) || old('is_nuevo') == 1)
                                 <option value="1" selected>Nuevo</option>
                                 <option value="0">Usado</option>
-                            @elseif(!is_null(old('is_nuevo')))
-                                <option value="">&lt;Seleccione&gt;</option>
+                            @elseif(!is_null(old('is_nuevo')) || old('is_nuevo') == 0)
                                 <option value="1">Nuevo</option>
                                 <option value="0" selected>Usado</option>
                             @endif
@@ -90,28 +84,12 @@
 
                     <!-- Detalles Usados-->
 
-                    <div id="div_producto_usado"
-                         @if(!is_null(old('is_nuevo')) && old("is_nuevo") == 0)
-                         style="display: block"
-                         @else
-                         style="display: none"
-                            @endif
-                    >
+                    <div class="div_producto_usado">
 
                         <div class="clearfix">&nbsp;</div>
                         <div class="divider"></div>
 
                         <h4 class="font-gray font-size-16"><strong>Detalle producto usado</strong></h4>
-                        <div class="form-group col-md-4">
-                            <label>Precio sin canje</label>
-                            <input type="number" class="form-control" name="precio_sin_canje"
-                                   value="{{old('precio_sin_canje')}}">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>Costo Usado</label>
-                            <input type="number" class="form-control" name="costo_usado" value="{{old('costo_usado')}}">
-                        </div>
 
                         <div class="form-group col-md-4">
                             <label>Horas motor</label>
@@ -169,7 +147,7 @@
                                         <option value="{{$vendedor->id}}"
                                                 selected>{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                                     @else
-                                        <option value="{{$vendedor->nombre}} {{$vendedor->apellido}}"</option>
+                                        <option value="{{$vendedor->id}}">{{$vendedor->nombre}} {{$vendedor->apellido}}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -188,7 +166,7 @@
                         <input type="number" class="form-control" name="precio_lista" value="{{old('razon_social')}}">
                     </div>
 
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-4 div_producto_nuevo">
                         <label>Bonificación Básica</label>
                         @if(old("bonificacion_basica") != "")
                             <input type="number" class="form-control" name="bonificacion_basica"
@@ -197,6 +175,17 @@
                             <input type="number" class="form-control" name="bonificacion_basica"
                                    value="{{$parametros_sistema->bonificacion_basica}}">
                         @endif
+                    </div>
+
+                    <div class="form-group col-md-4 div_producto_usado">
+                        <label>Costo Usado</label>
+                        <input type="number" class="form-control" name="costo_usado" value="{{old('costo_usado')}}">
+                    </div>
+
+                    <div class="form-group col-md-4 div_producto_usado">
+                        <label>Precio sin canje</label>
+                        <input type="number" class="form-control" name="precio_sin_canje"
+                               value="{{old('precio_sin_canje')}}">
                     </div>
 
                     <div class="clearfix">&nbsp;</div>
@@ -214,13 +203,22 @@
     </div>
 
     <script>
-        $("#is_nuevo").change(function () {
-            if (parseInt($(this).val()) == 1 || $(this).val() == "") {
-                $("#div_producto_usado").hide();
-            } else if ($(this).val() != "") {
-                $("#div_producto_usado").show();
+        var checkIsNuevo = function(){
+            if ($("#is_nuevo").val() == 1) {
+                $(".div_producto_usado").hide();
+                $(".div_producto_nuevo").show();
+            } else {
+                $(".div_producto_usado").show();
+                $(".div_producto_nuevo").hide();
             }
+        }
+
+        $("#is_nuevo").change(function () {
+            checkIsNuevo();
         });
+
+        checkIsNuevo();
+
     </script>
 
 @endsection
