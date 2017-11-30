@@ -164,7 +164,8 @@ class CotizacionController extends Controller
         $producto = Producto::find($request->get("producto_id"));
         if ($producto) {
             $request->merge(["costo_basico_producto" => $producto->costo_basico,
-                "bonificacion_basica_producto" => $producto->bonificacion_basica]);
+                "bonificacion_basica_producto" => $producto->bonificacion_basica,
+                "costo_usado" => $producto->costo_usado]);
         }
 
         $precio_venta = Cotizacion::getPrecioVenta($request);
@@ -225,11 +226,11 @@ class CotizacionController extends Controller
                     }
                 }
             }
-        }
 
-        $incentivos_a_eliminar = DB::table("cotizacion_incentivo")
-            ->whereNotIn("incentivo_id", $array_incentivos)
-            ->delete();
+            $incentivos_a_eliminar = DB::table("cotizacion_incentivo")
+                ->whereNotIn("incentivo_id", $array_incentivos)
+                ->delete();
+        }
 
         DB::commit();
         return redirect()->action(
@@ -263,6 +264,11 @@ class CotizacionController extends Controller
     }
 
 
+    /**
+     * Mêtodo privado utilizado para setear los parámetros particulares de cada cotización que dependen
+     * del tipo de propuesta que sea
+     * @param Request $request
+     */
     private function setParamsRequest(Request &$request)
     {
         switch ((int)$request->get("tipo_propuesta_negocio_id")) {
@@ -277,6 +283,18 @@ class CotizacionController extends Controller
                 $request->merge(["rentabilidad_vs_costo_real" => number_format($ganancia * 100 / $costo_real_producto, 2)]);
                 break;
             case 2:
+                $costo_real_producto = Producto::getCostoRealUsado($request);
+
+                if (!is_null($costo_real_producto)) {
+
+                    $request->merge(["costo_real_producto" => $costo_real_producto]);
+
+                    //Cálculos rentabilidad Vs. Precio venta
+                    $ganancia = (float)$request->get("precio_venta") - $costo_real_producto;
+                    $request->merge(["rentabilidad_vs_costo_real" => number_format($ganancia * 100 / $costo_real_producto, 2)]);
+                    $request->merge(["rentabilidad_vs_precio_venta" => number_format($ganancia * 100 / $request->get("precio_venta"), 2)]);
+                }
+
                 break;
             case 3:
                 break;

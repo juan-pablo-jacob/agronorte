@@ -27,7 +27,7 @@
                         <a href="#step-1" data-toggle="tab" id="go_step_1">
                             <label class="wizard-step">1</label>
                             <span class="wizard-description">
-                            Propuesta Inicio{{$step}}
+                            Propuesta Inicio
                             <small>Carga datos generales</small>
                         </span>
                         </a>
@@ -50,21 +50,53 @@
                         </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#step-4" data-toggle="tab" id="go_step_4">
-                            <label class="wizard-step">4</label>
-                            <span class="wizard-description">
-                            Finalización
-                            <small>Finalizar propuesta</small>
-                        </span>
-                        </a>
-                    </li>
+                    @if($propuesta->tipo_propuesta_negocio_id == 3 || $propuesta->tipo_propuesta_negocio_id == 4)
+                        <li>
+                            <a href="#step-4" data-toggle="tab" id="go_step_4">
+                                <label class="wizard-step">4</label>
+                                <span class="wizard-description">
+                                Producto
+                                <small>Datos de toma de productos</small>
+                            </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#step-5" data-toggle="tab" id="go_step_5">
+                                <label class="wizard-step">5</label>
+                                <span class="wizard-description">
+                                Precio
+                                <small>Visualización Productos Tomados</small>
+                            </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#step-6" data-toggle="tab" id="go_step_6">
+                                <label class="wizard-step">6</label>
+                                <span class="wizard-description">
+                                    Finalización
+                                    <small>Finalizar propuesta</small>
+                                </span>
+                            </a>
+                        </li>
+                    @elseif($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 2)
+                        <li>
+                            <a href="#step-4" data-toggle="tab" id="go_step_4">
+                                <label class="wizard-step">4</label>
+                                <span class="wizard-description">
+                                    Finalización
+                                    <small>Finalizar propuesta</small>
+                                </span>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="step-1">
                         @include('propuesta.step_edit_1')
                     </div>
-                    @if($propuesta->tipo_propuesta_negocio_id == 1 )
+                    @if($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 3)
                         <div class="tab-pane" id="step-2">
                             @if(is_null($cotizacion_edit))
                                 @include('propuesta.step_new_nuevo_2')
@@ -72,30 +104,47 @@
                                 @include('propuesta.step_edit_nuevo_2')
                             @endif
                         </div>
-                    @elseif($propuesta->tipo_propuesta_negocio_id == 2)
+                    @elseif($propuesta->tipo_propuesta_negocio_id == 2 || $propuesta->tipo_propuesta_negocio_id == 4)
                         <div class="tab-pane" id="step-2">
                             @if(is_null($cotizacion_edit))
                                 @include('propuesta.step_new_usado_2')
                             @elseif(!is_null($cotizacion_edit) && $step == 2)
-                                @include('propuesta.step_edit_nuevo_2')
+                                @include('propuesta.step_edit_usado_2')
                             @endif
                         </div>
                     @endif
                     <div class="tab-pane" id="step-3">
                         @include('propuesta.step_show_ventas_3')
                     </div>
-                    <div class="tab-pane" id="step-4">
-                        @if($propuesta->tipo_propuesta_negocio_id == 1 )
-                        @include('propuesta.step_edit_finalizacion_nuevo_4')
-                        @endif
-                    </div>
+                    @if($propuesta->tipo_propuesta_negocio_id == 3 || $propuesta->tipo_propuesta_negocio_id == 4)
+
+                        <div class="tab-pane" id="step-4">
+                            @if(is_null($cotizacion_edit))
+                                @include('propuesta.step_new_toma_usado')
+                            @elseif(!is_null($cotizacion_edit) && $step == 4)
+                                @include('propuesta.step_edit_toma_usado')
+                            @endif
+                        </div>
+                        <div class="tab-pane" id="step-5">
+                            @include('propuesta.step_show_toma_usado')
+                        </div>
+                        <div class="tab-pane" id="step-6">
+                            @include('propuesta.step_edit_finalizacion_toma')
+                        </div>
+                    @elseif($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 2)
+                        <div class="tab-pane" id="step-4">
+                            @if($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 2 )
+                                @include('propuesta.step_edit_finalizacion_nuevo_4')
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
     @if (isset($step) && $step != "")
-        <input type="hidden" id="request_step" value="{{$step}}" />
+        <input type="hidden" id="request_step" value="{{$step}}"/>
     @endif
 
     <script type="text/javascript">

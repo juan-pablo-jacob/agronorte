@@ -1,6 +1,10 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
-        Finalización producto <strong>Nuevo</strong>
+        @if($propuesta->tipo_propuesta_negocio_id == 1)
+            Finalización producto <strong>Nuevo</strong>
+        @elseif($propuesta->tipo_propuesta_negocio_id == 2)
+            Finalización producto <strong>Usado</strong>
+        @endif
     </h3>
     <div class="content-box-wrapper">
         <div class="clearfix">&nbsp;</div>

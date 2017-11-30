@@ -257,6 +257,16 @@ class PropuestaController extends Controller
             ->where("propuesta_negocio_id", $id)
             ->first();
 
+        $tipo_productos = DB::table('tipo_producto')
+            ->where("active", 1)
+            ->orderBy("tipo_producto", "asc")
+            ->get();
+
+        $marcas = DB::table('marca')
+            ->where("active", 1)
+            ->orderBy("marca", "asc")
+            ->get();
+
         return [
             "propuesta" => $propuesta,
             "cliente" => $cliente,
@@ -264,6 +274,8 @@ class PropuestaController extends Controller
             "mail_propuesta" => !$mail_propuesta ? null : $mail_propuesta,
             "cotizacion_edit" => null,
             "vendedores" => $vendedores,
+            "tipo_productos" => $tipo_productos,
+            "marcas" => $marcas,
             "tipo_propuesta" => $tipo_propuesta,
             "tipos_propuestas_negocios" => $tipos_propuestas
         ];

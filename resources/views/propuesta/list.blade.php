@@ -50,7 +50,7 @@
                                     <option value="{{$tipo_propuesta->id}}"
                                             selected>{{$tipo_propuesta->tipo_propuesta_negocio}}</option>
                                 @else
-                                    <option value="{{$tipo_propuesta->id}}">{{$tipo_propuesta->tipo_propuesta}}</option>
+                                    <option value="{{$tipo_propuesta->id}}">{{$tipo_propuesta->tipo_propuesta_negocio}}</option>
                                 @endif
                             @endforeach
                         </select>

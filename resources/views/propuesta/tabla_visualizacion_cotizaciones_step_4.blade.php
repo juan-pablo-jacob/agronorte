@@ -16,7 +16,7 @@
             <tr>
                 <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong> (producto {{$key + 1}})</td>
                 <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
-                <td>{{utf8_decode($cotizacion->observacion)}}</td>
+                <td>{{$cotizacion->observacion}}</td>
                 <td align="right">USD {{number_format ($cotizacion->precio_venta * 0.79, 2)}}</td>
                 <td align="right">USD {{number_format ($cotizacion->precio_venta * 0.21, 2)}}</td>
                 <td align="right">USD {{number_format ($cotizacion->precio_venta, 2)}}</td>

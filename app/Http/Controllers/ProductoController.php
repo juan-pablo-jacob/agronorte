@@ -128,6 +128,45 @@ class ProductoController extends Controller
         return redirect('/producto')->with('message', 'Producto creado con éxito');
     }
 
+
+    /**
+     * Mètodo para dar de alta un producto de manera ágil
+     * @param Request $request
+     * @return mixed
+     */
+    public function addProducto(Request $request)
+    {
+        $validator = Validator::make($request->all(), Producto::getRules());
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json([
+                "result" => false,
+                "errors" => $errors
+            ]);
+        }
+
+        DB::beginTransaction();
+
+        $producto = Producto::create($request->all());
+
+        if (!$producto) {
+            DB::Rollback();
+            $errors = new MessageBag(['error' => ['No se pudo crear el Producto']]);
+            return response()->json([
+                "result" => false,
+                "errors" => $errors
+            ]);
+        }
+
+        DB::commit();
+        return response()->json([
+            "result" => true,
+            "producto" => $producto,
+            "msg" => "El producto fue creado con éxito"
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

@@ -3,12 +3,15 @@
         Venta Producto <strong>Usado</strong>
     </h3>
     <div class="content-box-wrapper">
-        <form role="form" id="form_venta_nuevo" action="{{url("/cotizacion")}}" method="post"
+        <form role="form" id="form_edit_venta_usado" action="{{url("/cotizacion/" . $cotizacion_edit->id)}}"
+              method="post"
               enctype="multipart/form-data">
             {{ csrf_field() }}
+            {{ method_field('PUT') }}
 
+            <input type="hidden" id="cotizacion_id" value="{{$cotizacion_edit->id}}">
 
-            <input type="hidden" name="producto_id" id="producto_id" value="{{old('producto_id')}}">
+            <input type="hidden" name="producto_id" id="producto_id" value="{{$cotizacion_edit->producto_id}}">
             <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
             <input type="hidden" name="tipo_propuesta_negocio_id" value="{{$propuesta->tipo_propuesta_negocio_id}}">
 
@@ -20,15 +23,12 @@
                     <span class="add-on input-group-addon">
                         <i class="glyph-icon icon-calendar"></i>
                     </span>
-                    @if(old("fecha_entrega") == "")
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy">
-                    @else
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime(old("fecha_entrega")))}}">
-                    @endif
+
+                    <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
+                           placeholder="dd/mm/aaaa"
+                           data-date-format="mm/dd/yy"
+                           value="{{date('d/m/Y',strtotime($cotizacion_edit->fecha_entrega))}}">
+
                 </div>
             </div>
 
@@ -42,18 +42,8 @@
 
                 <div class="form-group col-md-4">
                     <label>Modelo</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="modelo"/>
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" id="btnAgregarProductoUsado"  type="button">Agregar Producto Usado</button>
-                        </span>
-                    </div>
+                    <input type="text" class="form-control" id="modelo"/>
                 </div>
-
-                {{--<div class="form-group col-md-4">--}}
-                    {{--<a href="javascript:;" id="btnAgregarCliente" class="btn btn-default" tittle="Agregar"> <i--}}
-                                {{--class="glyph-icon icon-elusive-plus"></i> Agregar Cliente</a>--}}
-                {{--</div>--}}
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Tipo de producto</label>
@@ -64,7 +54,7 @@
                     <label>Descripción</label>
                     <textarea name="observacion" id="descripcion_producto" placeholder="Ingrese descripción producto"
                               rows="3"
-                              class="form-control textarea-sm">{{old("observacion")}}</textarea>
+                              class="form-control textarea-sm">{{$cotizacion_edit->observacion}}</textarea>
                 </div>
 
                 <div class="form-group col-md-4" style="display: none">
@@ -84,7 +74,7 @@
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Costo usado</label>
-                    <input type="text" class="form-control" id="costo_usado">
+                    <input type="text" class="form-control" name="costo_usado" id="costo_usado">
                 </div>
 
 
@@ -92,23 +82,26 @@
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Precio Lista</label>
-                    <input type="number" class="form-control" id="precio_lista" name="precio_lista_producto">
+                    <input type="number" class="form-control" id="precio_lista" name="precio_lista_producto"
+                           value="{{$cotizacion_edit->precio_lista_producto}}">
                 </div>
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Descuento</label>
-                    <input type="number" class="form-control" id="descuento" name="descuento" placeholder="1 % - 100 %">
+                    <input type="number" class="form-control" id="descuento" name="descuento" placeholder="1 % - 100 %"
+                           value="{{$cotizacion_edit->descuento}}">
                 </div>
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Descripcion descuento</label>
                     <textarea name="descripcion_descuento" placeholder="Ingrese descripción por el descuento" rows="3"
-                              class="form-control textarea-sm">{{old("descripcion_descuento")}}</textarea>
+                              class="form-control textarea-sm">{{$cotizacion_edit->descripcion_descuento}}</textarea>
                 </div>
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Precio venta</label>
-                    <input type="text" class="form-control" id="precio_venta">
+                    <input type="text" class="form-control" id="precio_venta"
+                           value="{{$cotizacion_edit->precio_venta}}">
                 </div>
 
             </div>
@@ -118,7 +111,7 @@
             <div class="divider"></div>
             <div class="form-group col-md-12">
                 <button type="submit" id="btnCrearCotizacion" style="display: none" class="btn btn-primary"><i
-                            class="glyph-icon icon-save"></i>&nbsp;Crear Cotización
+                            class="glyph-icon icon-save"></i>&nbsp;Guardar Cotización
                 </button>
             </div>
         </form>
@@ -194,10 +187,6 @@
         }
 
 
-        $("#btnAgregarProductoUsado").click(function () {
-            $("#modal-create-producto").modal("toggle");
-        });
-
         /**
          * Autosuggest de clientes
          */
@@ -245,5 +234,3 @@
 
     });
 </script>
-
-@include('producto.new_producto_modal')

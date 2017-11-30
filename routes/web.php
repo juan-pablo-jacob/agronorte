@@ -59,6 +59,7 @@ Route::get("test_xls", 'ClienteController@parserClienteFromXLS');
 /**
  * Rutas productos
  */
+Route::post("producto/creacion_agil", 'ProductoController@addProducto');
 Route::get("producto/multi-upload", "ProductoController@multiUpload");
 Route::get("archivo/producto/{id}", "ProductoController@getArchivo");
 Route::post("delete_archivo/producto/{id}", "ProductoController@deleteArchivo");
