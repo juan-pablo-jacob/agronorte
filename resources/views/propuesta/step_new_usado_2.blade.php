@@ -13,28 +13,6 @@
             <input type="hidden" name="tipo_propuesta_negocio_id" value="{{$propuesta->tipo_propuesta_negocio_id}}">
 
 
-            <h4 class="font-gray font-size-16"><strong>Datos Cotización</strong></h4>
-            <div class="form-group col-md-4">
-                <label for="exampleInputEmail1">Fecha</label>
-                <div class="input-prepend input-group ">
-                    <span class="add-on input-group-addon">
-                        <i class="glyph-icon icon-calendar"></i>
-                    </span>
-                    @if(old("fecha_entrega") == "")
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy">
-                    @else
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime(old("fecha_entrega")))}}">
-                    @endif
-                </div>
-            </div>
-
-
-            <div class="clearfix">&nbsp;</div>
-            <div class="divider"></div>
 
             <h4 class="font-gray font-size-16"><strong>Datos Producto *</strong></h4>
             <div id="div_datos_productos">

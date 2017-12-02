@@ -22,7 +22,7 @@ class Producto extends Model
         'precio_lista', 'bonificacion_basica', 'costo_basico', 'incentivo_actual', 'is_nuevo', 'modelo', 'descripcion',
         'tipo_producto_id', 'marca_id', 'anio', 'horas_motor', 'horas_trilla', 'precio_sin_canje', 'costo_usado',
         'traccion', 'recolector', 'piloto_mapeo', 'ex_usuario', 'ubicacion', 'vendedor', 'estado',
-        'disponible', 'usuario_vendedor_id'
+        'disponible', 'usuario_vendedor_id', 'linea'
     ];
 
     /**

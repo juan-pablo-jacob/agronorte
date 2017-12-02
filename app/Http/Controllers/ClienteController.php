@@ -166,7 +166,7 @@ class ClienteController extends Controller
     {
         $rdo = DB::table('cliente')
             ->where('id', $id)
-            ->update(['active' => 0]);
+            ->update(['is_activo' => 0]);
 
         if (!$rdo) {
             return redirect('/cliente')->with('message', 'No se pudo eliminar el Cliente');

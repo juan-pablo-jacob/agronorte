@@ -148,10 +148,21 @@ class PropuestaController extends Controller
      */
     public function editCotizacion($id, Request $request)
     {
-        $cotizacion = Cotizacion::find($id);
+        $cotizacion = DB::table("cotizacion")
+            ->select("cotizacion.*", "producto.marca_id", "producto.tipo_producto_id", "producto.modelo", "producto.anio", "producto.horas_motor", "producto.horas_trilla",
+                "producto.traccion", "producto.recolector", "producto.piloto_mapeo", "producto.costo_usado", "producto.precio_sin_canje",
+                "producto.ex_usuario", "producto.ubicacion", "producto.estado", "producto.disponible")
+            ->leftJoin("producto", "producto.id", "=", "cotizacion.producto_id")
+            ->where("cotizacion.id", $id)
+            ->first();
 
         $array_response = $this->getEditData($cotizacion->propuesta_negocio_id);
-        $array_response["cotizacion_edit"] = $cotizacion;
+        if ((int)$cotizacion->is_toma == 1) {
+            $array_response["cotizacion_toma_edit"] = $cotizacion;
+        } else {
+            $array_response["cotizacion_edit"] = $cotizacion;
+        }
+
         $array_response["step"] = (int)$cotizacion->is_toma == 0 ? 2 : 4;
 
         return view('propuesta/edit', $array_response);
@@ -273,6 +284,7 @@ class PropuestaController extends Controller
             "user" => $user,
             "mail_propuesta" => !$mail_propuesta ? null : $mail_propuesta,
             "cotizacion_edit" => null,
+            "cotizacion_toma_edit" => null,
             "vendedores" => $vendedores,
             "tipo_productos" => $tipo_productos,
             "marcas" => $marcas,

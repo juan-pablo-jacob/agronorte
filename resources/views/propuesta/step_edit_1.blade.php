@@ -9,7 +9,7 @@
             {{ method_field('PUT') }}
 
             <h4 class="font-gray font-size-16"><strong>Datos Cliente *</strong></h4>
-
+            <input type="hidden" id="propuesta_id" value="{{$propuesta->id}}"/>
             <input type="hidden" name="cliente_id" id="cliente_id" value="{{$propuesta->cliente_id}}"/>
 
             <div id="div_datos_clientes">

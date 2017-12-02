@@ -119,9 +119,9 @@
                     @if($propuesta->tipo_propuesta_negocio_id == 3 || $propuesta->tipo_propuesta_negocio_id == 4)
 
                         <div class="tab-pane" id="step-4">
-                            @if(is_null($cotizacion_edit))
+                            @if(is_null($cotizacion_toma_edit))
                                 @include('propuesta.step_new_toma_usado')
-                            @elseif(!is_null($cotizacion_edit) && $step == 4)
+                            @elseif(!is_null($cotizacion_toma_edit) && $step == 4)
                                 @include('propuesta.step_edit_toma_usado')
                             @endif
                         </div>

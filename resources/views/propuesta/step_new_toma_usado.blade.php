@@ -8,41 +8,18 @@
             {{ csrf_field() }}
 
 
-            <input type="hidden" name="producto_id" id="producto_id" value="{{old('producto_id')}}">
+            {{--<input type="hidden" name="producto_id" id="producto_id_toma" value="{{old('producto_id')}}">--}}
+            <input type="hidden" name="is_toma" value="1">
+            <input type="hidden" name="step" value="4">
+            <input type="hidden" name="is_nuevo" value="0">
             <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
             <input type="hidden" name="tipo_propuesta_negocio_id" value="{{$propuesta->tipo_propuesta_negocio_id}}">
 
-
-            <h4 class="font-gray font-size-16"><strong>Datos Cotización</strong></h4>
-            <div class="form-group col-md-4">
-                <label for="exampleInputEmail1">Fecha</label>
-                <div class="input-prepend input-group ">
-                    <span class="add-on input-group-addon">
-                        <i class="glyph-icon icon-calendar"></i>
-                    </span>
-                    @if(old("fecha_entrega") == "")
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy">
-                    @else
-                        <input type="text" class="bootstrap-datepicker form-control" name="fecha_entrega"
-                               placeholder="dd/mm/aaaa"
-                               data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime(old("fecha_entrega")))}}">
-                    @endif
-                </div>
-            </div>
-
-
-            <div class="clearfix">&nbsp;</div>
-            <div class="divider"></div>
-
             <h4 class="font-gray font-size-16"><strong>Datos Producto *</strong></h4>
-
-            <input type="hidden" id="costo_basico" name="costo_basico_producto">
 
             <div class="form-group col-md-4">
                 <label>Marca</label>
-                <select id="marca_id" name="marca_id" class="form-control">
+                <select id="marca_id_toma" name="marca_id" class="form-control">
                     <option value="">&lt;Seleccione&gt;</option>
                     @foreach($marcas as $marca)
                         @if($marca->id == old('marca_id'))
@@ -55,8 +32,8 @@
             </div>
 
             <div class="form-group col-md-4">
-                <label>Tipo Producto</label>
-                <select id="tipo_producto_id" name="tipo_producto_id" class="form-control">
+                <label>Tipo Producto *</label>
+                <select id="tipo_producto_id_toma" name="tipo_producto_id" class="form-control">
                     <option value="">&lt;Seleccione&gt;</option>
                     @foreach($tipo_productos as $tipo_producto)
                         @if($tipo_producto->id == old("tipo_producto_id"))
@@ -70,13 +47,13 @@
             </div>
 
             <div class="form-group col-md-4">
-                <label>Modelo</label>
+                <label>Modelo *</label>
                 <input type="text" class="form-control" name="modelo" value="{{old('modelo')}}">
             </div>
 
             <div class="form-group col-md-4">
                 <label>Descripción</label>
-                <textarea name="descripcion" id="descripcion" placeholder="Ingrese descripción" rows="3"
+                <textarea name="descripcion" id="descripcion_toma" placeholder="Ingrese descripción" rows="3"
                           class="form-control textarea-sm">{{old("descripcion")}}</textarea>
             </div>
 
@@ -138,12 +115,13 @@
 
             <div class="form-group col-md-4">
                 <label>Precio Lista</label>
-                <input type="number" class="form-control" name="precio_lista" value="{{old('precio_lista')}}">
+                <input type="number" class="form-control" name="precio_lista" id="precio_lista_toma" value="{{old('precio_lista')}}">
             </div>
 
             <div class="form-group col-md-4 div_producto_usado">
-                <label>Costo Usado</label>
-                <input type="number" class="form-control" name="costo_usado" value="{{old('costo_usado')}}">
+                <label>Precio toma *</label>
+                <input type="number" class="form-control" name="precio_toma"
+                       value="{{old('precio_toma')}}">
             </div>
 
             <div class="form-group col-md-4 div_producto_usado">
@@ -155,8 +133,8 @@
             <div class="clearfix">&nbsp;</div>
             <div class="divider"></div>
             <div class="form-group col-md-12">
-                <button type="submit" id="btnCrearCotizacion" style="display: none" class="btn btn-primary"><i
-                            class="glyph-icon icon-save"></i>&nbsp;Crear Cotización
+                <button type="submit" id="btnCrearCotizacionToma" class="btn btn-primary"><i
+                            class="glyph-icon icon-save"></i>&nbsp;Crear Producto y Cotización
                 </button>
             </div>
         </form>
@@ -167,30 +145,9 @@
 
 <script type="text/javascript">
 
-    var actualizarCosto = function () {
-        var precio_lista = parseFloat($("#precio_lista").val());
-        var descuento = isNaN(parseFloat($("#descuento").val())) ? 0 : parseFloat($("#descuento").val());
-
-        if (precio_lista > 0 && descuento >= 0 && descuento <= 100) {
-            var precio_venta = (100 - descuento) * precio_lista / 100;
-            $("#precio_venta").val(precio_venta);
-        }
-    };
-
-
-    $("#precio_lista, #descuento").blur(function () {
-        actualizarCosto();
-    });
-
     $(function () {
-
-
-        $("#btnAgregarProductoUsado").click(function () {
-            $("#modal-create-producto").modal("toggle");
-        });
 
 
     });
 </script>
 
-@include('producto.new_producto_modal')

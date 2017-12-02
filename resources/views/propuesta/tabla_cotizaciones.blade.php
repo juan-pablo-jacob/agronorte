@@ -4,7 +4,6 @@
     <thead>
     <tr>
         <th>Modelo</th>
-        <th>Fecha Entrega</th>
         <th>Precio Venta</th>
         <th>Precio Lista</th>
         <th>Costo Real</th>
@@ -36,7 +35,6 @@
 
             <tr class="odd gradeX">
                 <td>{{$cotizacion->modelo}}</td>
-                <td>{{date('d/m/Y',strtotime($cotizacion->fecha_entrega))}}</td>
                 <td>{{number_format ($cotizacion->precio_venta, 2)}}</td>
                 <td>{{number_format ($cotizacion->precio_lista_producto, 2)}}</td>
                 <td>{{number_format ($cotizacion->costo_real_producto, 2)}}</td>

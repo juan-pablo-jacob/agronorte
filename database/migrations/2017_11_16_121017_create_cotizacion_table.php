@@ -15,7 +15,6 @@ class CreateCotizacionTable extends Migration
     {
         Schema::create('cotizacion', function (Blueprint $table) {
             $table->increments('id');
-            $table->date("fecha_entrega");
             $table->double("precio_venta")->nullable();
             $table->text("observacion")->nullable();
             $table->double("rentabilidad_vs_costo_real")->nullable();

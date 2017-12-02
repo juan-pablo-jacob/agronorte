@@ -19,23 +19,31 @@ class Cotizacion extends Model
      * @var array
      */
     protected $fillable = [
-        'fecha_entrega', 'precio_venta', 'observacion', 'rentabilidad_vs_costo_real', 'rentabilidad_vs_precio_venta',
+        'precio_venta', 'observacion', 'rentabilidad_vs_costo_real', 'rentabilidad_vs_precio_venta',
         'descuento', 'descripcion_descuento', 'precio_lista_producto', 'bonificacion_basica_producto', 'costo_real_producto',
-        'costo_basico_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id', 'active'
+        'costo_basico_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id', 'active',
+        'precio_toma'
     ];
 
 
     /**
      * Método de retorno la validación para la Creación o Update
+     * @param Request $request
      * @return array
      */
-    public static function getRules()
+    public static function getRules(Request $request)
     {
         $validation = [
-            'fecha_entrega' => 'required|date',
             'producto_id' => 'required',
             'propuesta_negocio_id' => 'required'
         ];
+
+        if (((int)$request->get("tipo_propuesta_negocio_id") == 3 || (int)$request->get("tipo_propuesta_negocio_id") == 4) && (int)$request->get("is_toma") == 1) {
+            $validation["precio_toma"] = "required|numeric";
+        } else {
+            $validation["precio_lista_producto"] = "required|numeric";
+            $validation["precio_venta"] = "required|numeric";
+        }
 
         return $validation;
     }
