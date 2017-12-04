@@ -123,7 +123,7 @@
                     $("#costo_usado").val(result.costo_usado).prop("disabled", true);
 
                     $("#div_datos_productos .form-group.col-md-4").show();
-                    $("#precio_venta").val(result.precio_lista);
+                    actualizarCosto();
                     $("#btnCrearCotizacion").show();
                 }
             });
@@ -140,6 +140,7 @@
             $("#horas_trilla").val("").prop("disabled", true);
             $("#precio_sin_canje").val("").prop("disabled", true);
             $("#costo_usado").val("").prop("disabled", true);
+            actualizarCosto();
             $("#btnCrearCotizacion").hide();
         }
     };

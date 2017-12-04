@@ -17,7 +17,7 @@
             <div class="content-box">
                 <h3 class="content-box-header bg-default">
                     <i class="glyph-icon icon-elusive-basket"></i>
-                    Editar producto
+                    Crear producto
                 </h3>
                 <div class="content-box-wrapper">
 

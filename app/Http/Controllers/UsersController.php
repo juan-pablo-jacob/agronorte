@@ -34,6 +34,7 @@ class UsersController extends Controller
         $users = User::name($request->get('name'))
             ->email($request->get('email'))
             ->select("users.*")
+            ->where("is_activo", 1)
             ->orderBy('name', 'DESC')
             ->paginate();
 
@@ -68,11 +69,11 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //Merge Password
-        $request->merge(["password" => Hash::make($request->input("password"))]);
-
         //Validaciones
         $validator = Validator::make($request->all(), User::getRulesSTORE());
+
+        //Merge Password
+        $request->merge(["password" => Hash::make($request->input("password"))]);
 
         if ($validator->fails()) {
             $errors = $validator->errors();

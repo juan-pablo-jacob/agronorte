@@ -20,7 +20,7 @@ class MarcaController extends Controller
     }
 
     protected $rules = [
-        'marca' => 'required|unique:marca|max:100'
+        'marca' => 'required|max:100'
     ];
 
     /**

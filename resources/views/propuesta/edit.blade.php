@@ -129,7 +129,7 @@
                             @include('propuesta.step_show_toma_usado')
                         </div>
                         <div class="tab-pane" id="step-6">
-                            @include('propuesta.step_edit_finalizacion_toma')
+                            @include('propuesta.step_edit_finalizacion_nuevo_4')
                         </div>
                     @elseif($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 2)
                         <div class="tab-pane" id="step-4">

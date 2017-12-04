@@ -84,7 +84,8 @@ class CotizacionController extends Controller
         }
         if ($producto) {
             $request->merge(["costo_basico_producto" => $producto->costo_basico,
-                "bonificacion_basica_producto" => $producto->bonificacion_basica]);
+                "bonificacion_basica_producto" => $producto->bonificacion_basica,
+                "costo_usado" => $producto->costo_usado]);
         }
 
         if ((int)$request->get("is_toma") != 1) {
@@ -194,7 +195,8 @@ class CotizacionController extends Controller
         if ($producto) {
             //Inserto los parámetros que no cambian del producto. Los que pasan a la cotización
             $request->merge(["costo_basico_producto" => $producto->costo_basico,
-                "bonificacion_basica_producto" => $producto->bonificacion_basica]);
+                "bonificacion_basica_producto" => $producto->bonificacion_basica,
+                "costo_usado" => $producto->costo_usado]);
         }
 
         //Obtengo el precio de la venta, calculo con incentivos, etc
@@ -341,6 +343,7 @@ class CotizacionController extends Controller
                     $rdo_ventas = DB::table("cotizacion")
                         ->select(DB::raw("SUM(IFNULL(precio_venta,0)) as cant_precio_venta"), DB::raw("SUM(IFNULL(costo_real_producto, 0)) as cant_costo_real_nuevo"))
                         ->where("is_toma", 0)
+                        ->where("active", 1)
                         ->where("propuesta_negocio_id", $request->get("propuesta_negocio_id"))
                         ->groupBy("propuesta_negocio_id")
                         ->first();
@@ -348,6 +351,7 @@ class CotizacionController extends Controller
                     //saco la sumatoria del precio de toma de los usados
                     $query_toma = DB::table("cotizacion")
                         ->select(DB::raw("SUM(IFNULL(precio_toma, 0)) as cant_precio_toma"))
+                        ->where("active", 1)
                         ->where("is_toma", 1)
                         ->where("propuesta_negocio_id", $request->get("propuesta_negocio_id"));
 
@@ -367,7 +371,7 @@ class CotizacionController extends Controller
 
                     //Obtengo la diferencia a pagar por el cliente
                     $a_pagar_por_cliente = (float)$rdo_ventas->cant_precio_venta - $precio_toma;
-//                    dd((float)$rdo_ventas->cant_costo_real_nuevo .  " " . $a_pagar_por_cliente);
+
                     //Sumatoria de todos los costos reales de los productos nuevos que hay.
                     $costo_usado = (float)$rdo_ventas->cant_costo_real_nuevo / 0.85 - $a_pagar_por_cliente;
                     //Costo real del producto
@@ -386,6 +390,22 @@ class CotizacionController extends Controller
                 }
                 break;
             case 4:
+
+                if ($request->get("is_toma")) {
+
+                } else {
+                    $costo_real_producto = Producto::getCostoRealUsado($request);
+
+                    if (!is_null($costo_real_producto)) {
+
+                        $request->merge(["costo_real_producto" => $costo_real_producto]);
+
+                        //Cálculos rentabilidad Vs. Precio venta
+                        $ganancia = (float)$request->get("precio_venta") - $costo_real_producto;
+                        $request->merge(["rentabilidad_vs_costo_real" => number_format($ganancia * 100 / $costo_real_producto, 2)]);
+                        $request->merge(["rentabilidad_vs_precio_venta" => number_format($ganancia * 100 / $request->get("precio_venta"), 2)]);
+                    }
+                }
                 break;
             default:
                 break;
@@ -463,7 +483,6 @@ class CotizacionController extends Controller
 
                     //Obtengo la diferencia a pagar por el cliente
                     $a_pagar_por_cliente = (float)$rdo_ventas->cant_precio_venta - $precio_toma;
-//                    dd((float)$rdo_ventas->cant_costo_real_nuevo .  " " . $a_pagar_por_cliente);
                     //Sumatoria de todos los costos reales de los productos nuevos que hay.
                     $costo_usado = (float)$rdo_ventas->cant_costo_real_nuevo / 0.85 - $a_pagar_por_cliente;
                     //Costo real del producto
@@ -494,7 +513,7 @@ class CotizacionController extends Controller
                 ->leftJoin("tipo_producto", "producto.tipo_producto_id", "=", "tipo_producto.id")
                 ->where("cotizacion.propuesta_negocio_id", $request->get("propuesta_negocio_id"))
                 ->where("cotizacion.active", 1)
-                ->where("cotizacion.is_toma", $request->get("is_toma"))
+//                ->where("cotizacion.is_toma", $request->get("is_toma"))
                 ->orderBy('producto.modelo', 'DESC')
                 ->get(200);
 

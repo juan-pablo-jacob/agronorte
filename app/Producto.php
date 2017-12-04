@@ -71,6 +71,7 @@ class Producto extends Model
 
         $array_rule = [
             'precio_lista' => "required|numeric",
+            'descripcion' => "required",
             'bonificacion_basica' => "min:0|max:100|numeric",
             'costo_basico' => "numeric",
             'is_nuevo' => "required",
@@ -112,7 +113,8 @@ class Producto extends Model
         $porcentaje_costo_usado = (float)$request->get("porcentaje_costo_usado");
 
         $costo_real_usado = null;
-        if($costo_usado > 0 || $porcentaje_costo_usado > 0 && $porcentaje_costo_usado <= 1){
+
+        if($costo_usado > 0 || ($porcentaje_costo_usado > 0 && $porcentaje_costo_usado <= 1)){
             $costo_real_usado = $costo_usado > 0 ? $costo_usado : (float) $request->get("precio_lista") * $porcentaje_costo_usado;
         }
 

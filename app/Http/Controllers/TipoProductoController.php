@@ -22,7 +22,7 @@ class TipoProductoController extends Controller
 
 
     protected $rules = [
-        'tipo_producto' => 'required|unique:tipo_producto|max:100'
+        'tipo_producto' => 'required|max:100'
     ];
 
     /**

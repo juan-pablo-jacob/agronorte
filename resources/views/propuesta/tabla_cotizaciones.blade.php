@@ -51,8 +51,7 @@
         @endforeach
         @if(count($cotizaciones)>1)
         <tr class="odd gradeX">
-            <td>&nbsp;</td>
-            <td><strong>Total:</strong></td>
+            <td>&nbsp;<strong>Total:</strong></td>
             <td>{{number_format ($total_precio_venta, 2)}}</td>
             <td>{{number_format ($total_precio_lista_producto, 2)}}</td>
             <td>{{number_format ($total_costo_real_producto, 2)}}</td>

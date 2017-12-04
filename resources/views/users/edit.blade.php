@@ -18,7 +18,7 @@
             <div class="content-box">
                 <h3 class="content-box-header bg-default">
                     <i class="glyph-icon icon-elusive-basket"></i>
-                    Crear Usuario
+                    Editar Usuario
                 </h3>
                 <div class="content-box-wrapper">
                     <h4 class="font-gray font-size-16"><strong>Datos Usuario</strong></h4>
@@ -47,16 +47,11 @@
                         <input type="password" class="form-control" name="password" value="">
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         <label>Celular</label>
-                        <input type="text" class="form-control" name="cel_codigo_area" id="cel_codigo_area"
-                               placeholder="Característica" value="{{$user->cel_codigo_area}}">
+                        <input type="text" class="form-control" name="cel_numero" id="cel_numero" placeholder="Número" value="{{$user->cel_numero}}">
                     </div>
-                    <div class="form-group col-md-2">
-                        <label>&nbsp;</label>
-                        <input type="text" class="form-control" name="cel_numero" id="cel_numero" placeholder="Número"
-                               value="{{$user->cel_numero}}">
-                    </div>
+
                     <div class="form-group col-md-4">
                         <label>Tipo Usuario *</label>
                         <select id="tipo_usuario_id" name="tipo_usuario_id" class="form-control">

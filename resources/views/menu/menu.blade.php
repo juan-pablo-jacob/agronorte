@@ -3,6 +3,12 @@
         <div id="sidebar-menu">
             <ul>
                 <li>
+                    <a href="{{ url("") }}" title="Home">
+                        <i class="glyph-icon icon-elusive-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#" title="Configuración sistema">
                         <i class="glyph-icon icon-linecons-cloud"></i>
                         <span>Configuración</span>
@@ -37,6 +43,8 @@
                                title="Listado Clientes"><span>Listado Clientes</span></a></li>
                         <li><a href="{{ url("/cliente/create") }}" title="Crear Cliente"><span>Crear Cliente</span></a>
                         </li>
+                        <li><a href="{{url("cliente/upload_xls")}}" title="Agregar Clientes XLS"><span>Agregar Clientes XLS</span></a>
+                        </li>
                     </ul>
                 </li>
 
@@ -48,7 +56,8 @@
                     <ul>
                         <li><a href="{{ url("/producto") }}"
                                title="Listado Productos"><span>Listado Productos</span></a></li>
-                        <li><a href="{{ url("/producto/create") }}" title="Crear Producto"><span>Crear Producto</span></a>
+                        <li><a href="{{ url("/producto/create") }}"
+                               title="Crear Producto"><span>Crear Producto</span></a>
                         </li>
                     </ul>
                 </li>

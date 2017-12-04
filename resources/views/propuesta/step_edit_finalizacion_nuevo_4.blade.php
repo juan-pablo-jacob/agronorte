@@ -25,6 +25,7 @@
       onsubmit="return false;">
     <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
     <input type="hidden" name="is_toma" value="0">
+
 </form>
 
 @if(!is_null($mail_propuesta))

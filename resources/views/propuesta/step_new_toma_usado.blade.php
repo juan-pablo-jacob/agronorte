@@ -52,7 +52,7 @@
             </div>
 
             <div class="form-group col-md-4">
-                <label>Descripción</label>
+                <label>Descripción *</label>
                 <textarea name="descripcion" id="descripcion_toma" placeholder="Ingrese descripción" rows="3"
                           class="form-control textarea-sm">{{old("descripcion")}}</textarea>
             </div>

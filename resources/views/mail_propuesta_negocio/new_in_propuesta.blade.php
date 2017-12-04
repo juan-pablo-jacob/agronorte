@@ -2,6 +2,7 @@
     {{ csrf_field() }}
 
     <input type="hidden" name="propuesta_negocio_id" value="{{$propuesta->id}}">
+    <input type="hidden" name="step" value="{{$step}}">
 
     <div class="content-box">
         <h3 class="content-box-header bg-default">
