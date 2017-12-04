@@ -66,18 +66,24 @@ class Producto extends Model
      * Retorno del array de validación al guardar el producto
      * @return array
      */
-    public static function getRules()
+    public static function getRules(Request $request)
     {
 
         $array_rule = [
-            'precio_lista' => "required|numeric",
-            'descripcion' => "required",
+//            'precio_lista' => "required|numeric",
+//            'descripcion' => "required",
             'bonificacion_basica' => "min:0|max:100|numeric",
             'costo_basico' => "numeric",
             'is_nuevo' => "required",
             'modelo' => "required",
             'tipo_producto_id' => "required"
         ];
+
+        if (!is_null($request->get("is_toma")) && (int)$request->get("is_toma") == 1) {
+            $array_rule["precio_toma"] = "required";
+        } else {
+            $array_rule["precio_lista"] = "required";
+        }
 
         return $array_rule;
     }
@@ -114,8 +120,8 @@ class Producto extends Model
 
         $costo_real_usado = null;
 
-        if($costo_usado > 0 || ($porcentaje_costo_usado > 0 && $porcentaje_costo_usado <= 1)){
-            $costo_real_usado = $costo_usado > 0 ? $costo_usado : (float) $request->get("precio_lista") * $porcentaje_costo_usado;
+        if ($costo_usado > 0 || ($porcentaje_costo_usado > 0 && $porcentaje_costo_usado <= 1)) {
+            $costo_real_usado = $costo_usado > 0 ? $costo_usado : (float)$request->get("precio_lista") * $porcentaje_costo_usado;
         }
 
 

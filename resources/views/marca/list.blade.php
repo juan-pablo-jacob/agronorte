@@ -28,8 +28,8 @@
             <tr class="odd gradeX">
                 <td>{{$record->marca}}</td>
                 <td class="center">
-                    <a href="javascript:;" data-id="{{$record->id}}" class="btn-editar" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
-                    <a href="javascript:;" data-id="{{$record->id}}" class="btn-borrar" tittle="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
+                    <a href="javascript:;" data-id="{{$record->id}}" data-toggle="tooltip" data-placement="top" title="Editar Marca" class="btn-editar tooltip-button"><i class="glyph-icon icon-elusive-edit"></i></a>
+                    <a href="javascript:;" data-id="{{$record->id}}"  data-toggle="tooltip" data-placement="top" title="Borrar Marca" class="btn-borrar tooltip-button"><i class="glyph-icon icon-elusive-trash"></i></a>
                 </td>
             </tr>
             @endforeach
@@ -74,6 +74,7 @@
     /* Datatables init */
 
     $(document).ready(function () {
+
 
         $("#btnCrear").click(function () {
             $("#modal-create").modal("toggle");

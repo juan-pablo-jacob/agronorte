@@ -59,8 +59,8 @@
                 <td>{{$user->nombre}}</td>
                 <td>{{$user->apellido}}</td>
                 <td class="center">
-                    <a href="{{url("users/" . $user->id . "/edit")}}" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
-                    <a href="javascript:;" data-id="{{$user->id}}" class="btn-borrar" tittle="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
+                    <a href="{{url("users/" . $user->id . "/edit")}}" data-toggle="tooltip" data-placement="top" class="btn-editar tooltip-button"  title="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
+                    <a href="javascript:;" data-id="{{$user->id}}"  data-toggle="tooltip" data-placement="top"  class="btn-borrar tooltip-button" title="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
                 </td>
             </tr>
             @endforeach

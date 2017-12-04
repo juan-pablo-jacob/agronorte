@@ -24,9 +24,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <a href="{{ route('password.request') }}" title="Recover password">Olvidé mi contraseña?</a>
-                    </div>
+
                     <button type="submit" class="btn btn-success btn-block">Entrar</button>
                 </div>
             </div>

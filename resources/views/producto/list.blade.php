@@ -94,8 +94,8 @@
                         </td>
                         <td class="center">{{$producto->precio_lista}}</td>
                         <td class="center">
-                            <a href="{{url("producto/" . $producto->id . "/edit")}}" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
-                            <a href="javascript:;" data-id="{{$producto->id}}" class="btn-borrar" tittle="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
+                            <a href="{{url("producto/" . $producto->id . "/edit")}}"  data-toggle="tooltip" data-placement="top" class="btn-editar tooltip-button"  title="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
+                            <a href="javascript:;" data-id="{{$producto->id}}"  data-toggle="tooltip" data-placement="top"  class="btn-borrar tooltip-button" title="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

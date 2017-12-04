@@ -69,9 +69,9 @@
                     <input type="text" class="bootstrap-datepicker form-control" name="fecha"
                            placeholder="dd/mm/aaaa"
                            data-date-format="mm/dd/yy" value="{{date('d/m/Y',strtotime($propuesta->fecha))}}">
-
                 </div>
             </div>
+
 
             <div class="form-group col-md-4">
                 <label>Seleccione tipo propuesta *</label>
@@ -102,6 +102,21 @@
                 </select>
             </div>
 
+            <div class="form-group col-md-4">
+                <label>Estados *</label>
+                <select id="estados" name="estados" class="form-control">
+                    <option value="1" @if($propuesta->estados == 1) selected @endif>Abierta</option>
+                    <option value="2" @if($propuesta->estados == 2) selected @endif>Negociación</option>
+                    <option value="3" @if($propuesta->estados == 3) selected @endif>Aceptada</option>
+                    <option value="4" @if($propuesta->estados == 4) selected @endif>Rechazada</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label>Comentario interno propuesta</label>
+                <textarea name="comentario" id="comentario" placeholder="Ingrese comentario de la propuesta" rows="3"
+                          class="form-control textarea-sm">{{$propuesta->comentario}}</textarea>
+            </div>
             <div class="clearfix"></div>
 
             <div class="form-group col-md-12">

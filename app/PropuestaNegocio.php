@@ -18,7 +18,7 @@ class PropuestaNegocio extends Model
      * @var array
      */
     protected $fillable = [
-        'fecha', 'estados', 'precio_total', 'active', 'cliente_id', 'users_id', 'tipo_propuesta_negocio_id'
+        'fecha', 'estados', 'precio_total', 'active', 'cliente_id', 'users_id', 'tipo_propuesta_negocio_id', 'comentario'
     ];
 
     /**
@@ -41,6 +41,12 @@ class PropuestaNegocio extends Model
     public function scopeTipoPropuestaNegocio($query, $tipo_propuesta_negocio_id) {
         if (trim($tipo_propuesta_negocio_id) != "") {
             $query->where('tipo_propuesta_negocio_id', $tipo_propuesta_negocio_id);
+        }
+    }
+
+    public function scopeModelo($query, $modelo) {
+        if (trim($modelo) != "") {
+            $query->where('producto.modelo', 'like', "%$modelo%");
         }
     }
 

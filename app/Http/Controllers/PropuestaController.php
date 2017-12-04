@@ -42,12 +42,15 @@ class PropuestaController extends Controller
         $propuestas =
             PropuestaNegocio::TipoPropuestaNegocio($request->get('tipo_propuesta_negocio_id'))
                 ->vendedor($request->get('users_id'))
+                ->modelo($request->get('modelo'))
                 ->select("propuesta_negocio.*",
                     "tipo_propuesta_negocio.tipo_propuesta_negocio",
                     "users.nombre", "users.apellido", "cliente.razon_social")
                 ->join("tipo_propuesta_negocio", "propuesta_negocio.tipo_propuesta_negocio_id", "=", "tipo_propuesta_negocio.id")
                 ->join("users", "propuesta_negocio.users_id", "=", "users.id")
                 ->join("cliente", "propuesta_negocio.cliente_id", "=", "cliente.id")
+                ->leftJoin("cotizacion", "cotizacion.propuesta_negocio_id", "=", "propuesta_negocio.id")
+                ->leftJoin("producto", "cotizacion.producto_id", "=", "producto.id")
                 ->where("propuesta_negocio.active", 1)
                 ->orderBy('propuesta_negocio.fecha', 'DESC')
                 ->paginate(200);

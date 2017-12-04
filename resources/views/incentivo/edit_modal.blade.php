@@ -12,6 +12,16 @@
                     {{ method_field('PUT') }}
 
                     <div class="form-group col-md-12">
+                        <label>Incentivo</label>
+                        <input type="text" class="form-control" name="incentivo" placeholder="Nombre Incentivo">
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label>Boletín</label>
+                        <input type="text" class="form-control" name="boletin" placeholder="Boletín">
+                    </div>
+
+                    <div class="form-group col-md-12">
                         <label>Fecha Caducidad *</label>
                         <div class="input-prepend input-group ">
                             <span class="add-on input-group-addon">

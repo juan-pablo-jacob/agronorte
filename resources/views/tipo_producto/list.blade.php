@@ -19,7 +19,7 @@
         <thead>
             <tr>
                 <th>Tipo Producto</th>
-                <th>&nbsp;</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -28,8 +28,8 @@
             <tr class="odd gradeX">
                 <td>{{$record->tipo_producto}}</td>
                 <td class="center">
-                    <a href="javascript:;" data-id="{{$record->id}}" class="btn-editar" tittle="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
-                    <a href="javascript:;" data-id="{{$record->id}}" class="btn-borrar" tittle="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
+                    <a href="javascript:;" data-id="{{$record->id}}" data-toggle="tooltip" data-placement="top" class="btn-editar tooltip-button" title="Editar"><i class="glyph-icon icon-elusive-edit"></i></a>
+                    <a href="javascript:;" data-id="{{$record->id}}" data-toggle="tooltip" data-placement="top" class="btn-borrar tooltip-button" title="Eliminar"><i class="glyph-icon icon-elusive-trash"></i></a>
                 </td>
             </tr>
             @endforeach

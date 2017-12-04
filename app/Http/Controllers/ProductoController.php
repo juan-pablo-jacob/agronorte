@@ -104,7 +104,7 @@ class ProductoController extends Controller
         }
 
 
-        $validator = Validator::make($request->all(), Producto::getRules());
+        $validator = Validator::make($request->all(), Producto::getRules($request));
 
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -136,7 +136,7 @@ class ProductoController extends Controller
      */
     public function addProducto(Request $request)
     {
-        $validator = Validator::make($request->all(), Producto::getRules());
+        $validator = Validator::make($request->all(), Producto::getRules($request));
 
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -251,7 +251,7 @@ class ProductoController extends Controller
             $request->merge(["bonificacion_basica" => "", "costo_basico" => ""]);
         }
 
-        $validator = Validator::make($request->all(), Producto::getRules());
+        $validator = Validator::make($request->all(), Producto::getRules($request));
 
         if ($validator->fails()) {
             $errors = $validator->errors();

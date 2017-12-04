@@ -23,6 +23,7 @@ class IncentivoController extends Controller
     {
         $incentivos =
             Incentivo::nocaducados($request->get('no_caducados'))
+                ->incentivo($request->get("incentivo"))
                 ->select("incentivo.*", DB::raw("COUNT(incentivo_producto.id) as cantidad_productos"))
                 ->leftJoin("incentivo_producto", "incentivo.id", "=", "incentivo_producto.incentivo_id")
                 ->where("active", 1)

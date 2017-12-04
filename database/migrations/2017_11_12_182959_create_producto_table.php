@@ -15,7 +15,7 @@ class CreateProductoTable extends Migration
     {
         Schema::create('producto', function (Blueprint $table) {
             $table->increments('id');
-            $table->double("precio_lista");
+            $table->double("precio_lista")->nullable();
             $table->double("bonificacion_basica")->nullable();
             $table->double("costo_basico")->nullable();
             $table->double("incentivo_actual")->nullable();

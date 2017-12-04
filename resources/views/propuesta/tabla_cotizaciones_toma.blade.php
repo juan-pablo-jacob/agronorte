@@ -6,7 +6,6 @@
         <th>Tipo Producto</th>
         <th>Marca</th>
         <th>Modelo</th>
-        <th>Precio Lista</th>
         <th>Precio Toma</th>
         <th>Costo Usado</th>
         <th>
@@ -17,20 +16,17 @@
     <tbody>
     @if(count($cotizaciones)>0)
         @php ($total_precio_toma = 0)
-        @php ($total_precio_lista = 0)
         @php ($total_costo_usado = 0)
 
         @foreach ($cotizaciones as $cotizacion)
 
             @php ($total_precio_toma += $cotizacion->precio_toma)
-            @php ($total_precio_lista += $cotizacion->precio_lista_producto)
             @php ($total_costo_usado += $cotizacion->costo_real_producto)
 
             <tr class="odd gradeX">
                 <td>{{$cotizacion->tipo_producto}}</td>
                 <td>{{$cotizacion->marca}}</td>
                 <td>{{$cotizacion->modelo}}</td>
-                <td>{{number_format ($cotizacion->precio_lista_producto, 2)}}</td>
                 <td>{{number_format ($cotizacion->precio_toma, 2)}}</td>
                 <td>{{number_format ($cotizacion->costo_real_producto, 2)}}</td>
                 <td class="center">
@@ -46,7 +42,6 @@
                 <td>&nbsp;</td>
                 <td><strong>Total:</strong></td>
                 <td>&nbsp;</td>
-                <td>{{number_format ($total_precio_lista, 2)}}</td>
                 <td>{{number_format ($total_precio_toma, 2)}}</td>
                 <td>{{number_format ($total_costo_usado, 2)}}</td>
                 <td class="center">

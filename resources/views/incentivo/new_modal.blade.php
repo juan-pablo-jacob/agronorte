@@ -4,11 +4,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Crear Marca</h4>
+                <h4 class="modal-title">Crear Incentivo</h4>
             </div>
             <div class="modal-body">
                 <form id="creacion_modal" action="{{url("/incentivo")}}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
+
+                    <div class="form-group col-md-12">
+                        <label>Incentivo</label>
+                        <input type="text" class="form-control" name="incentivo" placeholder="Nombre Incentivo">
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label>Boletín</label>
+                        <input type="text" class="form-control" name="boletin" placeholder="Boletín">
+                    </div>
 
                     <div class="form-group col-md-12">
                         <label>Fecha Caducidad *</label>

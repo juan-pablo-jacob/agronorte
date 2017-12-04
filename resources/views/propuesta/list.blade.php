@@ -156,7 +156,7 @@
                 $('#propuesta-delete-form').submit();
             });
 
-            $('#dynamic-table-propuesta').dataTable();
+            $('#dynamic-table-propuesta').dataTable({sort: false});
             $("#dynamic-table-propuesta_length").hide();
             $("#dynamic-table-propuesta_filter").hide();
 

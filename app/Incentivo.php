@@ -18,7 +18,7 @@ class Incentivo extends Model
      * @var array
      */
     protected $fillable = [
-        'porcentaje', 'fecha_caducidad', 'condicion_excluyente', 'active'
+        'porcentaje', 'fecha_caducidad', 'condicion_excluyente', 'active', 'incentivo', 'boletin'
     ];
 
     /**
@@ -44,6 +44,14 @@ class Incentivo extends Model
         } elseif ($no_caducados != "" && (int)$no_caducados == 1) {
             //Lista los no caducados
             $query->where('fecha_caducidad', '>', date("Y-m-d"));
+        }
+    }
+
+    public function scopeIncentivo($query, $incentivo)
+    {
+        if (trim($incentivo) != "") {
+            //Lista los caducados
+            $query->where('incentivo', 'LIKE', "%$incentivo%");
         }
     }
 }

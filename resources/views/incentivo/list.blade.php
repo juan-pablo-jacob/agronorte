@@ -21,13 +21,13 @@
 
             <div class="content-box-wrapper bg-white">
                 <form action="{{url("/incentivo")}}" method="get" enctype="multipart/form-data">
-                    <div class="form-group col-md-6">
-                        <label for="exampleInputEmail1">Modelo</label>
-                        <input type="text" class="form-control col-md-2" id="modelo_busqueda"
-                               value="{{$request->modelo}}"
-                               name="modelo" placeholder="Modelo">
+                    <div class="form-group col-md-3">
+                        <label for="exampleInputEmail1">Incentivo</label>
+                        <input type="text" class="form-control col-md-2" id="incentivo_busqueda"
+                               value="{{$request->incentivo}}"
+                               name="incentivo" placeholder="Incentivo">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-3">
                         <label for="exampleInputPassword1">Estado</label>
                         <select id="no_caducados" name="no_caducados" class="form-control">
                             <option value="">&lt;Todos&gt;</option>
@@ -35,6 +35,8 @@
                             <option value="1" @if($request->no_caducados == 1) selected @endif>No Caducados</option>
                         </select>
                     </div>
+
+                    <div class="clearfix"></div>
 
                     <button type="submit" class="btn btn-success"><i class="glyph-icon icon-elusive-search"></i>&nbsp;Buscar
                     </button>
@@ -51,27 +53,31 @@
                id="dynamic-table-user">
             <thead>
             <tr>
+                <th>Incentivo</th>
                 <th>Fecha Caducidad</th>
                 <th>Porcentaje</th>
                 <th>Condición excluyente</th>
+                <th>Boletín</th>
                 <th>Cantidad Productos</th>
-                <th>&nbsp;</th>
+                <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
             @if(count($incentivos)>0)
                 @foreach ($incentivos as $incentivo)
                     <tr class="odd gradeX">
+                        <td>{{$incentivo->incentivo}}</td>
                         <td>{{date('d/m/Y',strtotime($incentivo->fecha_caducidad))}}</td>
                         <td>{{$incentivo->porcentaje}}</td>
                         <td>{{$incentivo->condicion_excluyente}}</td>
+                        <td>{{$incentivo->boletin}}</td>
                         <td>{{$incentivo->cantidad_productos}}</td>
                         <td class="center">
-                            <a href="{{url("incentivo/" . $incentivo->id . "/productos?asignado=1")}}" tittle="Ver Productos"><i
-                                        class="glyph-icon icon-gears"></i></a>
-                            <a href="javascript:;" data-id="{{$incentivo->id}}" class="btn-editar" tittle="Editar"><i
+                            <a href="{{url("incentivo/" . $incentivo->id . "/productos?asignado=1")}}" data-toggle="tooltip" data-placement="top"  title="Asignar productos a incentivo"  class="tooltip-button" ><i
+                                        class="glyph-icon icon-gears tooltip-button"></i></a>
+                            <a href="javascript:;" data-id="{{$incentivo->id}}"  data-toggle="tooltip" data-placement="top" class="btn-editar tooltip-button"  title="Editar"><i
                                         class="glyph-icon icon-elusive-edit"></i></a>
-                            <a href="javascript:;" data-id="{{$incentivo->id}}" class="btn-borrar" tittle="Eliminar"><i
+                            <a href="javascript:;" data-id="{{$incentivo->id}}" data-toggle="tooltip" data-placement="top"  class="btn-borrar tooltip-button" title="Eliminar"><i
                                         class="glyph-icon icon-elusive-trash"></i></a>
                         </td>
                     </tr>

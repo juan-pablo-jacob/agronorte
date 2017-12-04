@@ -7,6 +7,8 @@
         <title> Agronorte Admin </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
 
         <!-- Favicons -->
 
@@ -70,10 +72,7 @@ $(window).load(function () {
                     </div>
                     <!-- #header-logo -->
 
-                    <div id="sidebar-search">
-                        <input type="text" placeholder="Buscar..." class="autocomplete-input input tooltip-button" data-placement="bottom" title="Type &apos;jav&apos; to see the available tags..." id="" name="">
-                        <i class="glyph-icon icon-search"></i>
-                    </div>
+              
 
                     <div id="header-right">
                         <div class="user-profile dropdown">

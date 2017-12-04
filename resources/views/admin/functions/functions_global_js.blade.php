@@ -22,6 +22,8 @@
     };
 
 
+
+
     var ajax_form = function (params) {
         //Busco los datos de la venta
         $.ajax({
@@ -70,5 +72,12 @@
             $("#" + params.id_related).change();
         }
     };
+
+    $(function () {
+
+        $('.tooltip-button').tooltip({
+            container: 'body'
+        });
+    });
 
 </script>

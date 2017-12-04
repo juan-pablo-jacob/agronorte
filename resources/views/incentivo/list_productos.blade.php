@@ -18,18 +18,21 @@
                 Datos Incentivo
             </h3>
 
-
             <div class="content-box-wrapper bg-white">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
+                    <label for="exampleInputEmail1">Incentivo</label>
+                    <input type="text" class="form-control col-md-2" value="{{$incentivo->incentivo}}" disabled>
+                </div>
+                <div class="form-group col-md-3">
                     <label for="exampleInputEmail1">Porcentaje</label>
                     <input type="text" class="form-control col-md-2" value="{{$incentivo->porcentaje}}" disabled>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="exampleInputEmail1">Fecha Caducidad</label>
                     <input type="text" class="form-control col-md-2"
                            value="{{date('d/m/Y',strtotime($incentivo->fecha_caducidad))}}" disabled>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="exampleInputEmail1">Condicion Excluyente</label>
                     <input type="text" class="form-control col-md-2" value="{{$incentivo->condicion_excluyente}}"
                            disabled>

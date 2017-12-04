@@ -113,22 +113,12 @@
 
             <h4 class="font-gray font-size-16"><strong>Detalle Precio Producto</strong></h4>
 
-            <div class="form-group col-md-4">
-                <label>Precio Lista</label>
-                <input type="number" class="form-control" name="precio_lista" id="precio_lista_toma" value="{{old('precio_lista')}}">
-            </div>
-
             <div class="form-group col-md-4 div_producto_usado">
                 <label>Precio toma *</label>
                 <input type="number" class="form-control" name="precio_toma"
                        value="{{old('precio_toma')}}">
             </div>
 
-            <div class="form-group col-md-4 div_producto_usado">
-                <label>Precio sin canje</label>
-                <input type="number" class="form-control" name="precio_sin_canje"
-                       value="{{old('precio_sin_canje')}}">
-            </div>
 
             <div class="clearfix">&nbsp;</div>
             <div class="divider"></div>
