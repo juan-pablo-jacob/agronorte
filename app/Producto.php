@@ -88,43 +88,4 @@ class Producto extends Model
         return $array_rule;
     }
 
-    /**
-     * Método que retorna el costo real de un producto NUEVO
-     * @param Request $request
-     * @return float
-     */
-    public static function getCostoRealNuevo(Request $request)
-    {
-        //$costo_real_producto = (float)$request->get("precio_lista_producto") - (float)$request->get("bonificacion_basica_producto");
-        $costo_basico_producto = (float)$request->get("costo_basico_producto");
-        $array_incentivos = $request->get("incentivos_id");
-        if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
-            foreach ($array_incentivos as $incentivo_id) {
-                $porcentaje_incentivo = (float)Incentivo::find($incentivo_id)->first()->porcentaje;
-                $costo_basico_producto -= ($porcentaje_incentivo) * $costo_basico_producto / 100;
-            }
-        }
-        return $costo_basico_producto;
-    }
-
-
-    /**
-     * Método que retorna el costo real de un producto Usado
-     * @param Request $request
-     * @return float
-     */
-    public static function getCostoRealUsado(Request $request)
-    {
-        $costo_usado = (float)$request->get("costo_usado");
-        $porcentaje_costo_usado = (float)$request->get("porcentaje_costo_usado");
-
-        $costo_real_usado = null;
-
-        if ($costo_usado > 0 || ($porcentaje_costo_usado > 0 && $porcentaje_costo_usado <= 1)) {
-            $costo_real_usado = $costo_usado > 0 ? $costo_usado : (float)$request->get("precio_lista") * $porcentaje_costo_usado;
-        }
-
-
-        return $costo_real_usado;
-    }
 }

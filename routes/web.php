@@ -105,4 +105,5 @@ Route::resource("cotizacion", "CotizacionController");
 /**
  * Mail propuesta Negocio
  */
+Route::resource("mail_propuesta_negocio/send/{id}", "MailPropuestaNegocioController@sendMail");
 Route::resource("mail_propuesta_negocio", "MailPropuestaNegocioController");

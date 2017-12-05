@@ -42,9 +42,9 @@
                 <td>{{number_format ($cotizacion->rentabilidad_vs_costo_real, 2)}}</td>
                 <td>{{number_format ($cotizacion->rentabilidad_vs_precio_venta, 2)}}</td>
                 <td class="center">
-                    <a href="{{url("propuesta/cotizacion/" . $cotizacion->id)}}" tittle="Editar"><i
+                    <a href="{{url("propuesta/cotizacion/" . $cotizacion->id)}}" title="Editar"><i
                                 class="glyph-icon icon-elusive-edit"></i></a>
-                    <a href="javascript:;" data-id="{{$cotizacion->id}}" class="btn-borrar-cotizacion" tittle="Eliminar"><i
+                    <a href="javascript:;" data-id="{{$cotizacion->id}}" class="btn-borrar-cotizacion" title="Eliminar"><i
                                 class="glyph-icon icon-elusive-trash"></i></a>
                 </td>
             </tr>

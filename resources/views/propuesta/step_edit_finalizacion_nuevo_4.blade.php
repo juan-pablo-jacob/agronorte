@@ -1,9 +1,13 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
         @if($propuesta->tipo_propuesta_negocio_id == 1)
-            Finalización producto <strong>Nuevo</strong>
+            Finalización propuesta <strong>Venta Nuevo</strong>
         @elseif($propuesta->tipo_propuesta_negocio_id == 2)
-            Finalización producto <strong>Usado</strong>
+            Finalización propuesta <strong>Venta Usado</strong>
+        @elseif($propuesta->tipo_propuesta_negocio_id == 3)
+            Finalización propuesta <strong>Venta Nuevo - Toma usado</strong>
+        @elseif($propuesta->tipo_propuesta_negocio_id == 4)
+            Finalización propuesta <strong>Venta Usado - Toma usado</strong>
         @endif
     </h3>
     <div class="content-box-wrapper">
@@ -16,6 +20,8 @@
 
         <input type="hidden" id="object_id" value="{{$propuesta->id}}"/>
         <input type="hidden" id="entity_id" value="propuesta"/>
+
+        @php ($titulo_upload = "Subir archivos de la propuesta. (Envío por mail)")
         @include('admin.upload.upload_edit')
     </div>
 </div>

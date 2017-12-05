@@ -1,6 +1,6 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
-        Venta Producto <strong>Usado</strong>
+        Edición de producto <strong>Tomado</strong>
     </h3>
     <div class="content-box-wrapper">
         <form role="form" id="form_toma_producto" action="{{url("/cotizacion/" . $cotizacion_toma_edit->id)}}"

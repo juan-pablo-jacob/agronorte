@@ -120,4 +120,23 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Configuración del phpmailes
+    |--------------------------------------------------------------------------
+    |
+    | Variables utilizadas para el phpmailer
+    |
+    */
+    'phpmailer' => [
+        'Username' => 'fotocromia@overdesign.biz',
+        'Password' => 'h0r89hj3e',
+        'SMTPAuth' => true,
+        'SMTPSecure' => 'tls',
+        'Port' => 587,
+        'Host' => 'mail.overdesign.biz',
+        'From' => 'fotocromia@overdesign.biz',
+        'FromName' => 'Over Design',
+    ],
+
 ];

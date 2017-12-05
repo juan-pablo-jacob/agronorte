@@ -21,7 +21,7 @@ class Cotizacion extends Model
     protected $fillable = [
         'precio_venta', 'observacion', 'rentabilidad_vs_costo_real', 'rentabilidad_vs_precio_venta',
         'descuento', 'descripcion_descuento', 'precio_lista_producto', 'bonificacion_basica_producto', 'costo_real_producto',
-        'costo_basico_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id', 'active',
+        'costo_basico_producto', 'costo_usado_producto', 'incentivo_producto', 'is_toma', 'producto_id', 'propuesta_negocio_id', 'incentivo_id', 'active',
         'precio_toma'
     ];
 

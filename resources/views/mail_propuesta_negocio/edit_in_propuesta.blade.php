@@ -3,6 +3,7 @@
     {{ method_field('PUT') }}
 
     <input type="hidden" name="propuesta_negocio_id" value="{{$mail_propuesta->propuesta_negocio_id}}">
+    <input type="hidden" id="mail_propuesta_negocio_id" value="{{$mail_propuesta->id}}">
 
     <div class="content-box">
         <h3 class="content-box-header bg-default">
@@ -35,7 +36,7 @@
 
             <div class="clearfix">&nbsp;</div>
 
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar datos</button>
             <button id="btnSendMail" class="btn btn-success"><i class="icon icon-elusive-mail"></i>&nbsp;Enviar Mail
             </button>
         </div>
@@ -46,7 +47,26 @@
     $(function () {
 
         $("#btnSendMail").click(function () {
-
+            $('#loading').show();
+            $.ajax({
+                url: BASE_URL + "/mail_propuesta_negocio/send/" + $("#mail_propuesta_negocio_id").val(),
+                data: "",
+                method: "GET",
+                success: function (result) {
+                    $('#loading').hide();
+                    if (result.result == false) {
+                        $.each(result.errors, function (index, value) {
+                            alertify.error(value[0]);
+                        });
+                    } else {
+                        alertify.success(result.msg);
+                    }
+                },
+                error: function (data) {
+                    $('#loading').hide();
+                    alertify.error("Se produjo un error inesperado. No se enviaron los mails");
+                }
+            });
         });
     });
 </script>

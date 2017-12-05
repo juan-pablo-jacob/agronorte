@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\ArchivoPropuesta;
 use App\MailPropuestaNegocio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class MailPropuestaNegocioController extends Controller
 {
@@ -45,7 +48,7 @@ class MailPropuestaNegocioController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -73,7 +76,7 @@ class MailPropuestaNegocioController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -84,7 +87,7 @@ class MailPropuestaNegocioController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -95,8 +98,8 @@ class MailPropuestaNegocioController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -120,11 +123,96 @@ class MailPropuestaNegocioController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+
+    /**
+     * Mètodo utilizado para el envío de emails
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendMail($id)
+    {
+        $mail_propuesta_negocio = MailPropuestaNegocio::find($id);
+
+        if ($mail_propuesta_negocio) {
+
+            if ($mail_propuesta_negocio->mail_cliente == "" && $mail_propuesta_negocio->mail_vendedores == "") {
+                $errors = new MessageBag(['error' => ['Error. Ingrese algún contacto para enviar mail']]);
+                return response()->json([
+                    "result" => false,
+                    "errors" => $errors
+                ]);
+            }
+
+            $mail = new PHPMailer(true); // notice the \  you have to use root namespace here
+            try {
+                //$mail->SMTPDebug = 2;
+                $mail->isSMTP(); // tell to use smtp
+                $mail->CharSet = "utf-8"; // set charset to utf8
+                $mail->SMTPAuth = config('mail.phpmailer.SMTPAuth');  // use smpt auth
+                $mail->SMTPSecure = config('mail.phpmailer.SMTPSecure');  // or ssl
+                $mail->Host = config('mail.phpmailer.Host');
+                $mail->Port = config('mail.phpmailer.Port'); // most likely something different for you. This is the mailtrap.io port i use for testing.
+                $mail->Username = config('mail.phpmailer.Username');
+                $mail->Password = config('mail.phpmailer.Password');
+                $mail->setFrom(config('mail.phpmailer.From'), config('mail.phpmailer.FromName'));
+
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
+                $mail->Subject = "Propuesta de negocio";
+
+
+                //Agrego los archivos si es que los hay
+                $archivos_propuestas = ArchivoPropuesta::where("propuesta_negocio_id", $mail_propuesta_negocio->propuesta_negocio_id)
+                    ->get();
+                if ($archivos_propuestas) {
+                    foreach ($archivos_propuestas as $archivo) {
+                        $enlace = base_path($archivo->path . $archivo->id . "." . $archivo->ext);
+                        if (is_file($enlace)) {
+                            $mail->AddAttachment($enlace, $archivo->nombre_archivo);
+                        }
+                    }
+                }
+
+                $mail->MsgHTML("Informamos que su pedido está siendo procesado.");
+
+                if ($mail_propuesta_negocio->mail_cliente != "") {
+                    $mail->addAddress($mail_propuesta_negocio->mail_cliente);
+                }
+                if ($mail_propuesta_negocio->mail_vendedores != "") {
+                    $mail->addAddress($mail_propuesta_negocio->mail_vendedores);
+                }
+
+                $mail->send();
+            } catch (\Exception $e) {
+                $errors = new MessageBag(['error' => [$e->getMessage()]]);
+                return response()->json([
+                    "result" => false,
+                    "errors" => $errors
+                ]);
+            }
+            return response()->json([
+                "result" => true,
+                "msg" => "La propuesta fue enviada con éxito a las personas seleccionadas"
+            ]);
+        }
+
+        $errors = new MessageBag(['error' => ['Error. No se pudieron enviar los mails']]);
+        return response()->json([
+            "result" => false,
+            "errors" => $errors
+        ]);
     }
 }

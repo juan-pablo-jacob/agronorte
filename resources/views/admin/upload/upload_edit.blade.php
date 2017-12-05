@@ -6,7 +6,15 @@
     <link rel="stylesheet" href="{{url('/assets/widgets/progressbar/progressbar.css')}}">
 
     <div class="clearfix">&nbsp;</div>
-    <h4 class="font-gray font-size-16"><strong>Subir Archivos</strong></h4>
+    <h4 class="font-gray font-size-16">
+        <strong>
+            @if(is_null($titulo_upload))
+                Subir Archivos
+            @else
+                {{$titulo_upload}}
+            @endif
+        </strong>
+    </h4>
     <div class="clearfix">&nbsp;</div>
 
     <form id="fileupload" action="" method="POST"
@@ -76,7 +84,7 @@
         };
 
 
-        var delete_files_input = function (){
+        var delete_files_input = function () {
             var $el = $('#' + params_carga_archivos.form_id);
             $el.wrap('<form>').closest('form').get(0).reset();
             $el.unwrap();

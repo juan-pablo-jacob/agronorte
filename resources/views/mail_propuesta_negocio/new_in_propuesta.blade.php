@@ -35,7 +35,7 @@
 
             <div class="clearfix">&nbsp;</div>
 
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+            <button type="submit" class="btn btn-primary"><i class="icon glyphicon-save"></i>&nbsp;Guardar datos</button>
 
         </div>
     </div>

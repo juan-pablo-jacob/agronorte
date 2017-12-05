@@ -1,6 +1,10 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
-        Cotizaciones <strong>Producto Nuevo</strong>
+        @if($propuesta->tipo_propuesta_negocio_id == 1 || $propuesta->tipo_propuesta_negocio_id == 3)
+            Cotizaciones <strong>Producto Nuevo</strong>
+        @else
+            Cotizaciones <strong>Producto Usado</strong>
+        @endif
     </h3>
     <div class="content-box-wrapper">
         <form role="form" id="form_lista_cotizaciones_venta" action="{{url("/cotizacion")}}" method="get"
