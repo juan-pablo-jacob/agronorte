@@ -130,7 +130,7 @@ return [
     */
     'phpmailer' => [
         'Username' => 'agronorte@agrocotizaciones.com',
-        'Password' => 'manasdfasdfa4321',
+        'Password' => 'mana4321',
         'SMTPAuth' => true,
         'SMTPSecure' => 'tls',
         'Port' => 465,

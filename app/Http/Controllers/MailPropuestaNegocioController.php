@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ArchivoPropuesta;
+use App\Cotizacion;
 use App\MailPropuestaNegocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -120,10 +121,15 @@ class MailPropuestaNegocioController extends Controller
         //Creo la marca
         $mail_propuesta_negocio->fill($request->all());
         $rdo_save = $mail_propuesta_negocio->save();
-        $this->sendMail($mail_propuesta_negocio->id);
+        $rdo_envio_mail = $this->sendMail($mail_propuesta_negocio->id);
+
+        if (!$rdo_envio_mail) {
+            $errors = new MessageBag(['error' => ['Error. No se pudo enviar al mail']]);
+            return Redirect::back()->withErrors($errors)->withInput();
+        }
 
 
-        return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se modificaron los datos para el mail de la propuesta de negocio, puede enviarlo"]);
+        return Redirect::back()->with('message', 'Propuesta enviada con éxito');
     }
 
     /**
@@ -193,7 +199,15 @@ class MailPropuestaNegocioController extends Controller
                     }
                 }
 
-                $mail->MsgHTML("Envío propuesta negocio.");
+                $string_cuadro = $this->setCuadroPropuestaHTML($mail_propuesta_negocio);
+                if ($string_cuadro == "") {
+                    return false;
+                }
+
+                $plantilla = file_get_contents(resource_path("/views/mail_propuesta_negocio/mail_propuesta.html"));
+                $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
+
+                $mail->MsgHTML($plantilla);
 
                 if ($mail_propuesta_negocio->mail_cliente != "") {
                     $mail->addAddress($mail_propuesta_negocio->mail_cliente);
@@ -204,6 +218,8 @@ class MailPropuestaNegocioController extends Controller
 
                 $mail->send();
             } catch (\Exception $e) {
+
+                
 //                $errors = new MessageBag(['error' => [$e->getMessage()]]);
 //                return response()->json([
 //                    "result" => false,
@@ -217,6 +233,7 @@ class MailPropuestaNegocioController extends Controller
 //            ]);
             return true;
         }
+
 
 //        $errors = new MessageBag(['error' => ['Error. No se pudieron enviar los mails']]);
 //        return response()->json([
@@ -268,8 +285,134 @@ class MailPropuestaNegocioController extends Controller
         } catch (\Exception $e) {
             die("error");
         }
-        die( "enviado");
+        die("enviado");
 
 
+    }
+
+    /**
+     * Método utilizado para armar la tabla y reemplazarla en el texto del mail
+     * @param MailPropuestaNegocio $mail_propuesta_negocio
+     * @return string
+     */
+    private function setCuadroPropuestaHTML(MailPropuestaNegocio $mail_propuesta_negocio)
+    {
+        $string_cuadro = '<table align="center" border="1" cellpadding="0" cellspacing="0" width="800">
+                            <thead>
+                            <tr>
+                                <th style="background: #80808047;">&nbsp;</th>
+                                <th style="background: #80808047;">Unidad</th>
+                                <th style="background: #80808047;">Descripción</th>
+                                <th style="background: #80808047;">Precio sin IVA</th>
+                                <th style="background: #80808047;">IVA</th>
+                                <th style="background: #80808047;">Prcio IVA Incluído</th>
+                            </tr>
+                            </thead>
+                            <tbody>';
+
+        $cotizaciones =
+            Cotizacion::select("cotizacion.*", "producto.modelo", "marca.marca", "tipo_producto.tipo_producto")
+                ->leftJoin("producto", "producto.id", "=", "cotizacion.producto_id")
+                ->leftJoin("marca", "producto.marca_id", "=", "marca.id")
+                ->leftJoin("tipo_producto", "producto.tipo_producto_id", "=", "tipo_producto.id")
+                ->where("cotizacion.propuesta_negocio_id", $mail_propuesta_negocio->propuesta_negocio_id)
+                ->where("cotizacion.active", 1)
+//                ->where("cotizacion.is_toma", $request->get("is_toma"))
+                ->orderBy('producto.modelo', 'DESC')
+                ->get(200);
+
+        if (count($cotizaciones) > 0) {
+            $cot_total_venta = 0;
+            $cot_total_descuento = 0;
+            $cot_total_toma = 0;
+            foreach ($cotizaciones as $key => $cotizacion) {
+                if ($cotizacion->is_toma == 0) {
+                    $cot_total_venta += $cotizacion->precio_venta_iva;
+                    $iteracion = $key + 1;
+                    if ((float)$cotizacion->descuento > 0) {
+                        $string_descuento = "Descuento {$cotizacion->descuento}%";
+                        $string_descripcion_descuento = $cotizacion->descripcion_descuento;
+                        $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
+                        $string_total_descuento = "USD " . number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+                    } else {
+                        $string_descuento = "No hay descuentos";
+                        $string_descripcion_descuento = "";
+                        $string_total_descuento = "&nbsp;";
+                    }
+
+                    $precio_venta = number_format($cotizacion->precio_venta, 2);
+                    $precio_iva = number_format($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2);
+                    $precio_venta_iva = number_format($cotizacion->precio_venta_iva, 2);
+
+                    $string_cuadro .= "<tr>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Venta</strong>
+                                            (producto {$iteracion})
+                                        </td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
+                                        <td>{$cotizacion->observacion}</td>
+                                        <td align=\"right\">USD {$precio_venta}</td>
+                                        <td align=\"right\">USD {$precio_iva}</td>
+                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                {$string_descuento}
+                                            </strong>
+                                        </td>
+                                        <td colspan=\"3\">
+                                            {$string_descripcion_descuento}
+                                        </td>
+                                        <td align=\"right\">
+                                            {$string_total_descuento}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>
+                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>";
+                }
+            }
+            $string_cuadro .= "<tr>
+                                    <td colspan=\"6\"></td>
+                                </tr>";
+
+            foreach ($cotizaciones as $key => $cotizacion) {
+                if ($cotizacion->is_toma == 1) {
+                    $cot_total_toma += $cotizacion->precio_toma_iva;
+                    $iteracion = $key + 1;
+
+                    $precio_toma = number_format($cotizacion->precio_toma, 2);
+                    $precio_iva = number_format($cotizacion->precio_toma_iva - $cotizacion->precio_toma, 2);
+                    $precio_toma_iva = number_format($cotizacion->precio_toma_iva, 2);
+
+                    $string_cuadro .= "<tr>
+                                            <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Toma</strong>
+                                                (producto {$iteracion})
+                                            </td>
+                                            <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
+                                            <td>{$cotizacion->observacion}</td>
+                                            <td align=\"right\">USD {$precio_toma}</td>
+                                            <td align=\"right\">USD {$precio_iva}</td>
+                                            <td align=\"right\">USD {$precio_toma_iva}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan=\"4\"><strong>Total TOMA usado:</strong></td>
+                                            <td align=\"right\">USD {$precio_toma_iva}</td>
+                                        </tr>";
+                }
+            }
+            $dif = number_format($cot_total_venta - $cot_total_toma, 2);
+            $string_cuadro .= "<tr>
+                                    <td colspan=\"4\"></td>
+                                    <td><strong>A pagar por el cliente</strong></td>
+                                    <td style=\"background: rgba(149,224,55,0.28);\" align=\"right\">USD {$dif}</td>
+                                </tr>";
+
+            return $string_cuadro;
+        } else {
+            return "";
+        }
     }
 }
