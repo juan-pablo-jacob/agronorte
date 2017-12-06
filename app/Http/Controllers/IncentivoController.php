@@ -329,15 +329,16 @@ class IncentivoController extends Controller
     public function getListIncentivosXproductoEdit($id, $cotizacion_id)
     {
         $records = DB::table("incentivo")
-            ->select("incentivo.*",  DB::raw("cotizacion_incentivo.cotizacion_id as cotizacion_incentivo_id"))
+            ->select("incentivo.*", DB::raw("cotizacion_incentivo.cotizacion_id as cotizacion_incentivo_id"))
             ->join("incentivo_producto", "incentivo.id", "=", "incentivo_producto.incentivo_id")
-            ->leftJoin("cotizacion_incentivo", "cotizacion_incentivo.incentivo_id", "=", "incentivo_producto.incentivo_id")
+            ->leftJoin("cotizacion_incentivo", function ($join) use ($cotizacion_id) {
+                $join->on("cotizacion_incentivo.incentivo_id", "=", "incentivo_producto.incentivo_id");
+                $join->on("cotizacion_incentivo.cotizacion_id", "=", DB::raw($cotizacion_id));
+            })
             ->where("incentivo_producto.producto_id", $id)
             ->whereDate('incentivo.fecha_caducidad', '>=', date("Y-m-d"))
             ->groupBy("incentivo.id")
             ->get();
-
-
 
 
         return view('propuesta.tabla_incentivo_producto', ['incentivos' => $records]);

@@ -68,7 +68,11 @@ class MailPropuestaNegocioController extends Controller
         }
 
         //Creo la marca
-        MailPropuestaNegocio::create($request->all());
+        $rdo = MailPropuestaNegocio::create($request->all());
+
+        if ($rdo) {
+            $this->sendMail($rdo->id);
+        }
 
         return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se creó el mail para la propuesta de negocio, puede enviarlo"]);
     }
@@ -115,7 +119,9 @@ class MailPropuestaNegocioController extends Controller
 
         //Creo la marca
         $mail_propuesta_negocio->fill($request->all());
-        $mail_propuesta_negocio->save();
+        $rdo_save = $mail_propuesta_negocio->save();
+        $this->sendMail($mail_propuesta_negocio->id);
+
 
         return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se modificaron los datos para el mail de la propuesta de negocio, puede enviarlo"]);
     }
@@ -144,11 +150,12 @@ class MailPropuestaNegocioController extends Controller
         if ($mail_propuesta_negocio) {
 
             if ($mail_propuesta_negocio->mail_cliente == "" && $mail_propuesta_negocio->mail_vendedores == "") {
-                $errors = new MessageBag(['error' => ['Error. Ingrese algún contacto para enviar mail']]);
-                return response()->json([
-                    "result" => false,
-                    "errors" => $errors
-                ]);
+//                $errors = new MessageBag(['error' => ['Error. Ingrese algún contacto para enviar mail']]);
+//                return response()->json([
+//                    "result" => false,
+//                    "errors" => $errors
+//                ]);
+                return false;
             }
 
             $mail = new PHPMailer(true); // notice the \  you have to use root namespace here
@@ -186,7 +193,7 @@ class MailPropuestaNegocioController extends Controller
                     }
                 }
 
-                $mail->MsgHTML("Informamos que su pedido está siendo procesado.");
+                $mail->MsgHTML("Envío propuesta negocio.");
 
                 if ($mail_propuesta_negocio->mail_cliente != "") {
                     $mail->addAddress($mail_propuesta_negocio->mail_cliente);
@@ -197,22 +204,72 @@ class MailPropuestaNegocioController extends Controller
 
                 $mail->send();
             } catch (\Exception $e) {
-                $errors = new MessageBag(['error' => [$e->getMessage()]]);
-                return response()->json([
-                    "result" => false,
-                    "errors" => $errors
-                ]);
+//                $errors = new MessageBag(['error' => [$e->getMessage()]]);
+//                return response()->json([
+//                    "result" => false,
+//                    "errors" => $errors
+//                ]);
+                return false;
             }
-            return response()->json([
-                "result" => true,
-                "msg" => "La propuesta fue enviada con éxito a las personas seleccionadas"
-            ]);
+//            return response()->json([
+//                "result" => true,
+//                "msg" => "La propuesta fue enviada con éxito a las personas seleccionadas"
+//            ]);
+            return true;
         }
 
-        $errors = new MessageBag(['error' => ['Error. No se pudieron enviar los mails']]);
-        return response()->json([
-            "result" => false,
-            "errors" => $errors
-        ]);
+//        $errors = new MessageBag(['error' => ['Error. No se pudieron enviar los mails']]);
+//        return response()->json([
+//            "result" => false,
+//            "errors" => $errors
+//        ]);
+        return false;
+    }
+
+
+    /**
+     * Mètodo utilizado para el envío de emails
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function testSendMail()
+    {
+
+
+        $mail = new PHPMailer(true); // notice the \  you have to use root namespace here
+        try {
+            $mail->SMTPDebug = 2;
+            $mail->isSMTP(); // tell to use smtp
+            $mail->CharSet = "utf-8"; // set charset to utf8
+            $mail->SMTPAuth = config('mail.phpmailer.SMTPAuth');  // use smpt auth
+            $mail->SMTPSecure = config('mail.phpmailer.SMTPSecure');  // or ssl
+            $mail->Host = config('mail.phpmailer.Host');
+            $mail->Port = config('mail.phpmailer.Port'); // most likely something different for you. This is the mailtrap.io port i use for testing.
+            $mail->Username = config('mail.phpmailer.Username');
+            $mail->Password = config('mail.phpmailer.Password');
+            $mail->setFrom(config('mail.phpmailer.From'), config('mail.phpmailer.FromName'));
+
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+            $mail->Subject = "Propuesta de negocio";
+
+
+            //Agrego los archivos si es que los hay
+            $mail->MsgHTML("Informamos que su pedido está siendo procesado.");
+
+            $mail->addAddress("juanpablojacob1@gmail.com");
+
+            $mail->send();
+        } catch (\Exception $e) {
+            die("error");
+        }
+        die( "enviado");
+
+
     }
 }

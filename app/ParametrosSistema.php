@@ -18,6 +18,6 @@ class ParametrosSistema extends Model
      * @var array
      */
     protected $fillable = [
-        'bonificacion_basica', 'precio_dolar'
+        'bonificacion_basica', 'precio_dolar', 'iva'
     ];
 }

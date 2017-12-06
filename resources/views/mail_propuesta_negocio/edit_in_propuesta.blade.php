@@ -34,10 +34,17 @@
                 </select>
             </div>
 
+            <div class="form-group col-md-4">
+                <label>Información IVA *</label>
+                <select name="is_iva_incluido" class="form-control">
+                    <option value="0" @if($mail_propuesta->is_iva_incluido == 0)  selected @endif>IVA Discriminado</option>
+                    <option value="1" @if($mail_propuesta->is_iva_incluido == 1) selected @endif>IVA Incluido</option>
+                </select>
+            </div>
+
             <div class="clearfix">&nbsp;</div>
 
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar datos</button>
-            <button id="btnSendMail" class="btn btn-success"><i class="icon icon-elusive-mail"></i>&nbsp;Enviar Mail
+            <button class="btn btn-success"><i class="icon icon-elusive-mail"></i>&nbsp;Enviar Propuesta
             </button>
         </div>
     </div>

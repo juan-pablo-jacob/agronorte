@@ -129,14 +129,14 @@ return [
     |
     */
     'phpmailer' => [
-        'Username' => 'fotocromia@overdesign.biz',
-        'Password' => 'h0r89hj3e',
+        'Username' => 'agronorte@agrocotizaciones.com',
+        'Password' => 'manasdfasdfa4321',
         'SMTPAuth' => true,
         'SMTPSecure' => 'tls',
-        'Port' => 587,
-        'Host' => 'mail.overdesign.biz',
-        'From' => 'fotocromia@overdesign.biz',
-        'FromName' => 'Over Design',
+        'Port' => 465,
+        'Host' => 'mail.agrocotizaciones.com',
+        'From' => 'agronorte@agrocotizaciones.com',
+        'FromName' => 'Agronorte S.R.L.',
     ],
 
 ];

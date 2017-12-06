@@ -17,16 +17,16 @@
 
         @foreach($cotizaciones as $key => $cotizacion)
             @if($cotizacion->is_toma == 0)
-                @php ($cot_total_venta += $cotizacion->precio_venta)
+                @php ($cot_total_venta += $cotizacion->precio_venta_iva)
                 <tr>
                     <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong>
                         (producto {{$key + 1}})
                     </td>
                     <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
                     <td>{{$cotizacion->observacion}}</td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_venta * 0.79, 2)}}</td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_venta * 0.21, 2)}}</td>
                     <td align="right">USD {{number_format ($cotizacion->precio_venta, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_venta_iva, 2)}}</td>
                 </tr>
                 <tr>
                     <td>
@@ -57,7 +57,7 @@
                 <tr>
                     <td>&nbsp;</td>
                     <td colspan="4"><strong>Total VENTA nuevo:</strong></td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_venta, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_venta_iva, 2)}}</td>
                 </tr>
 
             @endif
@@ -67,20 +67,20 @@
         </tr>
         @foreach($cotizaciones as $key => $cotizacion)
             @if($cotizacion->is_toma == 1)
-                @php ($cot_total_toma += $cotizacion->precio_toma)
+                @php ($cot_total_toma += $cotizacion->precio_toma_iva)
                 <tr>
                     <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Toma</strong>
                         (producto {{$key + 1}})
                     </td>
                     <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
                     <td>{{$cotizacion->observacion}}</td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_toma * 0.79, 2)}}</td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_toma * 0.21, 2)}}</td>
                     <td align="right">USD {{number_format ($cotizacion->precio_toma, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_toma_iva - $cotizacion->precio_toma, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</td>
                 </tr>
                 <tr>
                     <td colspan="4"><strong>Total TOMA usado:</strong></td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_toma, 2)}}</td>
+                    <td align="right">USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</td>
                 </tr>
             @endif
         @endforeach

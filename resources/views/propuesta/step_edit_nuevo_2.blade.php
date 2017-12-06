@@ -69,6 +69,9 @@
             <div class="form-group col-md-12">
                 <button type="submit" id="btnEditarCotizacion"  class="btn btn-primary"><i class="glyph-icon icon-save"></i>&nbsp;Editar Cotización
                 </button>
+                <button id="btnCancelarActuzalicionVenta" class="btn btn-success"><i
+                            class="glyph-icon icon-elusive-cancel"></i>&nbsp;Cancelar
+                </button>
             </div>
         </form>
     </div>
@@ -81,6 +84,10 @@
 </form>
 
 <script type="text/javascript">
+
+    $("#btnCancelarActuzalicionVenta").click(function () {
+        window.location.href = BASE_URL + "/propuesta/" + $("#propuesta_id").val() + "/edit"
+    });
 
     /*
      * Function que rearma las tablas de incentivos de prodcutos

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cotizacion;
 use App\CotizacionIncentivo;
 use App\Incentivo;
+use App\ParametrosSistema;
 use App\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,7 @@ class CotizacionController extends Controller
     {
         DB::beginTransaction();
         $step = is_null($request->get("step")) ? 2 : $request->get("step");
+        $parametros_sistema = ParametrosSistema::find(1);
 
         if (((int)$request->get("tipo_propuesta_negocio_id") == 3 || (int)$request->get("tipo_propuesta_negocio_id") == 4) && (int)$request->get("is_toma") == 1) {
             //Si es toma el producto no va a estar dado de alta en el sistema, entonces tengo que crear el producto
@@ -95,6 +97,9 @@ class CotizacionController extends Controller
                 return Redirect::back()->withErrors($errors)->withInput()->with("data", ["step" => $step]);
             }
             $request->merge(["precio_venta" => $precio_venta]);
+            $request->merge(["precio_venta_iva" => $precio_venta * (100 + $parametros_sistema->iva) / 100]);
+        } else {
+            $request->merge(["precio_toma_iva" => (float)$request->get("precio_toma") * (100 + $parametros_sistema->iva) / 100]);
         }
 
         $validator = Validator::make($request->all(), Cotizacion::getRules($request));
@@ -181,6 +186,7 @@ class CotizacionController extends Controller
     public function update(Request $request, $id)
     {
         $step = is_null($request->get("step")) ? 2 : $request->get("step");
+        $parametros_sistema = ParametrosSistema::find(1);
 
         $cotizacion = Cotizacion::find($id);
 
@@ -201,6 +207,7 @@ class CotizacionController extends Controller
                 return Redirect::back()->withErrors($errors)->withInput()->with("data", ["step" => $step]);
             }
             $request->merge(["precio_venta" => $precio_venta]);
+            $request->merge(["precio_venta_iva" => $precio_venta * (100 + $parametros_sistema->iva) / 100]);
         }
 
         DB::beginTransaction();
@@ -225,6 +232,7 @@ class CotizacionController extends Controller
         //Inserto las cotizaciones incentivos
         $array_incentivos = $request->get("incentivos_id");
         if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
+
             foreach ($array_incentivos as $incentivo_id) {
 
                 $cotizacion_incentivo = CotizacionIncentivo::where("incentivo_id", $incentivo_id)
@@ -253,7 +261,12 @@ class CotizacionController extends Controller
             }
 
             $incentivos_a_eliminar = DB::table("cotizacion_incentivo")
+                ->where("cotizacion_id", $cotizacion->id)
                 ->whereNotIn("incentivo_id", $array_incentivos)
+                ->delete();
+        } else {
+            $incentivos_a_eliminar = DB::table("cotizacion_incentivo")
+                ->where("cotizacion_id", $cotizacion->id)
                 ->delete();
         }
 
@@ -387,8 +400,6 @@ class CotizacionController extends Controller
                     ->first();
 
 
-
-
                 //Tomo el precio de toma del producto cargado por el usuario y le sumo los otros productos si es que hay
                 $precio_toma = $cotizacion->precio_toma;
                 if ($rdo_toma) {
@@ -446,10 +457,12 @@ class CotizacionController extends Controller
                         ->get();
 
                     if ($cotizaciones_incentivos) {
+                        $porcentaje_incentivo = 0;
                         foreach ($cotizaciones_incentivos as $value) {
-                            $porcentaje_incentivo = (float)Incentivo::find($value->incentivo_id)->first()->porcentaje;
-                            $costo_real_producto -= ($porcentaje_incentivo) * (float)$cotizacion->costo_basico_producto / 100;
+                            $incentivo = Incentivo::find($value->incentivo_id);
+                            $porcentaje_incentivo += (float)$incentivo->porcentaje;
                         }
+                        $costo_real_producto -= ($porcentaje_incentivo) * (float)$cotizacion->costo_basico_producto / 100;
                     }
 
                     $array_devolucion["costo_real_producto"] = $costo_real_producto;

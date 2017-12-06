@@ -25,17 +25,29 @@
                     @foreach($vendedores as $vendedor)
                         @if($propuesta->users_id == $vendedor->id)
                             <option value="{{$vendedor->email}}"
-                                    selected>{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )</option>
+                                    selected>{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )
+                            </option>
                         @else
-                            <option value="{{$vendedor->email}}">{{$vendedor->nombre}} {{$vendedor->apellido}} ( {{$vendedor->email}} )</option>
+                            <option value="{{$vendedor->email}}">{{$vendedor->nombre}} {{$vendedor->apellido}}
+                                ( {{$vendedor->email}} )
+                            </option>
                         @endif
                     @endforeach
                 </select>
             </div>
 
+            <div class="form-group col-md-4">
+                <label>Información IVA *</label>
+                <select name="is_iva_incluido" class="form-control">
+                    <option value="0" selected>IVA Discriminado</option>
+                    <option value="1">IVA Incluido</option>
+                </select>
+            </div>
+
             <div class="clearfix">&nbsp;</div>
 
-            <button type="submit" class="btn btn-primary"><i class="icon glyphicon-save"></i>&nbsp;Guardar datos</button>
+            <button class="btn btn-success"><i class="icon icon-elusive-mail"></i>&nbsp;Enviar Propuesta
+            </button>
 
         </div>
     </div>

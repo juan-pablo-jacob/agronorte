@@ -72,7 +72,7 @@ $(window).load(function () {
                     </div>
                     <!-- #header-logo -->
 
-              
+
 
                     <div id="header-right">
                         <div class="user-profile dropdown">
