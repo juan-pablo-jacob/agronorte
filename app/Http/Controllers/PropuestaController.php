@@ -52,6 +52,7 @@ class PropuestaController extends Controller
                 ->leftJoin("cotizacion", "cotizacion.propuesta_negocio_id", "=", "propuesta_negocio.id")
                 ->leftJoin("producto", "cotizacion.producto_id", "=", "producto.id")
                 ->where("propuesta_negocio.active", 1)
+                ->groupBy('propuesta_negocio.id')
                 ->orderBy('propuesta_negocio.fecha', 'DESC')
                 ->paginate(200);
 
@@ -236,10 +237,10 @@ class PropuestaController extends Controller
             ->update(['active' => 0]);
 
         if (!$rdo) {
-            return redirect('/cliente')->with('message', 'No se pudo eliminar la propuesta de negocio');
+            return redirect('/propuesta')->with('message', 'No se pudo eliminar la propuesta de negocio');
         }
 
-        return redirect('/cliente')->with('message', 'Propuesta de negocio eliminada con éxito');
+        return redirect('/propuesta')->with('message', 'Propuesta de negocio eliminada con éxito');
     }
 
     /**

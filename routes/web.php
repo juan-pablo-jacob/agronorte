@@ -108,3 +108,6 @@ Route::resource("cotizacion", "CotizacionController");
 Route::get("mail_propuesta_negocio/test", "MailPropuestaNegocioController@testSendMail");
 Route::get("mail_propuesta_negocio/send/{id}", "MailPropuestaNegocioController@sendMail");
 Route::resource("mail_propuesta_negocio", "MailPropuestaNegocioController");
+
+
+Route::get("actualizar_costos_reales", "CotizacionController@cronActualizarCostoRealProductos");

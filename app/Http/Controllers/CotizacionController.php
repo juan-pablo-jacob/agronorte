@@ -452,15 +452,18 @@ class CotizacionController extends Controller
                     //Cálculo costo real
                     $costo_real_producto = (float)$cotizacion->costo_basico_producto;
 
-                    $cotizaciones_incentivos = DB::table("cotizacion_incentivo")
-                        ->where("cotizacion_id", $cotizacion->id)
+                    //Tengo que traer todas los incentivos vigentes del producto perteneciente al incentivo
+                    $incentivos_vigentes = DB::table("incentivo_producto")
+                        ->select("incentivo_producto.id", "incentivo.porcentaje")
+                        ->join("incentivo", "incentivo.id", "=", "incentivo_producto.incentivo_id")
+                        ->whereDate('incentivo.fecha_caducidad', '>=', date("Y-m-d"))
+                        ->where("incentivo_producto.producto_id", $cotizacion->producto_id)
                         ->get();
 
-                    if ($cotizaciones_incentivos) {
+                    if ($incentivos_vigentes) {
                         $porcentaje_incentivo = 0;
-                        foreach ($cotizaciones_incentivos as $value) {
-                            $incentivo = Incentivo::find($value->incentivo_id);
-                            $porcentaje_incentivo += (float)$incentivo->porcentaje;
+                        foreach ($incentivos_vigentes as $value) {
+                            $porcentaje_incentivo += (float)$value->porcentaje;
                         }
                         $costo_real_producto -= ($porcentaje_incentivo) * (float)$cotizacion->costo_basico_producto / 100;
                     }
@@ -498,5 +501,53 @@ class CotizacionController extends Controller
                 ->get(200);
 
         return view('propuesta.tabla_visualizacion_cotizaciones_step_4', ['cotizaciones' => $records]);
+    }
+
+
+    /**
+     * Cron utilizado para actualizar todos los costos reales de los productos
+     */
+    public function cronActualizarCostoRealProductos()
+    {
+        //Obtengo todos los productos de las cotizaciones activas y que estèn abiertas o en negociaciòn
+        $productos = DB::table("cotizacion")
+            ->select("producto.*", DB::raw("cotizacion.id as cotizacion_id"))
+            ->join("producto", "producto.id", "=", "cotizacion.producto_id")
+            ->join("propuesta_negocio", "propuesta_negocio.id", "=", "cotizacion.propuesta_negocio_id")
+            ->where("cotizacion.active", 1)
+            ->where("cotizacion.is_toma", 0)
+            ->where("producto.is_nuevo", 1)
+            ->whereIn("propuesta_negocio.estados", [1, 2])
+            ->where("producto.active", 1)
+            ->get();
+
+        if ($productos && count($productos) > 0) {
+            foreach ($productos as $producto) {
+                $update = ["costo_real_producto" => (float)$producto->costo_basico];
+
+                //Tengo que traer todas los incentivos vigentes del producto perteneciente al incentivo
+                $incentivos_vigentes = DB::table("incentivo_producto")
+                    ->select("incentivo_producto.id", "incentivo.porcentaje")
+                    ->join("incentivo", "incentivo.id", "=", "incentivo_producto.incentivo_id")
+                    ->whereDate('incentivo.fecha_caducidad', '>=', date("Y-m-d"))
+                    ->where("incentivo_producto.producto_id", $producto->id)
+                    ->get();
+
+                if ($incentivos_vigentes) {
+                    $porcentaje_incentivo = 0;
+                    foreach ($incentivos_vigentes as $value) {
+                        $porcentaje_incentivo += (float)$value->porcentaje;
+                    }
+                    $update["costo_real_producto"] -= ($porcentaje_incentivo) * (float)$producto->costo_basico / 100;
+                }
+
+                $cotizacion = Cotizacion::find($producto->cotizacion_id);
+
+                if ($cotizacion) {
+                    $cotizacion->fill($update);
+                    $rdo = $cotizacion->save();
+                }
+            }
+        }
     }
 }

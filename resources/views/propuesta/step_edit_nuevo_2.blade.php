@@ -58,7 +58,7 @@
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Precio venta</label>
-                    <input type="text" class="form-control" id="precio_venta" value="{{$cotizacion_edit->precio_venta}}">
+                    <input type="text" class="form-control" id="precio_venta" value="{{$cotizacion_edit->precio_venta}}" disabled>
                 </div>
 
             </div>

@@ -219,7 +219,7 @@ class MailPropuestaNegocioController extends Controller
                 $mail->send();
             } catch (\Exception $e) {
 
-                
+
 //                $errors = new MessageBag(['error' => [$e->getMessage()]]);
 //                return response()->json([
 //                    "result" => false,
