@@ -34,7 +34,7 @@
 
                     <div class="form-group col-md-12">
                         <label>Porcentaje *</label>
-                        <input type="number" class="form-control" name="porcentaje" placeholder="0 % - 100 %">
+                        <input type="number" class="form-control" name="porcentaje" placeholder="0 % - 100 %" step=0.01 >
                     </div>
 
                     <div class="form-group col-md-12">

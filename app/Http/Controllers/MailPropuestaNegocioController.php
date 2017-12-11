@@ -334,10 +334,21 @@ class MailPropuestaNegocioController extends Controller
                         $string_descripcion_descuento = $cotizacion->descripcion_descuento;
                         $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
                         $string_total_descuento = "USD " . number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+                        $string_descuento_tr = "<tr>
+                                        <td>
+                                            <strong>
+                                                {$string_descuento}
+                                            </strong>
+                                        </td>
+                                        <td colspan=\"3\">
+                                            {$string_descripcion_descuento}
+                                        </td>
+                                        <td align=\"right\">
+                                            {$string_total_descuento}
+                                        </td>
+                                    </tr>";
                     } else {
-                        $string_descuento = "No hay descuentos";
-                        $string_descripcion_descuento = "";
-                        $string_total_descuento = "&nbsp;";
+                        $string_descuento_tr = " ";
                     }
 
                     $precio_venta = number_format($cotizacion->precio_venta, 2);
@@ -354,19 +365,7 @@ class MailPropuestaNegocioController extends Controller
                                         <td align=\"right\">USD {$precio_iva}</td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>
-                                                {$string_descuento}
-                                            </strong>
-                                        </td>
-                                        <td colspan=\"3\">
-                                            {$string_descripcion_descuento}
-                                        </td>
-                                        <td align=\"right\">
-                                            {$string_total_descuento}
-                                        </td>
-                                    </tr>
+                                    {$string_descuento_tr}
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>

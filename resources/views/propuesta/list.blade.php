@@ -93,11 +93,11 @@
                             @if ($propuesta->estados == 1)
                                 Abierto
                             @elseif ($propuesta->estados == 2)
-                                Estado 2
+                                Negociación
                             @elseif ($propuesta->estados == 3)
-                                Estado 3
+                                Aceptada
                             @elseif ($propuesta->estados == 4)
-                                Estado 4
+                                Rechazada
                             @endif
                         </td>
                         <td class="center">

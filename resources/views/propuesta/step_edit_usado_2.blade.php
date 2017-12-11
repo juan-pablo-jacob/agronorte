@@ -62,12 +62,12 @@
                 <div class="form-group col-md-4" style="display: none">
                     <label>Precio Lista</label>
                     <input type="number" class="form-control" id="precio_lista" name="precio_lista_producto"
-                           value="{{$cotizacion_edit->precio_lista_producto}}">
+                           value="{{$cotizacion_edit->precio_lista_producto}}" step=0.01 >
                 </div>
 
                 <div class="form-group col-md-4" style="display: none">
                     <label>Descuento</label>
-                    <input type="number" class="form-control" id="descuento" name="descuento" placeholder="1 % - 100 %"
+                    <input type="number" step=0.01  class="form-control" id="descuento" name="descuento" placeholder="1 % - 100 %"
                            value="{{$cotizacion_edit->descuento}}">
                 </div>
 
