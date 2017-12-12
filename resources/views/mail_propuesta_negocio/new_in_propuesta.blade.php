@@ -13,12 +13,23 @@
 
             <h4 class="font-gray font-size-16"><strong>Datos Mail a enviar</strong></h4>
 
-            <div class="form-group col-md-4">
+
+            <div class="form-group col-md-3">
+                <label>Enviar a cliente</label>
+                <div class="checkbox-inline">
+                    <label>
+                        <input type="checkbox" name="enviar_cliente" id="select_enviar_cliente" value="1"
+                               class="form-control custom-checkbox-cliente">
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3" id="div_mail_cliente" style="display: none">
                 <label>Mail Cliente *</label>
                 <input type="text" class="form-control" name="mail_cliente" value="{{$cliente->email}}">
             </div>
 
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Mail vendedor *</label>
                 <select name="mail_vendedores" class="form-control">
                     <option value="">&lt;No enviar a ningún vendedor&gt;</option>
@@ -36,7 +47,7 @@
                 </select>
             </div>
 
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Información IVA *</label>
                 <select name="is_iva_incluido" class="form-control">
                     <option value="0" selected>IVA Discriminado</option>
@@ -55,6 +66,15 @@
 
 <script>
     $(function () {
+        $('input[type="checkbox"].custom-checkbox-cliente').uniform();
+        $('.checker span').append('<i class="glyph-icon icon-check"></i>');
 
+        $("#select_enviar_cliente").change(function () {
+            if (this.checked) {
+                $("#div_mail_cliente").show();
+            } else {
+                $("#div_mail_cliente").hide();
+            }
+        });
     });
 </script>

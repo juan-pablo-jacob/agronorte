@@ -168,6 +168,11 @@
             $("table.dataTable .sorting_asc").append('<i class="glyph-icon"></i>');
             $("table.dataTable .sorting_desc").append('<i class="glyph-icon"></i>');
 
+
+
+            $('.bootstrap-datepicker').bsdatepicker({
+                format: 'dd/mm/yyyy'
+            });
         });
 
     </script>

@@ -30,7 +30,7 @@ table.dataTable thead .sorting_desc  .glyph-icon,
 .btn-link:hover,
 a:hover
 {
-    color: #f87500;
+    color: #9cd159;
 }
 
 /* Primary border color */
@@ -54,7 +54,7 @@ li.active a.list-group-item:focus,
 .border-primary,
 .btn-primary
 {
-    border-color: #db690c;
+    border-color: #8eca3f;
 }
 
 /* Primary background color */
@@ -95,7 +95,7 @@ li.active a.list-group-item:focus,
 .btn-primary
 {
     color: #fff;
-    background: #f87500;
+    background: #9cd159;
 }
 /* Default border color */
 
@@ -289,8 +289,8 @@ div[id^='uniform-'] span,
 .btn-primary[disabled].active
 {
     color: #fff;
-    border-color: #b45f1a;
-    background-color: #ff8e29;
+    border-color: #8eca3f;
+    background-color: #9cd159; 
 }
 
 /* Dropdown hover/active/focus */
@@ -464,12 +464,12 @@ li.active a.list-group-item > .glyph-icon,
 
 .xchart .color1 .line
 {
-    stroke: #f87500;
+    stroke: #9cd159;
 }
 
 .xchart .color1 circle
 {
-    stroke: #f87500;
+    stroke: #9cd159;
 }
 
 .xchart .color1 .line .fill
@@ -479,7 +479,7 @@ li.active a.list-group-item > .glyph-icon,
 
 .xchart .color1 rect
 {
-    fill: #f87500;
+    fill: #9cd159;
 }
 
 .xchart .color1 circle
@@ -493,11 +493,11 @@ li.active a.list-group-item > .glyph-icon,
 }
 .xchart .color1.comp .line
 {
-    stroke: #f87500;
+    stroke: #9cd159;
 }
 .xchart .color1.comp rect
 {
-    fill: #f87500;
+    fill: #9cd159;
 }
 .xchart .color1.comp .fill
 {
@@ -506,5 +506,5 @@ li.active a.list-group-item > .glyph-icon,
 .xchart .color1.comp circle,
 .xchart .color1.comp .pointer
 {
-    fill: #f87500;
+    fill: #9cd159;
 }

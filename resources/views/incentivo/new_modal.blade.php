@@ -69,8 +69,6 @@
         });
     });
 
-    $('.bootstrap-datepicker').bsdatepicker({
-        format: 'dd/mm/yyyy'
-    });
+
 
 </script>

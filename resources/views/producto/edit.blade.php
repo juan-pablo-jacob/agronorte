@@ -202,6 +202,7 @@
             </div>
         </form>
 
+        @php ($titulo_upload = "Subir archivos de los productos")
         @include('admin.upload.upload_edit')
     </div>
 

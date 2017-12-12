@@ -62,15 +62,15 @@ class Cotizacion extends Model
 
         $descuento = (float)$request->get("descuento");
         $precio_venta = (100 - $descuento) * $precio_lista / 100;
-        $costo_basico = (float)$request->get("costo_basico_producto");
-
-        $array_incentivos = $request->get("incentivos_id");
-        if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
-            foreach ($array_incentivos as $incentivo_id) {
-                $porcentaje_incentivo = (float)Incentivo::find($incentivo_id)->first()->porcentaje;
-                $precio_venta -= ($porcentaje_incentivo) * $costo_basico / 100;
-            }
-        }
+//        $costo_basico = (float)$request->get("costo_basico_producto");
+//
+//        $array_incentivos = $request->get("incentivos_id");
+//        if (!is_null($array_incentivos) && count($array_incentivos) > 0) {
+//            foreach ($array_incentivos as $incentivo_id) {
+//                $porcentaje_incentivo = (float)Incentivo::find($incentivo_id)->first()->porcentaje;
+//                $precio_venta -= ($porcentaje_incentivo) * $costo_basico / 100;
+//            }
+//        }
         return $precio_venta;
     }
 }

@@ -109,9 +109,9 @@
                     $("#dynamic-table-incentivo-producto_length").hide();
                     $("#dynamic-table-incentivo-producto_filter").hide();
 
-                    $(".check_grilla").click(function () {
-                        actualizarCosto();
-                    });
+//                    $(".check_grilla").click(function () {
+//                        actualizarCosto();
+//                    });
                     actualizarCosto();
                 }
             },
@@ -136,7 +136,6 @@
                     $("#costo_basico").val(result.costo_basico);
                     $("#tipo_producto").val(result.tipo_producto).prop("disabled", true);
                     $("#descripcion_producto").html(result.descripcion);
-                    $("#precio_lista").val(result.precio_lista);
                     $("#costo").val(result.costo).prop("disabled", true);
                     $("#div_datos_productos .form-group.col-md-4").show();
                     $('#form_buscar_incentivos_productos').attr('action', BASE_URL + '/getIncetivosProductosEdit/' + result.id + '-' + $("#cotizacion_id").val());
@@ -171,14 +170,14 @@
         var precio_lista = parseFloat($("#precio_lista").val());
         var descuento = isNaN(parseFloat($("#descuento").val())) ? 0 : parseFloat($("#descuento").val());
         var costo_basico = isNaN(parseFloat($("#costo_basico").val())) ? 0 : parseFloat($("#costo_basico").val());
-        var porcentajes_incentivos = getChecked();
+//        var porcentajes_incentivos = getChecked();
 
         if (precio_lista > 0) {
             var precio_venta = (100 - descuento) * precio_lista / 100;
-            for (var i = 0; i < porcentajes_incentivos.length; i++) {
-                var porc_inc = isNaN(parseFloat(porcentajes_incentivos[i])) ? 0 : parseFloat(porcentajes_incentivos[i]);
-                precio_venta = precio_venta - (porc_inc) * costo_basico / 100;
-            }
+//            for (var i = 0; i < porcentajes_incentivos.length; i++) {
+//                var porc_inc = isNaN(parseFloat(porcentajes_incentivos[i])) ? 0 : parseFloat(porcentajes_incentivos[i]);
+//                precio_venta = precio_venta - (porc_inc) * costo_basico / 100;
+//            }
 
             $("#precio_venta").val(precio_venta);
         } else {

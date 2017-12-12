@@ -452,18 +452,15 @@ class CotizacionController extends Controller
                     //Cálculo costo real
                     $costo_real_producto = (float)$cotizacion->costo_basico_producto;
 
-                    //Tengo que traer todas los incentivos vigentes del producto perteneciente al incentivo
-                    $incentivos_vigentes = DB::table("incentivo_producto")
-                        ->select("incentivo_producto.id", "incentivo.porcentaje")
-                        ->join("incentivo", "incentivo.id", "=", "incentivo_producto.incentivo_id")
-                        ->whereDate('incentivo.fecha_caducidad', '>=', date("Y-m-d"))
-                        ->where("incentivo_producto.producto_id", $cotizacion->producto_id)
+                    $cotizaciones_incentivos = DB::table("cotizacion_incentivo")
+                        ->where("cotizacion_id", $cotizacion->id)
                         ->get();
 
-                    if ($incentivos_vigentes) {
+                    if ($cotizaciones_incentivos) {
                         $porcentaje_incentivo = 0;
-                        foreach ($incentivos_vigentes as $value) {
-                            $porcentaje_incentivo += (float)$value->porcentaje;
+                        foreach ($cotizaciones_incentivos as $value) {
+                            $incentivo = Incentivo::find($value->incentivo_id);
+                            $porcentaje_incentivo += (float)$incentivo->porcentaje;
                         }
                         $costo_real_producto -= ($porcentaje_incentivo) * (float)$cotizacion->costo_basico_producto / 100;
                     }

@@ -65,7 +65,7 @@ body {
 
 #page-sidebar li a
 {
-    color: #737373;
+  color: #BEBEBE;
 }
 
 #page-sidebar .divider
@@ -187,7 +187,7 @@ body {
 
 #page-nav
 {
-    background: #fafafa;
+    background: #e9e9e9;
 }
 
 #page-subnav li a
@@ -198,8 +198,8 @@ body {
 #page-subnav li a:hover,
 #page-subnav li a.active
 {
-    color: #333;
-    border-color: #f87500;
+    color: #65a6ff;
+    border-color: #65a6ff;
 }
 
 /* Right menu */

@@ -72,7 +72,7 @@ class MailPropuestaNegocioController extends Controller
         $rdo = MailPropuestaNegocio::create($request->all());
 
         if ($rdo) {
-            $this->sendMail($rdo->id);
+            $this->sendMail($rdo->id, $request);
         }
 
         return app('App\Http\Controllers\PropuestaController')->editWithParams($request->get("propuesta_negocio_id"), ["step" => 4, "mensaje" => "Se creó el mail para la propuesta de negocio, puede enviarlo"]);
@@ -121,7 +121,7 @@ class MailPropuestaNegocioController extends Controller
         //Creo la marca
         $mail_propuesta_negocio->fill($request->all());
         $rdo_save = $mail_propuesta_negocio->save();
-        $rdo_envio_mail = $this->sendMail($mail_propuesta_negocio->id);
+        $rdo_envio_mail = $this->sendMail($mail_propuesta_negocio->id, $request);
 
         if (!$rdo_envio_mail) {
             $errors = new MessageBag(['error' => ['Error. No se pudo enviar al mail']]);
@@ -149,7 +149,7 @@ class MailPropuestaNegocioController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendMail($id)
+    public function sendMail($id, Request $request)
     {
         $mail_propuesta_negocio = MailPropuestaNegocio::find($id);
 
@@ -177,13 +177,13 @@ class MailPropuestaNegocioController extends Controller
                 $mail->Password = config('mail.phpmailer.Password');
                 $mail->setFrom(config('mail.phpmailer.From'), config('mail.phpmailer.FromName'));
 
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+//                $mail->SMTPOptions = array(
+//                    'ssl' => array(
+//                        'verify_peer' => false,
+//                        'verify_peer_name' => false,
+//                        'allow_self_signed' => true
+//                    )
+//                );
                 $mail->Subject = "Propuesta de negocio";
 
 
@@ -209,7 +209,7 @@ class MailPropuestaNegocioController extends Controller
 
                 $mail->MsgHTML($plantilla);
 
-                if ($mail_propuesta_negocio->mail_cliente != "") {
+                if ($mail_propuesta_negocio->mail_cliente != "" && (int) $request->get("enviar_cliente") == 1) {
                     $mail->addAddress($mail_propuesta_negocio->mail_cliente);
                 }
                 if ($mail_propuesta_negocio->mail_vendedores != "") {
