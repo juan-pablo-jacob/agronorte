@@ -21,15 +21,17 @@
 
             <div class="content-box-wrapper bg-white">
                 <form action="{{url("/propuesta")}}" method="get" enctype="multipart/form-data">
+
+
                     <div class="form-group col-md-3">
-                        <label for="exampleInputEmail1">Modelo</label>
+                        {{--<label for="exampleInputEmail1">Modelo</label>--}}
                         <input type="text" class="form-control col-md-2" id="modelo" value="{{$request->modelo}}"
                                name="modelo" placeholder="Modelo propuesta">
                     </div>
                     <div class="form-group col-md-3">
-                        <label>Vendedor</label>
+                        {{--<label>Vendedor</label>--}}
                         <select id="users_id" name="users_id" class="form-control">
-                            <option value="">&lt;Seleccione&gt;</option>
+                            <option value="">&lt;Seleccione Vendedor&gt;</option>
                             @foreach($vendedores as $vendedor)
                                 @if($vendedor->id == $request->users_id)
                                     <option value="{{$vendedor->id}}"
@@ -42,9 +44,9 @@
                     </div>
 
                     <div class="form-group col-md-3">
-                        <label>Tipo propuesta</label>
+                        {{--<label>Tipo propuesta</label>--}}
                         <select id="tipo_propuesta_negocio_id" name="tipo_propuesta_negocio_id" class="form-control">
-                            <option value="">&lt;Seleccione&gt;</option>
+                            <option value="">&lt;Seleccione tipo propuesta&gt;</option>
                             @foreach($tipo_propuestas as $tipo_propuesta)
                                 @if($tipo_propuesta->id == $request->tipo_propuesta_negocio_id)
                                     <option value="{{$tipo_propuesta->id}}"
@@ -54,6 +56,54 @@
                                 @endif
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        {{--<label>Estados *</label>--}}
+                        <select id="estados" name="estados" class="form-control">
+                            <option value="" @if($request->estados == "") selected @endif>&lt;Todos los
+                                estados&gt;</option>
+                            <option value="1" @if($request->estados == 1) selected @endif>Abierta</option>
+                            <option value="2" @if($request->estados == 2) selected @endif>Negociación</option>
+                            <option value="3" @if($request->estados == 3) selected @endif>Aceptada</option>
+                            <option value="4" @if($request->estados == 4) selected @endif>Rechazada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        {{--<label for="exampleInputEmail1">Fecha Desde</label>--}}
+                        <div class="input-prepend input-group ">
+                            <span class="add-on input-group-addon">
+                                <i class="glyph-icon icon-calendar"></i>
+                            </span>
+                            <input type="text" class="bootstrap-datepicker form-control" name="fecha_desde"
+                                   placeholder="Fecha Desde (dd/mm/aaaa)"
+                                   data-date-format="mm/dd/yy"
+                                   @if($request->fecha_desde != "")
+                                   value="{{$request->fecha_desde}}"
+                                   @else
+                                   value=""
+                                    @endif
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        {{--<label for="exampleInputEmail1">Fecha Hasta</label>--}}
+                        <div class="input-prepend input-group ">
+                            <span class="add-on input-group-addon">
+                                <i class="glyph-icon icon-calendar"></i>
+                            </span>
+                            <input type="text" class="bootstrap-datepicker form-control" name="fecha_hasta"
+                                   placeholder="Fecha Hasta (dd/mm/aaaa)"
+                                   data-date-format="mm/dd/yy"
+                                   @if($request->fecha_hasta != "")
+                                   value="{{$request->fecha_hasta}}"
+                                   @else
+                                   value=""
+                                    @endif
+                            >
+                        </div>
                     </div>
 
                     <div class="clearfix">&nbsp;</div>
@@ -145,6 +195,10 @@
         /* Datatables init */
 
         $(document).ready(function () {
+
+            $('.bootstrap-datepicker').bsdatepicker({
+                format: 'dd/mm/yyyy'
+            });
 
             $(".btn-borrar").click(function () {
                 var idpropuesta = $(this).data("id");

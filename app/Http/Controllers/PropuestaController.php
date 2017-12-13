@@ -43,6 +43,9 @@ class PropuestaController extends Controller
             PropuestaNegocio::TipoPropuestaNegocio($request->get('tipo_propuesta_negocio_id'))
                 ->vendedor($request->get('users_id'))
                 ->modelo($request->get('modelo'))
+                ->fechadesde($request->get('fecha_desde'))
+                ->fechahasta($request->get('fecha_hasta'))
+                ->estados($request->get('estados'))
                 ->select("propuesta_negocio.*",
                     "tipo_propuesta_negocio.tipo_propuesta_negocio",
                     "users.nombre", "users.apellido", "cliente.razon_social")
