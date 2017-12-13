@@ -121,7 +121,7 @@ class MailPropuestaNegocioController extends Controller
         //Creo la marca
         $mail_propuesta_negocio->fill($request->all());
         $rdo_save = $mail_propuesta_negocio->save();
-        $rdo_envio_mail = $this->sendMail($mail_propuesta_negocio->id, $request);
+        $rdo_envio_mail = $this->sendMail($id, $request);
 
         if (!$rdo_envio_mail) {
             $errors = new MessageBag(['error' => ['Error. No se pudo enviar al mail']]);
@@ -161,6 +161,7 @@ class MailPropuestaNegocioController extends Controller
 //                    "result" => false,
 //                    "errors" => $errors
 //                ]);
+
                 return false;
             }
 
@@ -177,14 +178,14 @@ class MailPropuestaNegocioController extends Controller
                 $mail->Password = config('mail.phpmailer.Password');
                 $mail->setFrom(config('mail.phpmailer.From'), config('mail.phpmailer.FromName'));
 
-//                $mail->SMTPOptions = array(
-//                    'ssl' => array(
-//                        'verify_peer' => false,
-//                        'verify_peer_name' => false,
-//                        'allow_self_signed' => true
-//                    )
-//                );
-                $mail->Subject = "Propuesta de negocio";
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
+                $mail->Subject = "Propuesta de negocio Agronorte S.R.L.";
 
 
                 //Agrego los archivos si es que los hay
@@ -201,11 +202,15 @@ class MailPropuestaNegocioController extends Controller
 
                 $string_cuadro = $this->setCuadroPropuestaHTML($mail_propuesta_negocio);
                 if ($string_cuadro == "") {
+
                     return false;
                 }
-
+                
                 $plantilla = file_get_contents(resource_path("/views/mail_propuesta_negocio/mail_propuesta.html"));
                 $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
+                $plantilla = str_replace('{{path_logo}}', url("logo_agronorte.jpg"), $plantilla);
+
+
 
                 $mail->MsgHTML($plantilla);
 
@@ -266,6 +271,7 @@ class MailPropuestaNegocioController extends Controller
             $mail->Password = config('mail.phpmailer.Password');
             $mail->setFrom(config('mail.phpmailer.From'), config('mail.phpmailer.FromName'));
 
+
             $mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -273,6 +279,7 @@ class MailPropuestaNegocioController extends Controller
                     'allow_self_signed' => true
                 )
             );
+
             $mail->Subject = "Propuesta de negocio";
 
 
@@ -297,7 +304,7 @@ class MailPropuestaNegocioController extends Controller
      */
     private function setCuadroPropuestaHTML(MailPropuestaNegocio $mail_propuesta_negocio)
     {
-        $string_cuadro = '<table align="center" border="1" cellpadding="0" cellspacing="0" width="800">
+        $string_cuadro = '<table align="center" border="1" cellpadding="0" cellspacing="0" width="1200">
                             <thead>
                             <tr>
                                 <th style="background: #80808047;">&nbsp;</th>
@@ -323,40 +330,19 @@ class MailPropuestaNegocioController extends Controller
 
         if (count($cotizaciones) > 0) {
             $cot_total_venta = 0;
-            $cot_total_descuento = 0;
             $cot_total_toma = 0;
             foreach ($cotizaciones as $key => $cotizacion) {
                 if ($cotizacion->is_toma == 0) {
                     $cot_total_venta += $cotizacion->precio_venta_iva;
                     $iteracion = $key + 1;
-                    if ((float)$cotizacion->descuento > 0) {
-                        $string_descuento = "Descuento {$cotizacion->descuento}%";
-                        $string_descripcion_descuento = $cotizacion->descripcion_descuento;
-                        $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
-                        $string_total_descuento = "USD " . number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
-                        $string_descuento_tr = "<tr>
-                                        <td>
-                                            <strong>
-                                                {$string_descuento}
-                                            </strong>
-                                        </td>
-                                        <td colspan=\"3\">
-                                            {$string_descripcion_descuento}
-                                        </td>
-                                        <td align=\"right\">
-                                            {$string_total_descuento}
-                                        </td>
-                                    </tr>";
-                    } else {
-                        $string_descuento_tr = " ";
-                    }
+
 
                     $precio_venta = number_format($cotizacion->precio_venta, 2);
                     $precio_iva = number_format($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2);
                     $precio_venta_iva = number_format($cotizacion->precio_venta_iva, 2);
 
                     $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Venta</strong>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong>
                                             (producto {$iteracion})
                                         </td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
@@ -365,7 +351,6 @@ class MailPropuestaNegocioController extends Controller
                                         <td align=\"right\">USD {$precio_iva}</td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
                                     </tr>
-                                    {$string_descuento_tr}
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>
@@ -407,7 +392,7 @@ class MailPropuestaNegocioController extends Controller
                                     <td colspan=\"4\"></td>
                                     <td><strong>A pagar por el cliente</strong></td>
                                     <td style=\"background: rgba(149,224,55,0.28);\" align=\"right\">USD {$dif}</td>
-                                </tr>";
+                                </tr></table>";
 
             return $string_cuadro;
         } else {

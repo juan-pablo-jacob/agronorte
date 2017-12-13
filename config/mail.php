@@ -133,7 +133,7 @@ return [
         'Password' => 'mana4321',
         'SMTPAuth' => true,
         'SMTPSecure' => 'tls',
-        'Port' => 465,
+        'Port' => 26,
         'Host' => 'mail.agrocotizaciones.com',
         'From' => 'agronorte@agrocotizaciones.com',
         'FromName' => 'Agronorte S.R.L.',
