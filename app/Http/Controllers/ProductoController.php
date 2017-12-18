@@ -284,7 +284,15 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $rdo = DB::table('producto')
+            ->where('id', $id)
+            ->update(['active' => 0]);
+
+        if (!$rdo) {
+            return redirect('/producto')->with('message', 'No se pudo eliminar el Producto');
+        }
+
+        return redirect('/producto')->with('message', 'Producto eliminado con éxito');
     }
 
 

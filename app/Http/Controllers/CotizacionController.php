@@ -436,7 +436,7 @@ class CotizacionController extends Controller
                      */
                     $costo_real_producto = (float)$cotizacion->costo_usado_producto;
 
-                    if (!is_null($costo_real_producto)) {
+                    if (!is_null($costo_real_producto) && $costo_real_producto > 0) {
 
                         $array_devolucion["costo_real_producto"] = $costo_real_producto;
 

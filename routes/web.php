@@ -80,7 +80,7 @@ Route::post("incentivo/quitar_productos", "IncentivoController@quitarProductos")
 Route::get("getIncetivosProductos/{id}", "IncentivoController@getListIncentivosXproducto");
 Route::get("getIncetivosProductosEdit/{id}-{cotizacion_id}", "IncentivoController@getListIncentivosXproductoEdit");
 
-Route::get("incentivo/showJSON/{id}", 'incentivoController@showJSON');
+Route::get("incentivo/showJSON/{id}", 'IncentivoController@showJSON');
 
 
 /**

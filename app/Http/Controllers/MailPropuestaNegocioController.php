@@ -205,16 +205,15 @@ class MailPropuestaNegocioController extends Controller
 
                     return false;
                 }
-                
+
                 $plantilla = file_get_contents(resource_path("/views/mail_propuesta_negocio/mail_propuesta.html"));
                 $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
                 $plantilla = str_replace('{{path_logo}}', url("logo_agronorte.jpg"), $plantilla);
 
 
-
                 $mail->MsgHTML($plantilla);
 
-                if ($mail_propuesta_negocio->mail_cliente != "" && (int) $request->get("enviar_cliente") == 1) {
+                if ($mail_propuesta_negocio->mail_cliente != "" && (int)$request->get("enviar_cliente") == 1) {
                     $mail->addAddress($mail_propuesta_negocio->mail_cliente);
                 }
                 if ($mail_propuesta_negocio->mail_vendedores != "") {
@@ -331,6 +330,7 @@ class MailPropuestaNegocioController extends Controller
         if (count($cotizaciones) > 0) {
             $cot_total_venta = 0;
             $cot_total_toma = 0;
+            $cot_total_descuento = 0;
             foreach ($cotizaciones as $key => $cotizacion) {
                 if ($cotizacion->is_toma == 0) {
                     $cot_total_venta += $cotizacion->precio_venta_iva;
@@ -340,6 +340,25 @@ class MailPropuestaNegocioController extends Controller
                     $precio_venta = number_format($cotizacion->precio_venta, 2);
                     $precio_iva = number_format($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2);
                     $precio_venta_iva = number_format($cotizacion->precio_venta_iva, 2);
+                    $str_descuento = "";
+                    if ((float)$cotizacion->descuento > 0) {
+
+                        $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
+                        $precio_descuento = number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+                        $str_descuento = "<tr>
+                                            <td>
+                                                <strong>
+                                                    Descuento {$cotizacion->descuento}%
+                                                </strong>
+                                            </td>
+                                            <td colspan=\"3\">
+                                                {$cotizacion->descripcion_descuento}
+                                            </td>
+                                            <td align=\"right\">
+                                                USD {$precio_descuento}
+                                            </td>
+                                        </tr>";
+                    }
 
                     $string_cuadro .= "<tr>
                                         <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong>
@@ -351,6 +370,7 @@ class MailPropuestaNegocioController extends Controller
                                         <td align=\"right\">USD {$precio_iva}</td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
                                     </tr>
+                                    {$str_descuento}
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>
@@ -387,7 +407,7 @@ class MailPropuestaNegocioController extends Controller
                                         </tr>";
                 }
             }
-            $dif = number_format($cot_total_venta - $cot_total_toma, 2);
+            $dif = number_format($cot_total_venta - $cot_total_toma - $cot_total_descuento, 2);
             $string_cuadro .= "<tr>
                                     <td colspan=\"4\"></td>
                                     <td><strong>A pagar por el cliente</strong></td>
