@@ -1,6 +1,6 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
-        Edición de producto <strong>Tomado</strong>
+        Edición de producto <strong>usado a recibir</strong>
     </h3>
     <div class="content-box-wrapper">
         <form role="form" id="form_toma_producto" action="{{url("/cotizacion/" . $cotizacion_toma_edit->id)}}"
@@ -116,7 +116,7 @@
             <h4 class="font-gray font-size-16"><strong>Detalle Precio Producto</strong></h4>
 
             <div class="form-group col-md-4 div_producto_usado">
-                <label>Precio toma *</label>
+                <label>Precio unidad usada a recibir *</label>
                 <input type="number" class="form-control" name="precio_toma"
                        value="{{$cotizacion_toma_edit->precio_toma}}" step=0.01 >
             </div>

@@ -56,7 +56,7 @@
                                 <label class="wizard-step">4</label>
                                 <span class="wizard-description">
                                 Producto
-                                <small>Datos de toma de productos</small>
+                                <small>Datos de la unidad usada a recibir</small>
                             </span>
                             </a>
                         </li>
@@ -66,7 +66,7 @@
                                 <label class="wizard-step">5</label>
                                 <span class="wizard-description">
                                 Precio
-                                <small>Visualización Productos Tomados</small>
+                                <small>Visualización Productos Usados Recibidos</small>
                             </span>
                             </a>
                         </li>

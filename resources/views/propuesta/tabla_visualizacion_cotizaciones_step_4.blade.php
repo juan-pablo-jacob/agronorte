@@ -20,7 +20,7 @@
                 @php ($cot_total_venta += $cotizacion->precio_venta_iva)
                 <tr>
                     <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong>
-                        (producto {{$key + 1}})
+
                     </td>
                     <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
                     <td>{{$cotizacion->observacion}}</td>
@@ -69,8 +69,8 @@
             @if($cotizacion->is_toma == 1)
                 @php ($cot_total_toma += $cotizacion->precio_toma_iva)
                 <tr>
-                    <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Toma</strong>
-                        (producto {{$key + 1}})
+                    <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Unidad usada a recibir</strong>
+
                     </td>
                     <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
                     <td>{{$cotizacion->observacion}}</td>
@@ -79,14 +79,14 @@
                     <td align="right">USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</td>
                 </tr>
                 <tr>
-                    <td colspan="4"><strong>Total TOMA usado:</strong></td>
+                    <td colspan="4"><strong>Total recepción usado:</strong></td>
                     <td align="right">USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</td>
                 </tr>
             @endif
         @endforeach
         <tr>
             <td colspan="4"></td>
-            <td><strong>A pagar por el cliente</strong></td>
+            <td><strong>DIFERENCIA A PAGAR</strong></td>
             @php ($dif = $cot_total_venta - $cot_total_toma)
             <td style="background: rgba(149,224,55,0.28);" align="right">USD {{number_format($dif, 2)}}</td>
         </tr>

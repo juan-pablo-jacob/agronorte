@@ -6,7 +6,7 @@
         <th>Tipo Producto</th>
         <th>Marca</th>
         <th>Modelo</th>
-        <th>Precio Toma</th>
+        <th>Precio Uª recibida</th>
         <th>Costo Usado</th>
         <th>
             &nbsp;

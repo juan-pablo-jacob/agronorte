@@ -208,7 +208,7 @@ class MailPropuestaNegocioController extends Controller
 
                 $plantilla = file_get_contents(resource_path("/views/mail_propuesta_negocio/mail_propuesta.html"));
                 $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
-                $plantilla = str_replace('{{path_logo}}', url("logo_agronorte.jpg"), $plantilla);
+                $plantilla = str_replace('{{path_logo}}', url("logo_agronorte_v2.png"), $plantilla);
 
 
                 $mail->MsgHTML($plantilla);
@@ -303,7 +303,29 @@ class MailPropuestaNegocioController extends Controller
      */
     private function setCuadroPropuestaHTML(MailPropuestaNegocio $mail_propuesta_negocio)
     {
-        $string_cuadro = '<table align="center" border="1" cellpadding="0" cellspacing="0" width="1200">
+        $cliente = DB::table("propuesta_negocio")
+            ->join("cliente", "propuesta_negocio.cliente_id", "=", "cliente.id")
+            ->select("cliente.*")
+            ->where("propuesta_negocio.id", $mail_propuesta_negocio->propuesta_negocio_id)
+            ->first();
+
+        $string_cuadro = "<div align='center' style='border:1px solid black; width:1200px;margin: auto;'><p>
+                                <strong>Presupuesto realizado para: </strong> {$cliente->razon_social}
+                            </p>
+                            <p>
+                                <strong>CUIT: </strong> {$cliente->CUIT}
+                            </p>
+                            <p>
+                                <strong>Localidad: </strong> {$cliente->localidad}
+                            </p>
+                            <p>
+                                <strong>Domicilio: </strong> {$cliente->domicilio}
+                            </p></div>";
+
+
+
+        if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+            $string_cuadro .= '<table align="center" border="1" cellpadding="0" cellspacing="0" width="1200">
                             <thead>
                             <tr>
                                 <th style="background: #80808047;">&nbsp;</th>
@@ -311,10 +333,23 @@ class MailPropuestaNegocioController extends Controller
                                 <th style="background: #80808047;">Descripción</th>
                                 <th style="background: #80808047;">Precio sin IVA</th>
                                 <th style="background: #80808047;">IVA</th>
-                                <th style="background: #80808047;">Prcio IVA Incluído</th>
+                                <th style="background: #80808047;">Precio IVA Incluído</th>
                             </tr>
                             </thead>
                             <tbody>';
+        } else {
+            $string_cuadro .= '<table align="center" border="1" cellpadding="0" cellspacing="0" width="1200">
+                            <thead>
+                            <tr>
+                                <th style="background: #80808047;">&nbsp;</th>
+                                <th style="background: #80808047;">Unidad</th>
+                                <th style="background: #80808047;">Descripción</th>
+                                <th style="background: #80808047;">Precio IVA Incluído</th>
+                            </tr>
+                            </thead>
+                            <tbody>';
+        }
+
 
         $cotizaciones =
             Cotizacion::select("cotizacion.*", "producto.modelo", "marca.marca", "tipo_producto.tipo_producto")
@@ -334,7 +369,6 @@ class MailPropuestaNegocioController extends Controller
             foreach ($cotizaciones as $key => $cotizacion) {
                 if ($cotizacion->is_toma == 0) {
                     $cot_total_venta += $cotizacion->precio_venta_iva;
-                    $iteracion = $key + 1;
 
 
                     $precio_venta = number_format($cotizacion->precio_venta, 2);
@@ -345,25 +379,31 @@ class MailPropuestaNegocioController extends Controller
 
                         $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
                         $precio_descuento = number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+                        if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                            $descripcion_descuento = "<td colspan=\"3\">
+                                                {$cotizacion->descripcion_descuento}
+                                            </td>";
+                        } else {
+                            $descripcion_descuento = "<td colspan=\"2\">
+                                                {$cotizacion->descripcion_descuento}
+                                            </td>";
+                        }
                         $str_descuento = "<tr>
                                             <td>
                                                 <strong>
                                                     Descuento {$cotizacion->descuento}%
                                                 </strong>
                                             </td>
-                                            <td colspan=\"3\">
-                                                {$cotizacion->descripcion_descuento}
-                                            </td>
+                                            {$descripcion_descuento}
                                             <td align=\"right\">
                                                 USD {$precio_descuento}
                                             </td>
                                         </tr>";
                     }
 
-                    $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong>
-                                            (producto {$iteracion})
-                                        </td>
+                    if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                        $string_cuadro .= "<tr>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='2'><strong>Venta</strong></td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                         <td>{$cotizacion->observacion}</td>
                                         <td align=\"right\">USD {$precio_venta}</td>
@@ -376,25 +416,43 @@ class MailPropuestaNegocioController extends Controller
                                         <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
                                     </tr>";
+                    } else {
+                        $string_cuadro .= "<tr>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong></td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
+                                        <td>{$cotizacion->observacion}</td>
+                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>
+                                    {$str_descuento}
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan=\"2\"><strong>Total VENTA nuevo:</strong></td>
+                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>";
+                    }
                 }
             }
-            $string_cuadro .= "<tr>
+            if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                $string_cuadro .= "<tr>
                                     <td colspan=\"6\"></td>
                                 </tr>";
+            } else {
+                $string_cuadro .= "<tr>
+                                    <td colspan=\"4\"></td>
+                                </tr>";
+            }
 
             foreach ($cotizaciones as $key => $cotizacion) {
                 if ($cotizacion->is_toma == 1) {
                     $cot_total_toma += $cotizacion->precio_toma_iva;
-                    $iteracion = $key + 1;
 
                     $precio_toma = number_format($cotizacion->precio_toma, 2);
                     $precio_iva = number_format($cotizacion->precio_toma_iva - $cotizacion->precio_toma, 2);
                     $precio_toma_iva = number_format($cotizacion->precio_toma_iva, 2);
 
-                    $string_cuadro .= "<tr>
-                                            <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Toma</strong>
-                                                (producto {$iteracion})
-                                            </td>
+                    if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                        $string_cuadro .= "<tr>
+                                            <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Recepción Usado</strong> </td>
                                             <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                             <td>{$cotizacion->observacion}</td>
                                             <td align=\"right\">USD {$precio_toma}</td>
@@ -402,17 +460,38 @@ class MailPropuestaNegocioController extends Controller
                                             <td align=\"right\">USD {$precio_toma_iva}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan=\"4\"><strong>Total TOMA usado:</strong></td>
+                                            <td colspan=\"4\"><strong>Total recepción usado:</strong></td>
                                             <td align=\"right\">USD {$precio_toma_iva}</td>
                                         </tr>";
+                    } else {
+                        $string_cuadro .= "<tr>
+                                            <td style=\"background: rgba(149,224,55,0.28);\" rowspan=\"2\"><strong>Toma</strong></td>
+                                            <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
+                                            <td>{$cotizacion->observacion}</td>
+                                            <td align=\"right\">USD {$precio_toma_iva}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan=\"2\"><strong>Total recepción usado:</strong></td>
+                                            <td align=\"right\">USD {$precio_toma_iva}</td>
+                                        </tr>";
+                    }
                 }
             }
             $dif = number_format($cot_total_venta - $cot_total_toma - $cot_total_descuento, 2);
-            $string_cuadro .= "<tr>
+            if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                $string_cuadro .= "<tr>
                                     <td colspan=\"4\"></td>
-                                    <td><strong>A pagar por el cliente</strong></td>
-                                    <td style=\"background: rgba(149,224,55,0.28);\" align=\"right\">USD {$dif}</td>
+                                    <td><h3><strong>A pagar por el cliente</strong></h3></td>
+                                    <td style=\"background: rgba(149,224,55,0.28);\" align=\"right\"><h3>USD {$dif}</h3></td>
                                 </tr></table>";
+            }else{
+                $string_cuadro .= "<tr>
+                                    <td colspan=\"2\"></td>
+                                    <td><h3><strong>A pagar por el cliente</strong></h3></td>
+                                    <td style=\"background: rgba(149,224,55,0.28);\" align=\"right\"><h3>USD {$dif}</h3></td>
+                                </tr></table>";
+            }
+
 
             return $string_cuadro;
         } else {

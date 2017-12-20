@@ -1,6 +1,6 @@
 <div class="content-box">
     <h3 class="content-box-header bg-default">
-        Cotizaciones <strong>Productos Tomados</strong>
+        Cotizaciones <strong>Unidades usadas recibidas</strong>
     </h3>
     <div class="content-box-wrapper">
         <form role="form" id="form_lista_cotizaciones_toma" action="{{url("/cotizacion")}}" method="get"

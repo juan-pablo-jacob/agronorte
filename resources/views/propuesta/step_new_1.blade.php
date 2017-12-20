@@ -13,7 +13,7 @@
             <div id="div_datos_clientes">
                 <div class="form-group col-md-4">
                     <label>CUIT</label>
-                    <input type="text" class="form-control" id="CUIT" >
+                    <input type="text" class="form-control" id="CUIT"  placeholder="CUIT o Razón Social del cliente a buscar">
                 </div>
 
                 <div class="form-group col-md-4" id="div_razon_social" style="display: none">
@@ -137,6 +137,8 @@
                             }
                         }
                     });
+
+                    $("#cliente_id").val(id);
 
                 }
             });

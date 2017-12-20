@@ -114,7 +114,7 @@
             <h4 class="font-gray font-size-16"><strong>Detalle Precio Producto</strong></h4>
 
             <div class="form-group col-md-4 div_producto_usado">
-                <label>Precio toma *</label>
+                <label>Precio unidad usada a recibir *</label>
                 <input type="number" class="form-control" name="precio_toma"
                        value="{{old('precio_toma')}}">
             </div>
