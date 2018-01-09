@@ -210,7 +210,7 @@ class MailPropuestaNegocioController extends Controller
                 $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
                 $plantilla = str_replace('{{path_logo}}', url("logo_agronorte_v2.png"), $plantilla);
 
-
+echo $plantilla;die();
                 $mail->MsgHTML($plantilla);
 
                 if ($mail_propuesta_negocio->mail_cliente != "" && (int)$request->get("enviar_cliente") == 1) {
@@ -374,6 +374,7 @@ class MailPropuestaNegocioController extends Controller
                     $precio_venta = number_format($cotizacion->precio_venta, 2);
                     $precio_iva = number_format($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2);
                     $precio_venta_iva = number_format($cotizacion->precio_venta_iva, 2);
+                    $precio_lista_producto = number_format($cotizacion->precio_lista_producto, 2);
                     $str_descuento = "";
                     if ((float)$cotizacion->descuento > 0) {
 
@@ -403,12 +404,25 @@ class MailPropuestaNegocioController extends Controller
 
                     if ($mail_propuesta_negocio->is_iva_incluido == 1) {
                         $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='2'><strong>Venta</strong></td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='3'><strong>Venta</strong></td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                         <td>{$cotizacion->observacion}</td>
                                         <td align=\"right\">USD {$precio_venta}</td>
                                         <td align=\"right\">USD {$precio_iva}</td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                Precio de lista
+                                            </strong>
+                                        </td>
+                                        <td colspan=\"3\">
+                                            &nbsp;
+                                        </td>
+                                        <td align=\"right\">
+                                            USD {$precio_lista_producto}
+                                        </td>
                                     </tr>
                                     {$str_descuento}
                                     <tr>
@@ -418,10 +432,23 @@ class MailPropuestaNegocioController extends Controller
                                     </tr>";
                     } else {
                         $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong></td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='2' ><strong>Venta</strong></td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                         <td>{$cotizacion->observacion}</td>
                                         <td align=\"right\">USD {$precio_venta_iva}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                Precio de lista
+                                            </strong>
+                                        </td>
+                                        <td colspan=\"3\">
+                                            &nbsp;
+                                        </td>
+                                        <td align=\"right\">
+                                            USD {{$precio_lista_producto}}
+                                        </td>
                                     </tr>
                                     {$str_descuento}
                                     <tr>

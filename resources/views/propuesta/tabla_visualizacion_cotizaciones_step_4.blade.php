@@ -19,7 +19,7 @@
             @if($cotizacion->is_toma == 0)
                 @php ($cot_total_venta += $cotizacion->precio_venta_iva)
                 <tr>
-                    <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong>
+                    <td style="background: rgba(149,224,55,0.28);" rowspan="3"><strong>Venta</strong>
 
                     </td>
                     <td style="background: rgba(149,224,55,0.28);">{{$cotizacion->modelo}}</td>
@@ -27,6 +27,19 @@
                     <td align="right">USD {{number_format ($cotizacion->precio_venta, 2)}}</td>
                     <td align="right">USD {{number_format ($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2)}}</td>
                     <td align="right">USD {{number_format ($cotizacion->precio_venta_iva, 2)}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Precio de lista
+                        </strong>
+                    </td>
+                    <td colspan="3">
+                        &nbsp;
+                    </td>
+                    <td align="right">
+                        USD {{number_format($cotizacion->precio_lista_producto, 2)}}
+                    </td>
                 </tr>
                 <tr>
                     <td>
