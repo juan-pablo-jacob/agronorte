@@ -210,7 +210,6 @@ class MailPropuestaNegocioController extends Controller
                 $plantilla = str_replace('{{cuadro_propuesta}}', $string_cuadro, $plantilla);
                 $plantilla = str_replace('{{path_logo}}', url("logo_agronorte_v2.png"), $plantilla);
 
-echo $plantilla;die();
                 $mail->MsgHTML($plantilla);
 
                 if ($mail_propuesta_negocio->mail_cliente != "" && (int)$request->get("enviar_cliente") == 1) {
