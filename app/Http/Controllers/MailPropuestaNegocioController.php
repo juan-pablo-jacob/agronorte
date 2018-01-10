@@ -367,23 +367,29 @@ class MailPropuestaNegocioController extends Controller
             $cot_total_descuento = 0;
             foreach ($cotizaciones as $key => $cotizacion) {
                 if ($cotizacion->is_toma == 0) {
-                    $cot_total_venta += $cotizacion->precio_venta_iva;
 
 
-                    $precio_venta = number_format($cotizacion->precio_venta, 2);
-                    $precio_iva = number_format($cotizacion->precio_venta_iva - $cotizacion->precio_venta, 2);
-                    $precio_venta_iva = number_format($cotizacion->precio_venta_iva, 2);
+
+                    $precio_iva = number_format($cotizacion->precio_lista_producto - $cotizacion->precio_venta, 2);
+
+                    $precio_lista_producto_iva = number_format($cotizacion->precio_lista_producto_iva, 2);
                     $precio_lista_producto = number_format($cotizacion->precio_lista_producto, 2);
                     $str_descuento = "";
                     if ((float)$cotizacion->descuento > 0) {
 
                         $cot_total_descuento += $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
-                        $precio_descuento = number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+
                         if ($mail_propuesta_negocio->is_iva_incluido == 1) {
+                            //Si es IVA incluido -> precio lista más iva
+                            $precio_descuento = number_format($cotizacion->precio_lista_producto_iva * $cotizacion->descuento / 100, 2);
+                            $descuento = $cotizacion->precio_lista_producto_iva - $cotizacion->precio_lista_producto_iva * $cotizacion->descuento / 100;
                             $descripcion_descuento = "<td colspan=\"3\">
                                                 {$cotizacion->descripcion_descuento}
                                             </td>";
                         } else {
+                            //Si es IVA incluido -> precio lista producto sin iva
+                            $precio_descuento = number_format($cotizacion->precio_lista_producto * $cotizacion->descuento / 100, 2);
+                            $descuento = $cotizacion->precio_lista_producto - $cotizacion->precio_lista_producto * $cotizacion->descuento / 100;
                             $descripcion_descuento = "<td colspan=\"2\">
                                                 {$cotizacion->descripcion_descuento}
                                             </td>";
@@ -401,59 +407,36 @@ class MailPropuestaNegocioController extends Controller
                                         </tr>";
                     }
 
+                    $cot_total_venta += $descuento;
+                    $descuento_format = number_format($descuento, 2);
                     if ($mail_propuesta_negocio->is_iva_incluido == 1) {
                         $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='3'><strong>Venta</strong></td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='2'><strong>Venta</strong></td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                         <td>{$cotizacion->observacion}</td>
-                                        <td align=\"right\">USD {$precio_venta}</td>
+                                        <td align=\"right\">USD {$precio_lista_producto}</td>
                                         <td align=\"right\">USD {$precio_iva}</td>
-                                        <td align=\"right\">USD {$precio_venta_iva}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>
-                                                Precio de lista
-                                            </strong>
-                                        </td>
-                                        <td colspan=\"3\">
-                                            &nbsp;
-                                        </td>
-                                        <td align=\"right\">
-                                            USD {$precio_lista_producto}
-                                        </td>
+                                        <td align=\"right\">USD {$precio_lista_producto_iva}</td>
                                     </tr>
                                     {$str_descuento}
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td colspan=\"4\"><strong>Total VENTA nuevo:</strong></td>
-                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                        <td align=\"right\"><strong>USD {$descuento_format}</strong></td>
                                     </tr>";
                     } else {
+
                         $string_cuadro .= "<tr>
-                                        <td style=\"background: rgba(149,224,55,0.28);\" rowspan='2' ><strong>Venta</strong></td>
+                                        <td style=\"background: rgba(149,224,55,0.28);\" ><strong>Venta</strong></td>
                                         <td style=\"background: rgba(149,224,55,0.28);\">{$cotizacion->modelo}</td>
                                         <td>{$cotizacion->observacion}</td>
-                                        <td align=\"right\">USD {$precio_venta_iva}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>
-                                                Precio de lista
-                                            </strong>
-                                        </td>
-                                        <td colspan=\"3\">
-                                            &nbsp;
-                                        </td>
-                                        <td align=\"right\">
-                                            USD {{$precio_lista_producto}}
-                                        </td>
+                                        <td align=\"right\">USD {$precio_lista_producto_iva}</td>
                                     </tr>
                                     {$str_descuento}
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td colspan=\"2\"><strong>Total VENTA nuevo:</strong></td>
-                                        <td align=\"right\">USD {$precio_venta_iva}</td>
+                                        <td align=\"right\"><strong>USD {$descuento_format}</strong></td>
                                     </tr>";
                     }
                 }
@@ -503,7 +486,7 @@ class MailPropuestaNegocioController extends Controller
                     }
                 }
             }
-            $dif = number_format($cot_total_venta - $cot_total_toma - $cot_total_descuento, 2);
+            $dif = number_format($cot_total_venta - $cot_total_toma, 2);
             if ($mail_propuesta_negocio->is_iva_incluido == 1) {
                 $string_cuadro .= "<tr>
                                     <td colspan=\"4\"></td>

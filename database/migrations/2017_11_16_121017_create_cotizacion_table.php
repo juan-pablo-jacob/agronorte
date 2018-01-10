@@ -26,6 +26,7 @@ class CreateCotizacionTable extends Migration
             $table->double("costo_real_producto")->nullable();
             $table->double("costo_basico_producto")->nullable();
             $table->double("incentivo_producto")->nullable();
+            $table->double("precio_lista_producto_iva")->nullable();
             $table->tinyInteger("is_toma")->default(0);
             $table->double("precio_toma")->nullable();
 
