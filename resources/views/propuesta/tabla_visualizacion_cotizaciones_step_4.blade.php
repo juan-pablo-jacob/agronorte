@@ -12,12 +12,12 @@
     <tbody>
     @if(count($cotizaciones) > 0)
         @php ($cot_total_venta = 0)
-        @php ($cot_total_descuento = 0)
+
         @php ($cot_total_toma = 0)
 
         @foreach($cotizaciones as $key => $cotizacion)
             @if($cotizacion->is_toma == 0)
-
+                @php ($cot_total_descuento = 0)
                 <tr>
                     <td style="background: rgba(149,224,55,0.28);" rowspan="2"><strong>Venta</strong>
 
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
                     <td colspan="4"><strong>Total recepción usado:</strong></td>
-                    <td align="right">USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</td>
+                    <td align="right"><strong>USD {{number_format ($cotizacion->precio_toma_iva, 2)}}</strong></td>
                 </tr>
             @endif
         @endforeach
@@ -89,7 +89,7 @@
             <td colspan="4"></td>
             <td><strong>DIFERENCIA A PAGAR</strong></td>
             @php ($dif = $cot_total_venta - $cot_total_toma)
-            <td style="background: rgba(149,224,55,0.28);" align="right">USD {{number_format($dif, 2)}}</td>
+            <td style="background: rgba(149,224,55,0.28);" align="right"><strong>USD {{number_format($dif, 2)}}</strong></td>
         </tr>
     @endif
     </tbody>

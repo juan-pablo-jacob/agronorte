@@ -210,6 +210,8 @@ class CotizacionController extends Controller
             $request->merge(["precio_venta" => $precio_venta]);
             $request->merge(["precio_venta_iva" => $precio_venta * (100 + $parametros_sistema->iva) / 100]);
             $request->merge(["precio_lista_producto_iva" => (float)$request->get("precio_lista_producto") * (100 + $parametros_sistema->iva) / 100]);
+        } else {
+            $request->merge(["precio_toma_iva" => (float)$request->get("precio_toma") * (100 + $parametros_sistema->iva) / 100]);
         }
 
         DB::beginTransaction();

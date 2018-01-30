@@ -12,3 +12,8 @@ update cotizacion
 set precio_venta_iva = precio_venta * (100 + 10.5) / 100,
 precio_lista_producto_iva = precio_lista_producto * (100 + 10.5) / 100
 where is_toma <> 1;
+
+--Actualización de la cotización para los productos tomados
+update cotizacion
+set precio_toma_iva = precio_toma * (100 + 10.5) / 100
+where is_toma <> 0;
