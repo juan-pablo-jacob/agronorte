@@ -384,7 +384,7 @@ class CotizacionController extends Controller
                     ->join("producto", "producto.id", "=", "cotizacion.producto_id")
                     ->where("is_toma", 0)
                     ->where("producto.is_nuevo", 0)
-                    ->where("active", 1)
+                    ->where("cotizacion.active", 1)
                     ->where("propuesta_negocio_id", $cotizacion->propuesta_negocio_id)
                     ->groupBy("propuesta_negocio_id")
                     ->first();
